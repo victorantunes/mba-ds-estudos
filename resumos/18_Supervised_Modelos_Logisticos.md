@@ -1,40 +1,80 @@
 # 18 · Supervised ML — Modelos Logísticos Binários e Multinomiais
 **Prof. Dr. Luiz Paulo Fávero · 2 aulas · Prioridade: ALTA (classificação; "qual distribuição/modelo", logito, cutoff e ROC)**
-*Itens marcados com (†) são padrão da disciplina e complementam o que o professor mostrou nas lousas/planilhas.*
+*Itens marcados com (†) são padrão da disciplina e complementam o que o professor mostrou nas lousas.*
+
+> **Em uma frase:** a regressão logística modela a **probabilidade** de um evento (sim/não, ou uma entre várias categorias) usando uma curva em "S" que nunca sai de 0 a 1.
+
+**Pré-requisitos:** regressão (17), Bernoulli e odds (01). **Vem depois:** 19 (contagem) e 20 (multinível).
+
+## Por que isso importa (intuição)
+Se Y é "cliente deu calote (1) ou não (0)", uma reta de regressão pode prever −0,3 ou 1,4 — probabilidades impossíveis. A solução: modelar não p, mas o **logito = ln[p/(1−p)]**, que é linear em X e pode ir de −∞ a +∞; depois a **função logística** converte de volta para uma probabilidade entre 0 e 1.
 
 ## 1. Quando usar
-- Técnica **supervisionada** para **explicar ou predizer a probabilidade de ocorrência de um evento** em função de variáveis X. **Y é qualitativa**: **binária** (2 categorias → logística **binária**) ou **policotômica** (3+ categorias → logística **multinomial**). **X podem ser métricas ou não métricas** (qualitativas viram dummies, n−1).
-- **Objetivos:** **atribuir probabilidades** (0–1) e **classificar** observações em categorias.
-- São modelos de **classificação, não de "regressão" com erro de média zero**: aqui não faz sentido falar de termo de erro, e sim de acerto/erro de classificação. **Erros a evitar:** estimar OLS quando Y é qualitativa (**escolha errada do modelo**) e usar **pesos arbitrários** nas X qualitativas.
-- **Não precisa balancear** (downsampling/oversampling) como alguns *ensemble models*; **não precisa separar treino e teste** nem definir hiperparâmetros (todos os dados são "treino"; separar penaliza a estimação). Eventos **raros**: modelos de contagem/inflação de zeros (resumo 19).
-- Aplicações: chegar atrasado, falha de componente (Challenger × temperatura), **recuperação judicial**, probabilidade de **crédito e de default**, fidelidade do cliente.
+- **Supervisionada**, para **explicar/predizer a probabilidade** de um evento. **Y qualitativa:** **binária** (2 categorias) → logística **binária**; **3 ou mais** → **multinomial**. **X** pode ser métrica ou qualitativa (dummies n−1).
+- **Objetivos:** atribuir probabilidades e **classificar** observações.
+- **Erros a evitar:** usar OLS quando Y é qualitativa e usar pesos arbitrários nas X qualitativas.
+- **Não é necessário** balancear classes nem separar treino/teste (todos os dados estimam o modelo).
+- Aplicações: atraso, falha de componente (Challenger × temperatura), recuperação judicial, **crédito e default**, fidelidade.
 
 ## 2. Probabilidade, chance (odds) e logito
-- **p** = probabilidade do evento (Y=1); **1 − p** = não evento.
-- **Chance (odds) = p / (1 − p)**. p=0,50 → chance 1 (1 para 1); p=0,75 → chance 3; p=0,25 → chance 1/3.
-- **Logito (Z) = ln(chance) = ln[p/(1−p)] = α + β1X1 + β2X2 + … + βkXk** (função **linear** nas X → "modelo linear generalizado").
-- **Isolando p (função logística/sigmoide):** **p = 1 / (1 + e^(−Z))** = e^Z/(1 + e^Z) — assume valores entre **0 e 1** para qualquer Z de −∞ a +∞. Curva em "S".
-- (†) **Interpretação do beta:** e^β = **razão de chances (odds ratio)** — quanto a chance do evento multiplica quando X aumenta 1 unidade. β>0 aumenta a probabilidade; β<0 diminui.
+- **Chance (odds) = p ÷ (1 − p).** p = 0,50 → chance 1; p = 0,75 → chance 3; p = 0,25 → chance 1/3.
+- **Logito (Z) = ln[p ÷ (1 − p)] = α + β₁X₁ + … + βₖXₖ** (linear nas X).
+- **Função logística (sigmoide):** **p = 1 ÷ (1 + e⁻ᶻ)** — sempre entre 0 e 1. Curva em S.
+- (†) **Razão de chances:** **eᵝ** = quanto a chance do evento **multiplica** quando X sobe 1 unidade. β > 0 aumenta a probabilidade; β < 0 diminui.
 
-## 3. Estimação — Máxima Verossimilhança (MLE)
-- **Y segue distribuição de Bernoulli** (binária) — **a função densidade de probabilidade de Y define a função objetivo**. **Função objetivo = maximizar o logaritmo da função de verossimilhança (LL)**: processo **iterativo** que ajusta α e βs para maximizar o acerto entre a probabilidade prevista e o que de fato ocorreu. (Aula: feito na mão por **otimização/Solver** no Excel.) Python: `smf.logit('y ~ x1 + x2', data=df).fit()` (statsmodels); **Y precisa estar numérica 0/1** (se for texto, converter). `.predict()` já aplica 1/(1+e^−Z).
-- **Modelo nulo:** só intercepto (LL do modelo nulo). Teste **χ² (razão de verossimilhança)**: compara o modelo com preditoras × nulo; **p < 5% → pelo menos um β ≠ 0** (equivale ao teste F da regressão). **Teste z de Wald** para **cada parâmetro** (equivale ao t): p < 0,05 → significante.
-- **Pseudo-R² de McFadden** = 1 − LL/LL₀ = incremento percentual do log-likelihood em relação ao modelo nulo. **Não é a variância explicada** como o R² da regressão (o nome "variância" é inadequado aqui).
-- Cuidado com **overfitting** (não treinar demais algoritmos fortes como LightGBM); no logístico a estimação é por MLE (determinística).
+**Exemplo resolvido.** Z = −2 + 0,5·X, com X = 6 → Z = **1** → p = 1 ÷ (1 + e⁻¹) = **0,73**. eᵝ = e⁰·⁵ ≈ **1,65**: cada unidade a mais de X multiplica a chance por 1,65 (aumento de ~65% na chance).
 
-## 4. Eficiência: cutoff, matriz de confusão, sensibilidade, especificidade e curva ROC
-- **Cutoff (ponto de corte):** probabilidade a partir da qual se classifica como evento (**p̂ ≥ cutoff → 1**; padrão 0,5). **Mudar o cutoff muda os acertos**: baixar o cutoff aumenta a **sensibilidade** (mais verdadeiros positivos) mas inclui **falsos positivos** (observações antes corretas passam a erro).
-- **Matriz de confusão (tabela de classificação):** verdadeiros positivos (VP), falsos positivos (FP), verdadeiros negativos (VN), falsos negativos (FN).
-- (†) **Acurácia** = (VP+VN)/total. **Sensibilidade (recall)** = VP/(VP+FN) = acerto entre os que **tiveram** o evento. **Especificidade** = VN/(VN+FP) = acerto entre os que **não tiveram**.
-- **Curva ROC:** plota **sensibilidade × (1 − especificidade)** para **todos os cutoffs**; **área sob a curva (AUC)** mede o poder de discriminação (0,5 = aleatório; 1 = perfeito). Exemplo da aula: só com a idade, **AUC ≈ 70%**; incluindo 15–16 dummies, **AUC ≈ 95%** (+25 pontos percentuais) e acurácia de **86%** — dummies melhoram muito mesmo sem variáveis métricas.
-- Exemplo: Challenger — com 70 °F (21 °C), probabilidade de falha ≈ 13,7%.
+## 3. Estimação — máxima verossimilhança
+- **Y segue Bernoulli**; a **função objetivo é maximizar o log da verossimilhança (LL)**, processo **iterativo**. Python: `smf.logit('y ~ x1 + x2', data=df).fit()`; Y precisa ser **numérica 0/1**.
+- **Teste χ² (razão de verossimilhança):** compara com o **modelo nulo** (só intercepto); **p < 5% → ao menos um β ≠ 0** (equivale ao F). **Teste z de Wald:** cada parâmetro (equivale ao t).
+- **Pseudo-R² de McFadden = 1 − LL ÷ LL₀.** **Não é variância explicada.**
 
-## 5. Regressão logística multinomial
-- **Y policotômica** com M categorias → **M − 1 logitos** (compara cada categoria à **categoria de referência**, escolhida pelo pesquisador). Para 3 categorias (0=referência, 1, 2): Z1 = α1 + β11X1 + …; Z2 = α2 + β12X1 + …
-- **Probabilidades:** **P0 = 1/(1 + e^Z1 + e^Z2); P1 = e^Z1/(1 + e^Z1 + e^Z2); P2 = e^Z2/(1 + e^Z1 + e^Z2)** — **mesmo denominador; P0 + P1 + P2 = 100%** em cada linha.
-- **Distribuição de Y:** (na lousa do professor) **a Y policotômica segue distribuição binomial/multinomial**, base da função de verossimilhança do modelo (Bernoulli no binário).
-- **Interpretação:** parâmetros **sempre em relação à categoria de referência**; eficiência global: teste **χ²** do modelo e testes **z** dos parâmetros.
-- **Classificação:** a observação vai para a categoria de **maior probabilidade estimada** — **não faz sentido definir cutoff/threshold** no multinomial.
+**Exemplo.** LL do modelo = −60; LL do nulo = −100 → McFadden = 1 − (−60 ÷ −100) = **0,40**.
+
+## 4. Eficiência: cutoff, matriz de confusão, sensibilidade, especificidade, ROC
+- **Cutoff:** p̂ ≥ cutoff → classe 1 (padrão 0,5). **Baixar o cutoff aumenta a sensibilidade** e traz mais falsos positivos.
+- **Matriz de confusão:** VP, FP, VN, FN. **Acurácia** = (VP+VN) ÷ total. **Sensibilidade (recall)** = VP ÷ (VP+FN) (acerto entre os que **tiveram** o evento). **Especificidade** = VN ÷ (VN+FP) (acerto entre os que **não tiveram**).
+- **Curva ROC:** **sensibilidade × (1 − especificidade)** para todos os cutoffs; **AUC** mede a discriminação (**0,5 = aleatório; 1 = perfeito**). Na aula: só com idade, AUC ≈ 70%; com dummies, ≈ 95% e acurácia 86%.
+
+**Exemplo resolvido.** 200 casos: VP = 40, FN = 10, FP = 20, VN = 130.
+Acurácia = 170 ÷ 200 = **85%**; sensibilidade = 40 ÷ 50 = **80%**; especificidade = 130 ÷ 150 ≈ **86,7%**.
+
+## 5. Logística multinomial
+- **Y com M categorias → M − 1 logitos**, cada um comparando uma categoria à **categoria de referência**. Para 3 categorias: Z₁ e Z₂.
+- **Probabilidades:** P₀ = 1 ÷ (1 + e^Z₁ + e^Z₂); P₁ = e^Z₁ ÷ (1 + e^Z₁ + e^Z₂); P₂ = e^Z₂ ÷ (1 + e^Z₁ + e^Z₂) — **mesmo denominador, somam 100%**.
+- **Classificação:** categoria de **maior probabilidade**; **não há cutoff** no multinomial.
+
+**Exemplo resolvido.** Z₁ = 0,5 e Z₂ = −0,2 → e^0,5 = 1,649; e^−0,2 = 0,819; denominador = 3,467. **P₀ = 0,288; P₁ = 0,476; P₂ = 0,236** (soma = 1). Classificada na categoria 1.
+
+## Armadilhas e confusões comuns
+| Confusão | O correto |
+|---|---|
+| OLS serve para Y binária | probabilidades fora de 0–1; use **logística** |
+| Pseudo-R² de McFadden = variância explicada | **não**; compara log-likelihoods |
+| β = variação da probabilidade | β é variação do **logito**; **eᵝ** é razão de chances |
+| Multinomial tem 1 logito | **M − 1** logitos |
+| Multinomial usa cutoff | **não**: vai para a categoria de maior probabilidade |
+| Baixar o cutoff aumenta a especificidade | aumenta a **sensibilidade** (e os falsos positivos) |
+| Precisa balancear e separar treino/teste | **não precisa** nesta disciplina |
+| AUC = 0,5 é bom | 0,5 = **aleatório** |
+
+## Resumo-relâmpago
+- odds = p/(1−p); logito = ln(odds) = α + βX; p = 1/(1+e⁻ᶻ); eᵝ = razão de chances.
+- MLE: maximizar LL. χ² (modelo) e z (parâmetros). McFadden = 1 − LL/LL₀.
+- Sensibilidade = VP/(VP+FN); especificidade = VN/(VN+FP); ROC/AUC. Multinomial: M−1 logitos, sem cutoff.
+
+## Teste-se
+1. Converta p = 0,8 em chance.
+<details markdown="1"><summary>Ver resposta</summary>0,8 ÷ 0,2 = 4 (4 para 1).</details>
+
+2. β = 0,7. O que significa eᵝ ≈ 2,01?
+<details markdown="1"><summary>Ver resposta</summary>Cada unidade a mais de X aproximadamente dobra a chance do evento.</details>
+
+3. Quantos logitos tem um Y com 4 categorias?
+<details markdown="1"><summary>Ver resposta</summary>3 (M − 1), cada um contra a referência.</details>
+
+4. Por que baixar o cutoff aumenta a sensibilidade?
+<details markdown="1"><summary>Ver resposta</summary>Mais observações passam a ser classificadas como evento, capturando mais verdadeiros positivos (ao custo de mais falsos positivos).</details>
 
 ## Pergunta típica
-Por que logística e não OLS quando Y é qualitativa · logito, chance e probabilidade (converter p ↔ chance) · fórmula p = 1/(1+e^−Z) · por que MLE e qual a função objetivo · χ² × z de Wald · para que serve cutoff · sensibilidade × especificidade × ROC/AUC · quantos logitos no multinomial (M−1) · por que não há cutoff no multinomial · por que não balancear nem separar treino/teste aqui.
+Por que logística e não OLS quando Y é qualitativa · logito, chance e probabilidade (converter p ↔ chance) · fórmula p = 1/(1+e⁻ᶻ) · por que MLE e qual a função objetivo · χ² × z de Wald · para que serve o cutoff · sensibilidade × especificidade × ROC/AUC · quantos logitos no multinomial · por que não há cutoff no multinomial · por que não balancear nem separar treino/teste aqui
