@@ -1,50 +1,133 @@
 # 22 · Séries Temporais (I, II, III + Aula Extra de Exercícios)
-**Prof. Fabiano Guasti Lima · 3 aulas + extra · Prioridade: ALTA (muitos conceitos curtos e fórmulas; cai bastante)**
-*Referência: Hyndman, "Forecasting: Principles and Practice" (otexts.com/fpp3).*
+**Prof. Fabiano Guasti Lima · 3 aulas + extra · Prioridade: alta (muitos conceitos curtos e fórmulas)**
+*Referência do professor: Hyndman, "Forecasting: Principles and Practice" (otexts.com/fpp3).*
+
+## O fio condutor deste capítulo
+
+Em dados de vendas mensais, o valor de hoje **depende do que aconteceu antes**: por isso não se podem embaralhar as linhas nem tratar as observações como independentes. A estratégia é **decompor** a série (o que é nível ou tendência, o que se repete todo ano, o que é puro acaso) e usar esses padrões para **prever**. Métodos simples (repetir o último valor, tirar a média) servem de **linha de base**: um modelo sofisticado só vale se **os vencer**.
+
+O capítulo percorre esse caminho: primeiro *o que é* uma série e seus **componentes**; depois os **métodos simples** e a **suavização exponencial**; em seguida como **medir o erro** das previsões; e, por fim, a **estacionariedade** e os modelos **ARIMA**, que exigem que a série seja "estável".
+
+```mermaid
+flowchart LR
+  A["Série temporal"] --> B["Decompor: T, S, C, E"]
+  B --> C["Métodos simples e suavização exponencial"]
+  C --> D["Medir o erro: MAE, RMSE, MAPE"]
+  D --> E["Estacionariedade: teste ADF, log e diferença"]
+  E --> F["ARIMA: p, d, q via ACF e PACF"]
+  F --> G["Resíduos: ruído branco?"]
+```
 
 ## 1. O que é uma série temporal
-- **Conjunto de observações ordenadas no tempo**: X_t, t = 1..n; **a ordem importa** (cada valor depende do que veio antes) e o **espaçamento é regular** (diário, mensal…). **n ≥ 50 = "sucessão cronológica".** Três ingredientes: **medida** (o quê) · **unidade de tempo** (quando) · **fato/fonte**. Exemplos: IBOVESPA diário, inflação mensal, câmbio, passageiros por mês.
-- **Univariada** (uma variável × tempo) × **multivariada** (duas ou mais). **Discreta** (observações em intervalos fixos) × **contínua**. **Determinística** (função matemática exata) × **estocástica** (valores futuros só em termos probabilísticos: modelo com termo aleatório).
-- **Objetivos:** (1) **prever** valores futuros; (2) investigar o **mecanismo gerador**; (3) **descrever** o comportamento da série; (4) procurar **periodicidades**. Previsões longas → **o erro se propaga** (intervalo de confiança se abre); com série curta, prever passo a passo.
-- Limpeza: dados faltantes, erros de medida, acumulados (pandemia).
 
-## 2. Componentes
-- **Tendência (T)**: direção de longo prazo (crescente/decrescente). **Sazonalidade (S)**: padrão que se repete em **período fixo** (dia, semana, mês). **Ciclo (C)**: ondas longas, **sem período fixo** (ciclos econômicos). **Aleatório/erro (E)**: o resto imprevisível.
-- **Modelo aditivo: Y = T + C + S + E** (sazonalidade de **mesmo tamanho** ao longo do tempo). **Multiplicativo: Y = T × C × S × E** (sazonalidade **cresce com o nível**). No multiplicativo, os índices sazonais somam o nº de períodos (ex.: 4 trimestres somam 4).
-- **Decomposição:** estimar a tendência (média móvel; com janela **ímpar** já fica centrada), remover T (Y − T ou Y / T) → S + E; calcular a sazonalidade média por período; o que sobra = ciclo + erro.
-- **Diagnóstico visual primeiro:** sobe/desce → tendência; repete padrão em período fixo → sazonalidade; oscila em torno de média fixa → estacionária.
+É um conjunto de observações **\(X_t\) ordenadas no tempo** (t = 1…n) e **igualmente espaçadas**; **a ordem importa**, e o desejável é ter **n ≥ 50**. Seus ingredientes são a medida, a unidade de tempo e a fonte. Pode ser **univariada** ou **multivariada**, **determinística** (fórmula exata) ou **estocástica** (probabilística). Os objetivos são prever, entender o mecanismo gerador, descrever e achar periodicidades; e **previsões mais longas são menos confiáveis**, porque o erro se propaga e o intervalo de confiança se abre.
 
-## 3. Métodos simples (baselines — qualquer modelo mais sofisticado precisa vencê-los)
-- **Naive:** último valor. **Naive sazonal:** último valor do mesmo período sazonal. **Média:** média histórica. **Drift:** reta do primeiro ao último ponto (acompanha a tendência).
-- **Média móvel:** média dos vizinhos numa janela n (remove ruído); janela pequena segue de perto, grande suaviza; o melhor n minimiza o erro nas previsões passadas.
+## 2. Componentes e decomposição
 
-## 4. Suavização exponencial (SES, Holt, Holt-Winters) e ETS
-| Modelo | Quando | Ideia |
+| Componente | O que é |
+|---|---|
+| **Tendência (T)** | direção de longo prazo |
+| **Sazonalidade (S)** | padrão que se repete em **período fixo** (mês, semana) |
+| **Ciclo (C)** | ondas longas **sem período fixo** |
+| **Erro (E)** | o que sobra, imprevisível |
+
+![Decomposição aditiva: série = tendência + sazonalidade + erro](img/22_decomposicao.png)
+
+A decomposição pode ser **aditiva**, \(Y = T + C + S + E\), quando a sazonalidade tem **tamanho constante**, ou **multiplicativa**, \(Y = T\times C\times S\times E\), quando a sazonalidade **cresce com o nível** da série. No multiplicativo, os índices sazonais somam o número de períodos.
+
+## 3. Métodos simples e suavização exponencial
+
+As **linhas de base** são o **naive** (último valor), o **naive sazonal** (valor do mesmo período do ano anterior), a **média** e o **drift** (reta do primeiro ao último ponto). A **média móvel** faz a média dos vizinhos em uma janela: janela pequena segue a série; grande suaviza.
+
+> **Exemplo.** Valores 10, 12, 14 e 16. A média móvel de 3 períodos no final é \(\frac{12 + 14 + 16}{3} = 14\).
+
+A **suavização exponencial** dá **peso maior às observações recentes**, que decai exponencialmente. A escolha do método depende dos componentes presentes:
+
+| Método | Quando | Parâmetros |
 |---|---|---|
-| **SES** (simples) | sem tendência e sem sazonalidade ("andando de lado") | peso maior nas observações recentes, **decaindo exponencialmente**; **α entre 0 e 1** (α alto reage rápido; baixo = previsão suave); previsão = último valor suavizado (linha reta) |
-| **Holt (SEH)** | **tendência** linear, sem sazonalidade | acrescenta o parâmetro **β** (tendência) |
-| **Holt-Winters** | **tendência + sazonalidade** (período c) | parâmetros **α, β, γ** (nível, tendência, sazonal); **aditivo** (sazonal constante) ou **multiplicativo** (sazonal cresce) |
-- Fórmulas (aditivo): X̂t = L̂t−1 + T̂t−1 + Ŝt−c; Lt = α(Xt − St−c) + (1−α)(Lt−1 + Tt−1); Tt = β(Lt − Lt−1) + (1−β)Tt−1; St = γ(Xt − Lt−1) + (1−γ)St−c. Previsão h passos: Lt + h·Tt + St+h−c. Intervalo: X̂t(h) ± Zα/2·SE(h) (cresce com h). (Multiplicativo: usa produto e divisão.)
-- **ETS (Error, Trend, Seasonal):** escolhe automaticamente o melhor modelo; códigos **A** (aditivo), **M** (multiplicativo), **N**/Z (nenhum/automático); tendência **Ad / Md** = amortecida; ex.: "AAA". Se não há tendência/sazonalidade, β e γ são zero.
-- Os parâmetros (α, β, γ) são escolhidos **minimizando uma medida de erro** (ex.: MSE) — no Excel, com o Solver variando α.
+| **SES** (simples) | sem tendência e sem sazonalidade | **α** (0 a 1) |
+| **Holt** | com **tendência** | α e **β** |
+| **Holt-Winters** | com **tendência e sazonalidade** (aditivo ou multiplicativo) | α, β e **γ** |
+| **ETS** | escolhe automaticamente: **A** (aditivo), **M** (multiplicativo), **N** (nenhum), **Ad** (tendência amortecida) | — |
 
-## 5. Estatísticas de erro de previsão (erro = real − previsto)
-**ME** (erro médio; positivos e negativos se anulam) · **MAE** (média do valor absoluto; na unidade original) · **MSE** (média dos quadrados) · **RMSE** (raiz do MSE; penaliza erros grandes) · **MPE** (erro percentual médio) · **MAPE** (erro percentual absoluto médio; **sem unidade**, bom para comparar séries) · **Theil's U / TIC** (grau de ajuste da previsão; **quanto menor melhor, zero é ideal**; "quase um R² invertido") · **ACF1** (autocorrelação de 1ª ordem dos resíduos). **Em todas: quanto menor, melhor** (mesma base de comparação). MAPE explode quando há valores próximos de zero (use MAE).
-- **Resíduos de um bom modelo:** **ruído branco** = **média zero, variância constante e sem autocorrelação** (se o erro de hoje prevê o de amanhã, o modelo não extraiu toda a estrutura). Testes: **Ljung-Box** (H0: sem autocorrelação nos resíduos; **p > 0,05 desejável**), **Breusch-Pagan/ARCH** (H0: homocedasticidade), **Jarque-Bera** (H0: normalidade; JB ~ χ²(2); assimetria 0 e curtose 3 na normal).
+Um α alto reage rápido; um α baixo suaviza. Para a SES, o nível é atualizado por \(L_t = \alpha X_t + (1-\alpha)L_{t-1}\), e os parâmetros são escolhidos **minimizando um erro** (por exemplo, o MSE).
 
-## 6. Estacionariedade
-- **Estacionária:** **média e variância constantes** no tempo e covariância dependendo só da defasagem. A maioria dos modelos (ARIMA) exige. Tendência é a causa mais comum de não estacionariedade.
-- **Teste ADF (Dickey-Fuller Aumentado):** **H0: a série NÃO é estacionária (tem raiz unitária)**; **p ≤ 0,05 → estacionária**; **p > 0,05 → não estacionária** → aplicar **log** e/ou **diferenciação** e testar de novo. **KPSS** tem a hipótese invertida: **H0: a série é estacionária** (H1: possui raiz unitária). **Phillips-Perron (PP)**: H0 raiz unitária.
-- **Log** estabiliza a **variância** (transforma sazonalidade multiplicativa em aditiva); **diferenciação** (subtrair o valor anterior) **remove a tendência**; d = 1 (primeira ordem), d = 2 (rara). Sazonal: diferenciação sazonal (D).
+> **Exemplo resolvido (SES).** \(\alpha = 0{,}3\) e \(L_0 = 100\). \(X_1 = 110\): \(L_1 = 0{,}3\cdot110 + 0{,}7\cdot100 = 103\). \(X_2 = 120\): \(L_2 = 0{,}3\cdot120 + 0{,}7\cdot103 = 36 + 72{,}1 = 108{,}1\). A previsão para os próximos períodos é **108,1**.
 
-## 7. ARIMA (Box-Jenkins)
-- **ARIMA(p, d, q):** **p** = ordem **autorregressiva (AR)** (valor depende de p valores passados); **d** = grau de **diferenciação (I, integrado)**; **q** = ordem da **média móvel (MA)** (depende dos **erros/choques** passados). AR(1)=ARIMA(1,0,0); MA(1)=ARIMA(0,0,1); ARMA(1,1)=ARIMA(1,0,1). Ex.: Xt = 0,8·Xt−1 + εt.
-- **Como definir p, d, q:** **p → PACF**, **q → ACF**, **d → testes de estacionariedade**. **Padrões:** **AR(p): ACF decai exponencialmente/senoide amortecida; PACF corta (significativa até o lag p)**. **MA(q): ACF corta no lag q; PACF decai**. **ARMA: ambas decaem.**
-- **Autocorrelação (FAC/ACF):** correlação entre observações defasadas k períodos (−1 a 1); **correlograma** = gráfico FAC × k (1ª autocorrelação = 1). **FACP/PACF:** autocorrelação "parcial" (retira o efeito dos lags intermediários). Série não estacionária: **ACF decai lentamente**.
-- **Etapas Box-Jenkins:** **Identificação** (ACF/PACF) → **Estimação** → **Checagem dos resíduos (ruído branco)**; se não for, recomeça.
-- **Seleção de modelo:** **AIC** (informação perdida; **menor = melhor**) e **BIC** (menor = melhor ajuste).
-- **SARIMA(p,d,q)(P,D,Q)s:** acrescenta termos **sazonais** com ciclo s (ex.: s = 12 para mensal), P/Q = AR/MA sazonais, D = diferenças sazonais. Ex.: SARIMA(1,0,2)(0,1,1)12.
-- Outros citados: **teste de causalidade de Granger** (se X passa, não pôr em MQO/XGBoost como se fosse exógena sem cuidado), modelos de **volatilidade (ARCH/GARCH)**, **redes neurais** e cenários (otimista, pessimista, provável) para orçamento.
+## 4. Medindo o erro (erro = real − previsto)
+
+| Medida | Fórmula/ideia | Observação |
+|---|---|---|
+| **ME** | média dos erros | positivos e negativos **se anulam**: enganosa |
+| **MAE** | média dos erros absolutos | na unidade original |
+| **MSE** | média dos erros ao quadrado | penaliza erros grandes |
+| **RMSE** | \(\sqrt{MSE}\) | na unidade original |
+| **MAPE** | erro percentual absoluto médio | **sem unidade**; explode com valores perto de zero |
+| **Theil's U** | ajuste da previsão | **menor é melhor, zero é ideal** |
+
+Em todas, **menor é melhor**. Um bom modelo deixa **resíduos que são ruído branco**: média zero, variância constante e **sem autocorrelação**. Os testes são o **Ljung-Box** (H0: sem autocorrelação; queremos **p > 0,05**), o Breusch-Pagan/ARCH (homocedasticidade) e o Jarque-Bera (normalidade).
+
+> **Exemplo resolvido.** Reais: 100 e 110; previstos: 90 e 120; erros: +10 e −10. **ME = 0** (enganoso!), **MAE = 10**, **MSE = 100**, **RMSE = 10**, **MAPE** = \(\frac{10/100 + 10/110}{2} \approx 9{,}5\%\).
+
+## 5. Estacionariedade
+
+Uma série é **estacionária** quando **média e variância são constantes** no tempo e a covariância depende apenas da defasagem. O ARIMA exige isso, e a causa mais comum de não estacionariedade é a **tendência**.
+
+| Teste | H0 | Decisão |
+|---|---|---|
+| **ADF** (Dickey-Fuller aumentado) | a série **não** é estacionária (raiz unitária) | **p ≤ 0,05 → estacionária**; p > 0,05 → transformar |
+| **KPSS** | a série **é** estacionária | hipóteses **invertidas** em relação ao ADF |
+
+Quando a série não é estacionária, aplica-se o **log** (estabiliza a **variância**; transforma sazonalidade multiplicativa em aditiva) e/ou a **diferenciação** (subtrai o valor anterior; remove a **tendência**, \(d = 1\)) e testa-se de novo.
+
+## 6. ARIMA (Box-Jenkins)
+
+O **ARIMA(p, d, q)** combina três ideias: **p** termos **autorregressivos (AR)**, em que o valor depende de valores passados; **d** **diferenças** (a integração); **q** termos de **média móvel (MA)**, em que o valor depende de erros passados. **Como escolher:** o **p vem da PACF**, o **q vem da ACF** e o **d vem dos testes de estacionariedade**.
+
+| Modelo | ACF | PACF |
+|---|---|---|
+| **AR(p)** | decai gradualmente | **corta no lag p** |
+| **MA(q)** | **corta no lag q** | decai gradualmente |
+| **ARMA** | decai | decai |
+
+![Padrões de ACF e PACF para AR(1) e MA(1)](img/22_acf_pacf.png)
+
+As etapas de **Box-Jenkins** são: identificação (ACF/PACF) → estimação → checagem dos resíduos (ruído branco); se falhar, recomeça. A **seleção** entre modelos usa **AIC/BIC** (menor é melhor). O **SARIMA(p,d,q)(P,D,Q)\(_s\)** acrescenta termos sazonais (s = 12 para dados mensais). Outros temas citados: causalidade de Granger, modelos de volatilidade (ARCH/GARCH) e cenários (otimista, pessimista, provável).
+
+> **Exemplo de leitura.** Correlograma com PACF cortando após o lag 2 e ACF decaindo gradualmente sugere **AR(2)**. Se a ACF decai muito lentamente por muitos lags, a série provavelmente **não é estacionária**: diferencie antes.
+
+## O que levar daqui
+
+Uma série tem tendência, sazonalidade, ciclo e erro (aditivo ou multiplicativo). Compare qualquer modelo com os métodos simples. SES, Holt e Holt-Winters adicionam parâmetros α, β e γ. Avalie com MAE, RMSE e MAPE; o resíduo deve ser ruído branco. ADF: p ≤ 0,05 → estacionária. ARIMA: p → PACF, q → ACF, d → diferenças.
+
+## Erros que todo mundo comete
+
+| Erro | Correção |
+|---|---|
+| "No ADF queremos não rejeitar H0" | queremos **rejeitar** H0 (estacionária) |
+| ADF e KPSS têm a mesma H0 | as hipóteses são **invertidas** |
+| "ME baixo = modelo bom" | os erros se anulam; olhe **MAE/RMSE/MAPE** |
+| Aditivo × multiplicativo | sazonalidade **constante** × que **cresce com o nível** |
+| "O p vem da ACF" | **p → PACF; q → ACF** |
+| "Diferenciar remove a sazonalidade" | remove a **tendência**; a sazonal pede diferença sazonal (D) |
+| "Ljung-Box com p < 0,05 é bom" | queremos **p > 0,05** |
+
+## Teste-se
+
+1. Qual a H0 do teste ADF e o que fazer se p = 0,40?
+<details markdown="1"><summary>Ver resposta</summary>H0: a série não é estacionária. Com p = 0,40 não rejeita: aplique log e/ou diferenciação e teste novamente.</details>
+
+2. Como escolher p e q em um ARIMA?
+<details markdown="1"><summary>Ver resposta</summary>p pela PACF (corta no lag p em um AR) e q pela ACF (corta no lag q em um MA); d pelos testes de estacionariedade.</details>
+
+3. Quando usar modelo multiplicativo?
+<details markdown="1"><summary>Ver resposta</summary>Quando a amplitude da sazonalidade cresce junto com o nível da série.</details>
+
+4. Reais 100 e 110; previstos 90 e 120. Quanto vale o MAE?
+<details markdown="1"><summary>Ver resposta</summary>Erros absolutos 10 e 10 → MAE = 10.</details>
+
+5. O que deve acontecer com os resíduos de um bom modelo?
+<details markdown="1"><summary>Ver resposta</summary>Ser ruído branco: média zero, variância constante e sem autocorrelação (Ljung-Box com p > 0,05).</details>
 
 ## Pergunta típica
-Componentes e diferença aditivo × multiplicativo · qual método de suavização para cada caso (SES, Holt, HW) e o papel de α/β/γ · definir ME, MAE, RMSE, MAPE e interpretar Theil · H0 do ADF × KPSS · como estacionarizar (log e diferença) · o que significam p, d, q e qual gráfico determina p e q · padrões de ACF/PACF para AR e MA · critério AIC/BIC · o que deve ocorrer com os resíduos (ruído branco, Ljung-Box) · por que previsões longas perdem confiabilidade.
+Componentes e diferença aditivo × multiplicativo · qual método de suavização para cada caso (SES, Holt, HW) e o papel de α/β/γ · definir ME, MAE, RMSE, MAPE e interpretar Theil · H0 do ADF × KPSS · como estacionarizar (log e diferença) · o que significam p, d, q e qual gráfico define p e q · padrões de ACF/PACF para AR e MA · critério AIC/BIC · o que deve ocorrer com os resíduos · por que previsões longas perdem confiabilidade
