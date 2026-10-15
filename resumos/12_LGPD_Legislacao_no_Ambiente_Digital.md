@@ -1,47 +1,78 @@
 # 12 · Legislação no Ambiente Digital (LGPD)
-**Prof. Hélio Ferreira Moraes · 1 aula · Prioridade: ALTA (questões de múltipla escolha diretas; tudo abaixo cai)**
+**Prof. Hélio Ferreira Moraes · 1 aula · Prioridade: ALTA (questões objetivas diretas; o conteúdo abaixo é cobrado)**
 
-> Direito Digital: "o direito não é inimigo da tecnologia; é condição para seu florescimento sustentável". Características: **interdisciplinaridade, dinamismo, globalidade/transnacionalidade, proteção de direitos fundamentais, flexibilidade normativa** (princípios gerais; abordagem "tecnologicamente neutra").
+> **Em uma frase:** a LGPD diz que dados de pessoas físicas só podem ser tratados com **finalidade clara, base legal e o mínimo necessário**, respeitando os direitos do titular — e quem descumpre pode ser multado e ter a reputação atingida.
+
+**Pré-requisitos:** nenhum. **Vem depois:** aplica-se a BI (03), engenharia (04), cloud (07) e NLP (25).
+
+## Por que isso importa (intuição)
+Dados pessoais viraram matéria-prima de negócios (marketing, crédito, IA). A lei existe para equilibrar **o interesse da empresa em usar dados** com **o direito da pessoa à privacidade**. A regra de bolso: *coletei só o necessário? Para uma finalidade informada? Tenho uma base legal? Protegi os dados?*
+
+> Direito digital: *"o direito não é inimigo da tecnologia"*. Características: interdisciplinaridade, dinamismo, alcance global, proteção de direitos fundamentais e normas flexíveis (tecnologicamente neutras).
 
 ## 1. Marcos legais
-| Norma | Pontos-chave |
-|---|---|
-| **GDPR (UE, 2018)** | regras estritas de tratamento de dados; alcance **global** (afeta empresas fora da UE que tratam dados de cidadãos da UE) |
-| **CCPA (Califórnia, 2020)** | direito de saber quais dados são coletados e de pedir exclusão |
-| **DMCA (EUA, 1998)** | direitos autorais digitais |
-| **Marco Civil da Internet — Lei 12.965/2014** ("Constituição da Internet") | **neutralidade da rede**; privacidade e proteção de dados; **liberdade de expressão** (responsabilidade pelo conteúdo é do usuário; provedor de aplicação só responde após **ordem judicial**, exceto em casos específicos); **guarda de registros: conexão 1 ano; acesso a aplicações 6 meses**; provedores de conexão não respondem por conteúdo de terceiros |
-| **Marco Legal das Criptomoedas — Lei 14.478/2022** | regras para prestadoras de serviços de ativos virtuais; **não regula** reais/ativos vinculados a moedas estrangeiras, pontos e fidelidade; CVM Parecer 40 (cripto como valor mobiliário); IN RFB 1888/2019 (declaração de operações) |
-| **LAI — Lei de Acesso à Informação 12.527/2011** | transparência na Administração Pública (combate à corrupção); **conflito LAI × LGPD** (ex.: divulgar remuneração de servidores): equilibrar transparência × privacidade |
-| **LGPD — Lei 13.709/2018** | protege **direitos fundamentais de liberdade, privacidade e livre desenvolvimento da personalidade**; trata de **dados de pessoas naturais (físicas)**, por pessoa física ou jurídica, pública ou privada, **em qualquer meio (digital inclusive)** |
+- **GDPR (UE, 2018):** regras estritas; **alcance global** (afeta empresas fora da UE que tratam dados de europeus).
+- **CCPA (Califórnia, 2020):** direito de saber o que é coletado e de pedir exclusão.
+- **Marco Civil da Internet — Lei 12.965/2014:** neutralidade da rede, privacidade, liberdade de expressão (provedor só responde por conteúdo de terceiros após **ordem judicial**); guarda de registros: **conexão 1 ano; acesso a aplicações 6 meses**.
+- **Marco Legal das Criptomoedas — Lei 14.478/2022:** regras para prestadoras de serviços de ativos virtuais.
+- **LAI — Lei 12.527/2011:** transparência na administração pública (tensão com a LGPD: transparência × privacidade).
+- **LGPD — Lei 13.709/2018:** protege **liberdade, privacidade e livre desenvolvimento da personalidade**; trata de dados de **pessoas naturais**, por qualquer pessoa ou empresa, **em qualquer meio**.
 
 ## 2. LGPD — conceitos
-- **Dado pessoal:** **qualquer informação relacionada a pessoa natural identificada ou identificável** (não é só nome/endereço/CPF, nem só intimidade, nem dados da empresa).
-- **Dado pessoal sensível:** origem racial/étnica, **convicção religiosa**, opinião política, filiação a sindicato/organização religiosa/filosófica/política, **saúde**, vida sexual/orientação sexual, **dado genético ou biométrico**. Têm **proteção reforçada** (risco de discriminação) e **bases legais diferentes** (não pode usar **legítimo interesse** nem **proteção ao crédito** nem execução de contrato). **Dados financeiros e CPF NÃO são "sensíveis"** pela lei (mas a ANPD os trata com rigor).
-- **Titular** (pessoa natural a quem os dados se referem) · **Controlador** (decide sobre o tratamento) · **Operador** (**trata em nome do controlador**) · **Suboperador** (contratado pelo operador, sempre em nome do controlador) · **Encarregado (DPO)** (canal entre controlador, titulares e ANPD) · **ANPD** (zela, implementa e fiscaliza a LGPD; autarquia independente, elevada a "agência").
-- **Tratamento:** toda operação (coleta, classificação, acesso, armazenamento, etc.).
-- **Princípios:** **finalidade, adequação, necessidade** (usar o **mínimo** para atingir a finalidade), livre acesso, **qualidade dos dados**, **transparência**, **segurança**, **prevenção**, **não discriminação** e **responsabilização/prestação de contas**.
-- **Bases legais (10 + as dos dados sensíveis)** — *todo tratamento precisa de uma base, **mas nem toda base é consentimento***: consentimento · cumprimento de obrigação legal/regulatória · execução de políticas públicas · estudos por órgão de pesquisa · **execução de contrato** · exercício regular de direitos · proteção da vida · tutela da saúde · **legítimo interesse** · proteção ao crédito (e prevenção à fraude nos sensíveis). *Afirmação "todo tratamento exige consentimento" = FALSA.*
-- **Direitos do titular:** confirmação do tratamento, **acesso**, correção, **anonimização/bloqueio/eliminação**, **portabilidade**, informação sobre compartilhamento, negativa e **revogação do consentimento**, oposição, **revisão de decisões automatizadas** e informações sobre seus critérios (preservado o segredo de negócio).
-- **Transferência internacional (Resolução ANPD nº 19):** mecanismos: **cláusulas-padrão contratuais** (anexo II da resolução; já aprovadas, mais rápidas, não alteráveis), **normas corporativas globais** (empresas do mesmo grupo, precisam de aprovação da ANPD) e **cláusulas contratuais específicas** (aprovação da ANPD; processo demorado).
-- **Sanções administrativas:** advertência (com prazo p/ correção) · **multa simples** de **até 2% do faturamento** da empresa/grupo no Brasil no último exercício, **limitada a R$ 50 milhões por infração** · multa diária · **publicização da infração** · bloqueio e eliminação dos dados · suspensão parcial do funcionamento do banco de dados (até 6 meses, prorrogável) · suspensão do exercício da atividade de tratamento · proibição parcial/total de atividades. Impactos: financeiros e **reputacionais**.
+- **Dado pessoal:** qualquer informação relacionada a **pessoa natural identificada ou identificável**.
+- **Dado pessoal sensível:** origem racial/étnica, convicção religiosa, opinião política, filiação sindical/religiosa/política, **saúde**, vida sexual, **dado genético ou biométrico**. Proteção reforçada, com bases legais diferentes. **CPF e dados financeiros NÃO são sensíveis** pela lei.
+- **Agentes:** **Titular** (a pessoa dos dados) · **Controlador** (**decide** sobre o tratamento) · **Operador** (**trata em nome do controlador**) · **Encarregado/DPO** (canal com titulares e ANPD) · **ANPD** (autoridade que fiscaliza).
+- **Tratamento:** toda operação com dados (coleta, acesso, armazenamento, compartilhamento, eliminação…).
+- **Princípios:** **finalidade, adequação, necessidade** (usar o **mínimo**), livre acesso, qualidade, **transparência**, **segurança**, prevenção, não discriminação e **responsabilização**.
+- **Bases legais:** consentimento · obrigação legal/regulatória · políticas públicas · estudos por órgão de pesquisa · **execução de contrato** · exercício regular de direitos · proteção da vida · tutela da saúde · **legítimo interesse** · proteção ao crédito. **Todo tratamento precisa de uma base, mas nem toda base é consentimento.**
+- **Direitos do titular:** confirmação, **acesso**, correção, anonimização/bloqueio/eliminação, **portabilidade**, informação sobre compartilhamento, **revogação do consentimento**, oposição e **revisão de decisões automatizadas**.
+- **Transferência internacional:** cláusulas-padrão contratuais, normas corporativas globais e cláusulas específicas (Resolução ANPD 19).
+- **Sanções:** advertência · **multa simples de até 2% do faturamento, limitada a R$ 50 milhões por infração** · multa diária · publicização da infração · bloqueio/eliminação dos dados · suspensão do banco de dados (até 6 meses) ou da atividade de tratamento · proibição de atividades.
+
+**Exemplo resolvido.** Uma loja coleta CPF, endereço e data de nascimento para emitir nota fiscal (**base: obrigação legal**) e, separadamente, pede o e-mail para enviar promoções (**base: consentimento**). Usar o endereço para criar um perfil de crédito sem avisar viola a **finalidade**. Pedir a religião do cliente "por curiosidade" viola a **necessidade** (e é dado sensível).
 
 ## 3. Segurança da informação
-- **Tríade:** **confidencialidade, integridade, disponibilidade**. **Incidente de segurança:** qualquer evento que comprometa essas propriedades (acesso indevido, alteração, destruição).
-- **Ataques:** **phishing** (engano por e-mail/sites falsos), **malware** (vírus, **ransomware** = sequestra/criptografa dados e exige resgate, spyware, trojan), **engenharia social**, **DDoS**, **brute force**, exploração de vulnerabilidades, **man-in-the-middle** (risco em Wi-Fi público), **SQL injection**, **XSS**.
-- **Ameaças internas (falha humana):** enviar arquivos para e-mail pessoal, compartilhar senhas, usar apps não oficiais, deixar computador desbloqueado, documentos soltos. **Segurança é responsabilidade de todos.** Casos: STJ responsabilizou a **Enel** por vazamento mesmo com ataque de terceiros (não adotou medidas de segurança); funcionário demitido por justa causa por acessar contas indevidamente.
+- **Tríade:** **confidencialidade, integridade, disponibilidade.** Incidente = evento que compromete uma delas.
+- **Ataques:** **phishing**, **malware/ransomware** (sequestra dados e pede resgate), engenharia social, DDoS, força bruta, man-in-the-middle, SQL injection, XSS.
+- **Ameaças internas:** enviar arquivos ao e-mail pessoal, compartilhar senhas, deixar o computador desbloqueado. **Segurança é responsabilidade de todos.**
 
-## 4. LGPD na prática (negócio, dados e marketing)
-- **Cadastro:** reduzir ao **necessário**; regras de acesso; manter dados corretos e atualizados. **Lead também é titular**: informar finalidade, identificar-se e origem dos dados; ele pode mudar de ideia.
-- **Análise de dados:** entender a **origem** (evitar "compra de base"); coletar só o necessário; usar **somente para a finalidade informada** e depois **anonimizar ou excluir**; cuidado com dados públicos (ainda valem finalidade, adequação e necessidade); **segmentação com dados sensíveis** exige justificativa; **clearance** de base antiga; **segregar dados sensíveis**; **"jardim murado"** (rastrear dados sensíveis no pipeline).
-- **Marketing digital:** política de privacidade clara; consentimento **livre, informado e inequívoco**; **opt-in** (caixa desmarcada); informar **cookies/pixels/web beacons** (remarketing); cuidado com **preço dinâmico** discriminatório; parceiros também em conformidade; tecnologias de identificação (reconhecimento facial, biometria) elevam a exigência de **RIPD (relatório de impacto)**.
-- **Privacy by Design / by Default:** conceber o projeto já com privacidade; **minimização**, pseudonimização/anonimização, criptografia, gestão de acessos, **DPIA/RIPD**.
-- **Casos reais:** **Cambridge Analytica / Facebook** (87 mi de usuários; motivou GDPR/LGPD); **Clearview AI** (20 bi de imagens faciais sem consentimento; multada na Europa); **Meta** (ANPD suspendeu uso de dados para treinar IA generativa até haver transparência); **Tools for Humanity/World ID** (compra de biometria da íris, proibida pela ANPD); **TikTok** (dados de menores). Vazamentos: fraude financeira, roubo de identidade, danos morais.
+## 4. LGPD na prática
+- **Cadastro:** só o necessário; o **lead também é titular**. **Análise de dados:** conhecer a **origem** (evite "comprar base"), usar **só para a finalidade informada** e depois **anonimizar ou excluir**.
+- **Marketing:** política de privacidade clara; consentimento **livre, informado e inequívoco** (**opt-in**, caixa desmarcada); informar cookies e pixels; cuidado com preço dinâmico discriminatório.
+- **Privacy by Design/Default:** privacidade desde a concepção; minimização, anonimização, criptografia e **RIPD** (relatório de impacto).
+- **Casos:** **Cambridge Analytica/Facebook** (87 milhões de usuários), **Clearview AI** (imagens faciais sem consentimento), ANPD × **Meta** (treino de IA), **World ID** (biometria da íris).
 
-## Quiz da aula (com gabarito)
-1. *Qual agente trata dados em nome e sob orientação de outro?* → **Operador**.
-2. *Quem decide sobre forma e duração do tratamento?* → **Controlador**.
-3. *Princípios da LGPD:* → **finalidade, necessidade, transparência, segurança…** (não "consensualismo", "moralidade administrativa").
-4. *Todo tratamento exige consentimento?* → **Falso** (há outras bases).
-5. *Dados sensíveis são:* → **dados biométricos, origem racial…** (não CPF/cartão/extrato).
-6. *Princípio da necessidade:* → **utilizar o mínimo necessário** para atingir a finalidade.
-7. *Dado pessoal é:* → **qualquer informação relativa a pessoa física identificada ou identificável**.
+## Armadilhas e confusões comuns
+| Confusão | O correto |
+|---|---|
+| Todo tratamento exige consentimento | **Falso**: há outras bases legais |
+| CPF e dado bancário são sensíveis | **não** são sensíveis pela LGPD |
+| Operador decide como tratar | quem decide é o **controlador**; o operador trata em nome dele |
+| Dado público pode ser usado como quiser | continuam valendo finalidade, adequação e necessidade |
+| Anonimizado = sempre fora da LGPD | só se for **irreversível**; senão ainda é dado pessoal |
+| LGPD vale só para dados digitais | vale em **qualquer meio** |
+| Multa de 2% do faturamento sem teto | limitada a **R$ 50 milhões por infração** |
+
+## Resumo-relâmpago
+- Dado pessoal = pessoa natural identificável; sensível = raça, religião, política, saúde, sexo, genético/biométrico.
+- Controlador decide; operador executa; DPO é o canal; ANPD fiscaliza.
+- Princípio da necessidade = mínimo. Bases legais ≠ só consentimento. Multa até 2% do faturamento (teto R$ 50 mi).
+
+## Teste-se
+1. Qual agente trata dados em nome de outro?
+<details markdown="1"><summary>Ver resposta</summary>O operador (em nome do controlador).</details>
+
+2. Todo tratamento de dados exige consentimento?
+<details markdown="1"><summary>Ver resposta</summary>Falso. Exige uma base legal, e há dez além do consentimento (contrato, obrigação legal, legítimo interesse etc.).</details>
+
+3. O que diz o princípio da necessidade?
+<details markdown="1"><summary>Ver resposta</summary>Usar o mínimo de dados necessário para atingir a finalidade.</details>
+
+4. Biometria e CPF são dados sensíveis?
+<details markdown="1"><summary>Ver resposta</summary>Biometria sim; CPF não.</details>
+
+5. Qual o limite da multa simples?
+<details markdown="1"><summary>Ver resposta</summary>Até 2% do faturamento do último exercício, limitada a R$ 50 milhões por infração.</details>
+
+## Pergunta típica
+Qual agente trata dados em nome de outro · quem decide a forma e a duração do tratamento · princípios da LGPD · todo tratamento exige consentimento · quais são dados sensíveis · princípio da necessidade · o que é dado pessoal · sanções e limite da multa · direitos do titular
