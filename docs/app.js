@@ -15,7 +15,7 @@ function enhance(root){
   root.querySelectorAll('pre>code.language-mermaid').forEach(c=>{const d=document.createElement('div');d.className='mermaid';d.textContent=c.textContent;c.parentNode.replaceWith(d);});
   root.querySelectorAll('img').forEach(i=>{if(i.alt&&!i.closest('figure')){const f=document.createElement('figure');i.replaceWith(f);f.appendChild(i);const cp=document.createElement('figcaption');cp.textContent=i.alt;f.appendChild(cp);}});
   const go=()=>{try{if(window.renderMathInElement)renderMathInElement(root,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredClasses:['mermaid'],throwOnError:false});}catch(e){}
-    try{if(window.mermaid){const dark=(document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';mermaid.initialize({startOnLoad:false,theme:dark?'dark':'default',securityLevel:'loose'});
+    try{if(window.mermaid){const dark=(document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';mermaid.initialize({startOnLoad:false,theme:dark?'dark':'default',securityLevel:'loose',flowchart:{useMaxWidth:false,htmlLabels:true,curve:'basis'},themeVariables:{fontSize:'16px'}});
       root.querySelectorAll('.mermaid').forEach((n,k)=>{const src=n.textContent;n.dataset.src=src;mermaid.render('mmd'+Date.now()+'_'+k,src).then(r=>{n.innerHTML=r.svg;}).catch(e=>{n.innerHTML='<pre>'+src.replace(/</g,'&lt;')+'</pre>';});});}}catch(e){}};
   if(window.renderMathInElement&&window.mermaid)go();else window.addEventListener('load',go);
 }
@@ -52,11 +52,12 @@ function disc(id){
   buildNav('d'+id);
   const i=D.disciplines.indexOf(d), prev=D.disciplines[i-1], next=D.disciplines[i+1];
   let h='<div class="meta">'+(d.priority?'<span class="tag">prioridade: '+esc(d.priority.toLowerCase())+'</span>':'')+'</div>';
-  h+='<div class="toc">'+d.toc.map(t=>'<a href="#" data-sec="'+t.id+'">'+esc(t.name)+'</a>').join('')+'</div>';
-  h+='<div id="doc">'+d.html+'</div>';
+  const tocLinks=d.toc.map(t=>'<a href="#" data-sec="'+t.id+'">'+esc(t.name)+'</a>').join('');
+  h='<div class="page"><article>'+h+'<details class="toc-m"><summary>Nesta página</summary><div class="toc-l">'+tocLinks+'</div></details><div id="doc">'+d.html+'</div>';
   h+='<div class="card row"><label><input type="checkbox" id="doneCb" '+(done[id]?'checked':'')+'> Marcar como estudada</label><span class="spacer" style="flex:1"></span>'+
      (d.cards.length?'<a class="btn ghost" href="#/cards/'+id+'">Flashcards ('+d.cards.length+')</a>':'')+(d.questions.length?'<a class="btn ghost" href="#/quiz/'+id+'">Autoteste ('+d.questions.length+')</a>':'')+'</div>';
   h+='<div class="row">'+(prev?'<a class="btn ghost" href="#/d/'+prev.id+'">← '+esc(prev.title)+'</a>':'')+'<span style="flex:1"></span>'+(next?'<a class="btn ghost" href="#/d/'+next.id+'">'+esc(next.title)+' →</a>':'')+'</div>';
+  h+='</article><aside class="page-toc"><div class="pt-h">Nesta página</div>'+tocLinks+'</aside></div>';
   main.innerHTML=h;enhance(main);
   main.querySelectorAll('[data-sec]').forEach(a=>a.onclick=e=>{e.preventDefault();const el=document.getElementById(a.dataset.sec);if(el)el.scrollIntoView()});
   $('#doneCb').onchange=e=>{done[id]=e.target.checked;store.set('done',done);buildNav('d'+id)};

@@ -72,3 +72,19 @@ figcaption{font-size:.88rem;color:var(--mut);margin-top:.4em}
 .katex-display{overflow-x:auto;overflow-y:hidden;padding:.3em 0}
 details{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:.4em .8em;margin:.3em 0 1em}
 summary{cursor:pointer;color:var(--ac);font-size:.92rem}
+
+/* layout largo: artigo + índice lateral */
+.layout{max-width:1640px}
+main{max-width:none;margin:0;padding:28px clamp(16px,3vw,44px) 80px}
+.page{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:36px;align-items:start}
+article{min-width:0;max-width:1000px;margin:0 auto;width:100%}
+.page-toc{position:sticky;top:76px;max-height:calc(100vh - 100px);overflow:auto;display:flex;flex-direction:column;gap:2px;font-size:13px;border-left:1px solid var(--bd);padding-left:14px}
+.page-toc a{color:var(--mut);text-decoration:none;padding:3px 0;line-height:1.35}
+.page-toc a:hover{color:var(--ac)}
+.pt-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:6px}
+.toc-m{display:none}
+.mermaid svg{max-width:100%!important;height:auto}
+.mermaid{overflow-x:auto;text-align:center}
+.mermaid svg .nodeLabel,.mermaid svg .label{font-size:15px}
+body.collapsed article{max-width:1100px}
+@media(max-width:1180px){.page{grid-template-columns:minmax(0,1fr)}.page-toc{display:none}.toc-m{display:block}.toc-l{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.toc-l a{font-size:13px;background:var(--card);border:1px solid var(--bd);padding:3px 9px;border-radius:99px;text-decoration:none;color:var(--fg)}}
