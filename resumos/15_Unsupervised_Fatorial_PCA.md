@@ -1,0 +1,24 @@
+# 15 · Unsupervised ML — Análise Fatorial por Componentes Principais (PCA)
+**Prof. Wilson Tarantin Jr. · 2 aulas (25/11 e 02/12/2025) · Prioridade: ALTA (conceitos centrais e vocabulário que se repete em outras disciplinas)**
+
+## 1. Objetivo e diferenças
+- **Agrupa VARIÁVEIS** (colunas) em **fatores** (cluster agrupa **observações**/linhas). Técnica **não supervisionada**, só para **variáveis métricas (quantitativas)**; baseia-se na **matriz de correlações de Pearson** — **não precisa padronizar antes** (o *FactorAnalyzer* usa a matriz de correlações), ao contrário do cluster, que depende de distâncias e exige padronização.
+- **Objetivos:** (1) **redução estrutural** (menos variáveis; ex.: 5 → 2; com centenas de variáveis redundantes/ altamente correlacionadas); (2) **análise de construtos** (interpretar o conteúdo informacional dos fatores); (3) **criar rankings/índices** (ex.: indicador socioeconômico, desempenho acadêmico, índice de preço de imóveis); (4) **criar fatores ortogonais** para usar depois em **modelos supervisionados** (resolve **multicolinearidade**).
+- **Fatores são ortogonais**: correlação **zero** entre eles, por definição. Sem caráter preditivo para observações de fora da amostra; se mudarem observações/variáveis, os fatores mudam.
+- **PCA = Principal Components Analysis:** método de extração que cria fatores não correlacionados como **combinações lineares das variáveis originais**.
+
+## 2. Passo a passo (e o que interpretar)
+1. **Matriz de correlações de Pearson (ρ)** (K × K). Correlações próximas de ±1 → poucos fatores (um único fator captura quase tudo); próximas de 0 → muitos fatores (variáveis sem relação, a PCA não ajuda).
+2. **Adequação global — Teste de esfericidade de Bartlett:** H0: **ρ = matriz identidade** (correlações = 0); H1: ρ ≠ I. **Queremos rejeitar H0** (p < α = 5%) para a análise ser viável. (Em Python: `calculate_bartlett_sphericity`.) *Se não rejeitar, a análise fatorial não é adequada.*
+3. **Autovalores (λ) e autovetores** da matriz de correlações (nº de autovalores = K = nº máximo de fatores). **Autovalor = quanto da variância das variáveis originais é compartilhado para formar aquele fator** (informação do fator). Soma dos autovalores = K; **proporção do autovalor = % de variância explicada** (ex.: 62,9%, 25%, 7%, 4% → os dois primeiros = 87,9%). **O 1º fator (fator principal) vem do maior autovalor** e os demais decrescem.
+4. **Scores fatoriais** (pesos): s = v/√λ, com v o autovetor. **Fator Fk = Σ scores × ZX** (variáveis padronizadas pelo Z-score): Fki = (v1k/√λk)·ZX1i + (v2k/√λk)·ZX2i + … Os fatores têm média 0.
+5. **Quantos fatores manter? Critério de Kaiser (raiz latente): manter fatores com autovalor > 1** (um fator com autovalor < 1 carrega **menos informação do que uma variável original isolada**). Pode-se fixar a priori. Em alguns usos, só o 1º fator. **Deixar fatores de fora gera perda de variância.**
+6. **Cargas fatoriais (loadings) = correlações de Pearson entre cada variável original e cada fator.** Quanto maior a carga, mais o fator é influenciado por aquela variável. São usadas para **interpretar o significado de cada fator** (ex.: fator 1 = finanças, custos e marketing; fator 2 = localização; fator 3 = idade/distância de escolas). **Rotação** (ex.: varimax) torna a interpretação mais "limpa" (poucas variáveis por fator) **sem mudar** a variância total acumulada nem as comunalidades. Gráfico: **loading plot** (fator 1 no eixo x × fator 2 no y).
+7. **Comunalidades:** **variância total de cada variável original compartilhada pelos fatores selecionados** (0–100%). Mostra quanta informação de cada variável é retida após descartar fatores. Com todos os fatores extraídos, a comunalidade é 100% para todas.
+8. **Ranking/índice (soma ponderada e ordenamento):** **Ri = F1i·(% var. F1) + F2i·(% var. F2) + … + Fki·(% var. Fk)** — multiplica o fator de cada observação pelo seu % de variância compartilhada e ordena. (Pode-se usar apenas o 1º fator, sem ponderação.)
+
+## 3. Python (resumo)
+`from factor_analyzer import FactorAnalyzer` (+ `calculate_bartlett_sphericity`) · `fa = FactorAnalyzer(n_factors=k, method='principal', rotation=None)` · `fa.fit(df)` · `fa.get_eigenvalues()` · `fa.loadings_` · `fa.get_communalities()` · `fa.transform(df)` (scores/fatores) · `df.corr()` para a matriz. Exemplos da aula: banco de **desempenho de áreas (finanças, custos, marketing…)** e banco de **casas** (8 variáveis; 3 fatores retêm 68,5% da variância; objetivo: criar índice do preço excluindo a variável preço).
+
+## Pergunta típica
+O que difere PCA de cluster (variáveis × observações) · quando a análise é adequada (Bartlett: rejeitar H0) · critério de Kaiser (autovalor > 1) · o que é autovalor/% de variância · o que são cargas fatoriais e comunalidades · por que fatores são ortogonais e como isso ajuda em modelos supervisionados · como montar um ranking com soma ponderada · PCA exige variáveis métricas.
