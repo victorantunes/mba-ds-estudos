@@ -1,5 +1,5 @@
 # 08 · Social Network Analysis (SNA)
-**Profa. Adriana Silva · 2 aulas (02 e 09/09/2025) · Prioridade: ALTA (métricas de centralidade e cálculo "na mão" são cobráveis)**
+**Profa. Adriana Silva · 2 aulas · Prioridade: ALTA (métricas de centralidade e cálculo "na mão" são cobráveis)**
 
 > SNA **não é análise de redes sociais/mídias sociais** (Instagram/Facebook). É a análise de **relacionamentos entre entidades** (ligações telefônicas, e-mails, transações financeiras). **Também não é análise de cluster** (embora alguns materiais chamem comunidade de cluster).
 
@@ -14,7 +14,7 @@
 ## 2. Processo de SNA (passo a passo)
 1) obter acesso à informação/contexto → 2) extrair dados e **determinar links (A→B) e forças**, definir se a rede é direcionada → 3) montar a base → 4) **detectar comunidades** → 5) estipular **papéis** → resultados/aplicações. Passos 1–3 são contexto e manipulação de dados; **SNA propriamente dito = 4 e 5**.
 
-## 3. Métricas de centralidade (CAI NA PROVA)
+## 3. Métricas de centralidade (CAI NA AVALIAÇÃO)
 | Métrica | O que mede | Como calcula / interpreta |
 |---|---|---|
 | **Degree (grau)** | nº de links do nó (importância local) | undirected: nº de links. Directed: **out-degree** (saem), **in-degree** (chegam), **degree = in + out** |

@@ -1,5 +1,5 @@
 # 14 · Unsupervised ML — Análise de Cluster (Clustering I e II)
-**Prof. Wilson Tarantin Jr. · 2 aulas (11 e 18/11/2025) · Prioridade: ALTA (início do bloco de Machine Learning; sempre cobra "qual método e por quê")**
+**Prof. Wilson Tarantin Jr. · 2 aulas · Prioridade: ALTA (início do bloco de Machine Learning; sempre cobra "qual método e por quê")**
 *Livro-base: Fávero & Belfiore (2024), cap. 9. Código: Python (scipy, scikit-learn).*
 
 ## 1. Objetivo e características

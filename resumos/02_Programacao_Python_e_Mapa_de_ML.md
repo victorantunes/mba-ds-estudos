@@ -1,7 +1,7 @@
 # 02 · Introdução à Programação com Python + Mapa do Machine Learning
-**Prof. Wilson Tarantin Jr. · 3 aulas (21, 23 e 28/05/2025) · Prioridade: BAIXA para o Python em si (você já domina); ALTA para o "mapa" de ML abaixo.**
+**Prof. Wilson Tarantin Jr. · 3 aulas · Prioridade: BAIXA para o Python em si (você já domina); ALTA para o "mapa" de ML abaixo.**
 
-> A parte de código é só pandas/numpy/matplotlib/seaborn no Spyder. A parte que importa para prova é **o mapa conceitual** que o professor apresenta na aula 1: ele organiza todo o curso.
+> A parte de código é só pandas/numpy/matplotlib/seaborn no Spyder. A parte que importa para avaliação é **o mapa conceitual** que o professor apresenta na aula 1: ele organiza todo o curso.
 
 ## 1. Conceitos de base
 - **Machine learning** = usar dados + algoritmos (que contêm métodos estatísticos) para produzir informação útil à tomada de decisão: analisar a interdependência entre dados e/ou criar modelos preditivos. Envolve coletar, tratar dados brutos e escolher a técnica adequada.

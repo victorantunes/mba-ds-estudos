@@ -1,5 +1,5 @@
 # 30 · Gestão da Mudança na Era Digital
-**Profa. Fátima Cador Jinnyat · 1 aula (13/10/2026) · Prioridade: MÉDIA (teórica/conceitual; cai como dissertativa ou múltipla escolha de conceitos — memorize os modelos e as listas)**
+**Profa. Fátima Cador Jinnyat · 1 aula · Prioridade: MÉDIA (teórica/conceitual; cai como dissertativa ou múltipla escolha de conceitos — memorize os modelos e as listas)**
 
 ## 1. Contexto: IA e um mundo ambivalente
 - A transformação digital **não é apenas tecnológica, mas também cognitiva, cultural e humana**. A internet mudou a noção de tempo/espaço; crescimento **exponencial** (Kurzweil, Diamandis).

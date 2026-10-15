@@ -1,8 +1,8 @@
 # 19 · Supervised ML — Modelos para Dados de Contagem (Poisson, Binomial Negativo, Inflacionados de Zeros)
-**Prof. Dr. Luiz Paulo Fávero · 2 aulas (24 e 31/03/2026) · Prioridade: ALTA (dica explícita: "se cair uma pergunta na prova… o que caracteriza um dado de contagem?")**
+**Prof. Dr. Luiz Paulo Fávero · 2 aulas · Prioridade: ALTA (dica explícita: "se cair uma pergunta na avaliação… o que caracteriza um dado de contagem?")**
 
-## 1. O que é dado de contagem — 4 características (CAI NA PROVA)
-O professor: *"se cair uma pergunta na prova, só estou dando spoiler: o que caracteriza um dado de contagem? Quatro coisinhas."*
+## 1. O que é dado de contagem — 4 características (CAI NA AVALIAÇÃO)
+O professor: *"se cair uma pergunta na avaliação, só estou dando spoiler: o que caracteriza um dado de contagem? Quatro coisinhas."*
 1. **Quantidade** (variável dependente quantitativa);
 2. **Valores discretos** (inteiros);
 3. **Não negativos** (0, 1, 2, …);

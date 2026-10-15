@@ -1,7 +1,7 @@
 # 03 · Business Intelligence e Data Visualization
-**Profa. Viviane Martins Ferreira · 3 aulas (03, 10 e 17/06/2025) · Prioridade: MÉDIA (conceitual + Power BI)**
+**Profa. Viviane Martins Ferreira · 3 aulas · Prioridade: MÉDIA (conceitual + Power BI)**
 
-> Disciplina muito prática (Power BI). Para prova, o que tende a ser cobrado são **conceitos**: o que é BI, ETL, self-service, dataviz, governança, privacidade, e **boas práticas de gráficos/dashboards**.
+> Disciplina muito prática (Power BI). Para avaliação, o que tende a ser cobrado são **conceitos**: o que é BI, ETL, self-service, dataviz, governança, privacidade, e **boas práticas de gráficos/dashboards**.
 
 ## 1. Conceitos de Business Intelligence
 - **BI** = transformar **dados em informação** para apoiar decisões nas organizações; analisar dados e correlacioná-los para trazer uma informação coerente. **BI é um conceito, não uma ferramenta** ("vou pegar no BI" = vou pegar em uma ferramenta; o conceito não é isso).

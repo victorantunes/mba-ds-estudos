@@ -1,5 +1,5 @@
 # 15 · Unsupervised ML — Análise Fatorial por Componentes Principais (PCA)
-**Prof. Wilson Tarantin Jr. · 2 aulas (25/11 e 02/12/2025) · Prioridade: ALTA (conceitos centrais e vocabulário que se repete em outras disciplinas)**
+**Prof. Wilson Tarantin Jr. · 2 aulas · Prioridade: ALTA (conceitos centrais e vocabulário que se repete em outras disciplinas)**
 
 ## 1. Objetivo e diferenças
 - **Agrupa VARIÁVEIS** (colunas) em **fatores** (cluster agrupa **observações**/linhas). Técnica **não supervisionada**, só para **variáveis métricas (quantitativas)**; baseia-se na **matriz de correlações de Pearson** — **não precisa padronizar antes** (o *FactorAnalyzer* usa a matriz de correlações), ao contrário do cluster, que depende de distâncias e exige padronização.

@@ -1,5 +1,5 @@
 # 21 · Big Data e Deployment de Modelos (MLOps)
-**Prof. Helder Prado Santos · 2 aulas (24 e 28/04/2026) · Prioridade: MÉDIA (você, como dev, já conhece APIs/versionamento; foque nos termos de ML)**
+**Prof. Helder Prado Santos · 2 aulas · Prioridade: MÉDIA (você, como dev, já conhece APIs/versionamento; foque nos termos de ML)**
 
 ## 1. Ciclo de vida de modelos e deployment
 - **Modelo em desenvolvimento × em produção.** Na modelagem há input (dados preparados) e output; em produção chegam **dados novos o tempo todo** e a acurácia medida no treino **pode não se manter**.

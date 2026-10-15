@@ -1,5 +1,5 @@
 # 26 · Pesquisa Operacional e Modelos de Otimização (I, II, III)
-**Prof. Cassiano Augusto Isler · 3 aulas (11, 18 e 21/08/2026) · Prioridade: MÉDIA-ALTA (saber MODELAR um enunciado em variáveis/objetivo/restrições é o que cai)**
+**Prof. Cassiano Augusto Isler · 3 aulas · Prioridade: MÉDIA-ALTA (saber MODELAR um enunciado em variáveis/objetivo/restrições é o que cai)**
 
 ## 1. Ideia central
 - **Pesquisa Operacional (PO) / programação matemática:** transformar um **problema real de decisão** em um **modelo matemático** e resolvê-lo para achar a solução **ótima** (boa e rápida). "O segredo é interpretar o problema" — o modelo é consequência da interpretação (converse com quem vive o problema).

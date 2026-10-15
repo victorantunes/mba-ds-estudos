@@ -1,7 +1,7 @@
 # 04 · Engenharia de Dados
-**Prof. Guilherme Lima · 3 aulas (24/06, 01/07 e 15/07/2025) · Prioridade: MÉDIA (você, como dev, já domina boa parte; foque nos conceitos e vocabulário)**
+**Prof. Guilherme Lima · 3 aulas · Prioridade: MÉDIA (você, como dev, já domina boa parte; foque nos conceitos e vocabulário)**
 
-> Dica do professor (aula 1): *"se cair na prova 'O que é engenharia de dados?', provavelmente eu vou errar se só decorar a definição"* → entenda o papel. E na aula 3: *"O que é uma view? Se cair na prova, não erre isso."*
+> Dica do professor (aula 1): *"se cair na avaliação 'O que é engenharia de dados?', provavelmente eu vou errar se só decorar a definição"* → entenda o papel. E na aula 3: *"O que é uma view? Se cair na avaliação, não erre isso."*
 
 ## 1. O que é engenharia de dados
 - **Definição:** área responsável pelo **desenvolvimento e manutenção de sistemas que coletam, organizam e processam dados**. Trata de **movimentação, manipulação e gerenciamento de dados**: construir a base para a ciência de dados.
@@ -36,7 +36,7 @@
 - **Relacionamento** entre duas tabelas por PK/FK.
 - **Sistemas operacionais × analíticos:** *operacionais* = backend, regras de negócio, aplicação modifica os dados (muitas escritas); *analíticos* = atendem analistas de negócio e cientistas de dados (leitura/consulta). A base de dados analítica muda com **frequência menor** que a operacional. O desafio da engenharia é servir **pessoas diferentes com necessidades diferentes**.
 
-## 4. View × Stored Procedure (aula 3 — caiu na dica de prova)
+## 4. View × Stored Procedure (aula 3 — caiu na destaque do professor)
 | | **View** | **Stored procedure** |
 |---|---|---|
 | O que é | **tabela virtual**/consulta SQL salva, baseada em uma ou mais tabelas | **bloco de código SQL armazenado**, como uma função pré-programada |

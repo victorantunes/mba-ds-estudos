@@ -1,5 +1,5 @@
 # 22 · Séries Temporais (I, II, III + Aula Extra de Exercícios)
-**Prof. Fabiano Guasti Lima · 3 aulas (12, 19 e 26/05/2026) + extra (14/08/2026) · Prioridade: ALTA (muitos conceitos curtos e fórmulas; cai bastante)**
+**Prof. Fabiano Guasti Lima · 3 aulas + extra · Prioridade: ALTA (muitos conceitos curtos e fórmulas; cai bastante)**
 *Referência: Hyndman, "Forecasting: Principles and Practice" (otexts.com/fpp3).*
 
 ## 1. O que é uma série temporal

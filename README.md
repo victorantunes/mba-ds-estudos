@@ -1,6 +1,10 @@
-# Estudos para a prova final — MBA Data Science e Analytics (USP/Esalq)
+# Estudos — MBA Data Science e Analytics (USP/Esalq)
 
-Comece por **[plano_de_estudos.md](plano_de_estudos.md)** (calendário de 33 dias até 17/11/2026).
+Site de estudo (navegação, busca, flashcards, autoteste e plano com checklist): https://victorantunes.github.io/mba-ds-estudos/
+
+Para regenerar o site: `pip install markdown && python tools/build_site.py`.
+
+Plano em texto: **[plano_de_estudos.md](plano_de_estudos.md)** (33 dias).
 
 | Arquivo / pasta | O que é |
 |---|---|

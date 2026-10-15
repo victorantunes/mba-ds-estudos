@@ -1,6 +1,6 @@
 # 29 · Aula Extra: Desenvolvimento de APIs e Integração Prática de LLMs (I–II)
-**Prof. Helder Prado Santos · 2 aulas extras (07 e 16/10/2026) · Prioridade: BAIXA para a prova (aula extra; você é dev e já sabe quase tudo de API — leia para vocabulário de LLM/RAG)**
-*(Confirme com a coordenação se esse conteúdo entra na prova final.)*
+**Prof. Helder Prado Santos · 2 aulas extras · Prioridade: BAIXA para a avaliação (aula extra; você é dev e já sabe quase tudo de API — leia para vocabulário de LLM/RAG)**
+*(Confirme com a coordenação se esse conteúdo entra na avaliação final.)*
 
 ## 1. Do protótipo ao produto
 - **3 fases:** (1) **Prototipação** — notebooks, validação de prompts, sem preocupação com escala; (2) **Abismo de integração** — concorrência, padronização de formatos, latência de rede, gestão de dependências; (3) **Operação** — disponibilização via **API resiliente**, monitoramento de métricas, auditoria e governança.

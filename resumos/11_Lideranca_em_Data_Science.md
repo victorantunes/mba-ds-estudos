@@ -1,5 +1,5 @@
 # 11 · Liderança em Data Science
-**Profa. Fátima Jinnyat · 1 aula (14/10/2025) · Prioridade: MÉDIA (conceitual; costuma cair como "qual conceito descreve…")**
+**Profa. Fátima Jinnyat · 1 aula · Prioridade: MÉDIA (conceitual; costuma cair como "qual conceito descreve…")**
 *Tema da aula: liderança humanizada diante de incerteza, complexidade e mudança.*
 
 ## 1. Contexto: crise, incerteza e as "3 dores"

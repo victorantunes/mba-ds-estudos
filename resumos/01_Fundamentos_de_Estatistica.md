@@ -1,5 +1,5 @@
 # 01 · Fundamentos de Estatística
-**Prof. Wilson Tarantin Jr. · 3 aulas (09, 14 e 16/05/2025) · Base de TODO o resto do curso (ML, regressão, testes)**
+**Prof. Wilson Tarantin Jr. · 3 aulas · Base de TODO o resto do curso (ML, regressão, testes)**
 **Prioridade de estudo: ALTA** (é pré-requisito de Regressão, Logística, Contagem, Multinível, PCA e Séries Temporais).
 
 > Para quem programa: pense em "variável" como uma coluna tipada. A primeira decisão em qualquer análise é **o tipo da coluna**, porque ele define quais ferramentas são válidas.
@@ -87,7 +87,7 @@ Exemplos resolvidos em aula: Bernoulli com p=0,48 → P(1)=48%, P(0)=52%. Binomi
 Exemplos feitos em aula (úteis para treinar): caixas de papelão (Z, H1: μ>100, rejeita H0, p≈0,01); tempo de processamento (t, 25 obs, média 16,808 vs 18, α=1%, **não rejeita**); rotas de entrega (F, rota B tem variância maior, rejeita H0, p=0,005); fornos A e B (t de 2 amostras, médias diferentes); correlação notas: só matemática–física foi significativa.
 
 ---
-## O que mais cai (dicas do professor e do estilo da prova)
+## O que mais cai (dicas do professor e do estilo da avaliação)
 - "Para variável qualitativa, qual medida de posição posso usar?" → **moda** (e tabela de frequências). Média/mediana/desvio **não**.
 - Rejeitar H0 quando p < α. α = prob. do **erro tipo I**. Nível de confiança = 1 − α.
 - Média > mediana → assimetria à **direita**.

@@ -1,8 +1,7 @@
 # 28 · Deep Learning e Inteligência Artificial (Introdução + I, II e III)
-**Prof. Luis Augusto Libório O. Fonseca · 4 aulas (15, 22 e 29/09 e 06/10/2026) · Prioridade: ALTA (conceitos, fórmulas e comparações; nada de código complicado)**
-*(A transcrição da aula III cita "13 de novembro = prova final" e "19/11 = recuperação" — confirme a sua data.)*
+**Prof. Luis Augusto Libório O. Fonseca · 4 aulas · Prioridade: ALTA (conceitos, fórmulas e comparações; nada de código complicado)**
 
-## 1. Fundamentos (Aula 15/09)
+## 1. Fundamentos
 - **IA** = campo amplo da computação para simular/aprender habilidades. **Machine Learning (Samuel, 1959):** dar ao computador a capacidade de aprender **sem ser explicitamente programado**. **Mitchell (1997):** um programa aprende com a experiência **E** em relação a uma tarefa **T** e medida de desempenho **D**, se o desempenho em T melhora com E. ML = "**Software 2.0**": em vez de escrever regras, dá-se **dados + respostas** e o modelo descobre as regras (caixa-preta difícil de interpretar).
 - **ML tradicional × Deep Learning:** no ML clássico os **features são feitos à mão** (feature engineering — limitado, falho, não escalável); no DL a rede **aprende as representações** (*representation learning*) em **níveis hierárquicos**: baixo (bordas/cantos) → médio (olho, boca) → alto (rosto). Desvantagem: **interpretabilidade** e, em dados tabulares pequenos, algoritmos de ML tradicionais costumam ser **mais eficientes**.
 - **Maldição da dimensionalidade:** espaços de combinações gigantes (Xadrez ≈ 10¹²⁰; Go ≈ 10¹⁷⁰ jogadas; átomos do universo ≈ 10⁸⁰) → força bruta não basta. Deep Blue (1996/97, força bruta + engenharia de features de xadrezistas) × **AlphaGo (2016, Deep Reinforcement Learning, aprendeu jogando contra si mesmo)**.
@@ -17,7 +16,7 @@
 - **Ativações:** **Sigmoid** g(z) = 1/(1+e⁻ᶻ) — comprime em (0,1), **satura nas pontas (gradiente quase zero → vanishing gradient)**; **ReLU** g(z) = max(0,z) — barata, não satura para z>0, **padrão nas camadas ocultas**; com ReLU a probabilidade de o gradiente desaparecer em redes profundas é menor que com sigmoid. Modernas: ELU, SELU, Softplus, GELU, Swish, Mish. **Softmax** (S(zᵢ)=e^zᵢ/Σe^zⱼ): vetor de logits → **distribuição de probabilidade que soma 1**; saída de **classificação multiclasse**. **Sigmoid** na saída: classificação binária.
 - **Problema XOR:** nenhuma reta separa as classes → um perceptron **sem camada oculta e sem ativação não linear nunca resolve o XOR** (travou as redes neurais por ~2 décadas); AND e OR são linearmente separáveis.
 
-## 3. Como a rede aprende (Aula 22/09)
+## 3. Como a rede aprende
 - **Loop de treino:** dados viram **tensores** (feeding) → **forward** (predição ŷ) → **Loss** (função de perda/objetivo; qualquer função **contínua e diferenciável** que represente o objetivo) → **backpropagation** (calcula **dJ/dW**, a derivada da loss em relação aos pesos) → **atualiza os pesos** → repete. Se o resultado satisfaz a métrica de negócio → **deployment**. Anotar dados (rótulos) é caro.
 - **Gradient Descent:** **W ← W − η·∇J(W)** (η = **learning rate/taxa de aprendizagem**, ∇J = gradiente da loss). Tatear a direção de descida (derivada) → passo pequeno → repetir. A superfície de erro tem vários vales: risco de **mínimo local**.
   - **Learning rate:** **grande = rápido e instável** (oscila/passa do ponto); **pequeno demais = lento e pode estagnar** em mínimos; "pequeno garante ir ao mínimo global" só se o treino terminar.
@@ -35,7 +34,7 @@
   - **Repeated cross-validation:** K folds repetidos R vezes → média e desvio das métricas (estimativa mais robusta).
 - **Pergunta sobre "modelo especialista com poucos milhares de registros":** talvez rede neural não seja o melhor algoritmo — considere ML tradicional.
 
-## 4. Visão computacional e CNN (Aula 29/09)
+## 4. Visão computacional e CNN
 - Crescer a MLP (largura/profundidade) **não resolve estrutura espacial**: a rede densa **achata** a imagem e perde a vizinhança entre pixels. Cada família de arquitetura resolve um tipo de dado (imagens, sequências, grafos, texto).
 - **Tarefas clássicas de CV:** **classificação, localização, detecção e segmentação**. Aplicações: busca por imagem, filtros/realidade aumentada, diagnóstico médico, varejo autônomo, agricultura, manufatura. Contexto: 2012 AlexNet/ImageNet → CV impulsiona o DL; 2017 Transformers → NLP.
 - **FCN × CNN:** FCN (densa) = features **globais**, sem relação espacial, **sensível a deslocamentos**. **CNN** = features **locais**, **hierarquia espacial**, **invariância à translação**, preserva a estrutura espacial.
@@ -45,7 +44,7 @@
   - **MaxPooling2D:** reduz a resolução **mantendo o maior valor de cada janela** (pool 2×2, stride 2 → (4,4,1) vira (2,2,1)); sem parâmetros treináveis.
 - **Arquiteturas famosas:** **YOLO** (detecção de objetos em tempo real), **U-Net** (segmentação densa, encoder-decoder com skip connections, biomédica). Convnets 1D servem para dados sequenciais. **MNIST** = classificação de dígitos (exemplo da aula).
 
-## 5. NLP e Transformers (Aula 06/10)
+## 5. NLP e Transformers
 - **A máquina não lê, ela conta.** Linguagem natural é ambígua (uso vem primeiro) × linguagem de máquina (sintaxe fixa); frases com sentido igual podem não compartilhar palavras → é preciso **vetorizar** o texto.
 - **Text → tensor (3 decisões):** **padronização** (minúsculas/sem pontuação), **tokenização** (granularidade do token: split por espaço), **indexação** (índice único por token; reservados **0 = padding**, **1 = [UNK]** fora do vocabulário). Keras `TextVectorization(max_tokens=20000, output_sequence_length=7, ...)`; **`adapt()` aprende o vocabulário só nos dados de treino**.
 - **Tipos de encoding (ordem × frequência × semântica):**

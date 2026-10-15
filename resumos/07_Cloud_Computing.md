@@ -1,5 +1,5 @@
 # 07 · Cloud Computing (I e II)
-**Prof. Rodrigo Vale · 2 aulas (19 e 26/08/2025) · Prioridade: MÉDIA — conceitual; você, como dev, já conhece boa parte**
+**Prof. Rodrigo Vale · 2 aulas · Prioridade: MÉDIA — conceitual; você, como dev, já conhece boa parte**
 
 ## 1. O que é nuvem e que problemas resolve
 **Definição:** entrega de serviços de computação (servidores, armazenamento, software) **pela internet, com pagamento sob demanda** (analogia: energia elétrica).

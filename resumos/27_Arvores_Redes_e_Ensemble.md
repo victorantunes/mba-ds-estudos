@@ -1,5 +1,5 @@
 # 27 · Árvores, Redes e Ensemble Models (I, II, III)
-**Profa. Valquíria Alencar · 3 aulas (25/08, 01/09 e 08/09/2026) · Prioridade: ALTA (conceitos de ML supervisionado + métricas caem; você já sabe Python, foque nos conceitos)**
+**Profa. Valquíria Alencar · 3 aulas · Prioridade: ALTA (conceitos de ML supervisionado + métricas caem; você já sabe Python, foque nos conceitos)**
 
 ## 1. Árvore de decisão
 - **Método de aprendizado supervisionado, não paramétrico:** não impõe fórmula rígida; a própria árvore constrói a estrutura fazendo uma sequência de perguntas "verdadeiro/falso".
@@ -7,7 +7,7 @@
 - **Vantagens:** pouca preparação dos dados (em geral **não precisa normalizar/padronizar**); aceita variáveis **numéricas e categóricas**; **"caixa branca"** (cada previsão é explicável por regras — oposto das redes neurais); robusta a dados reais fora de distribuições "ideais".
 - **Classificação × regressão:** **classificação** → folha retorna a **classe mais frequente**; **regressão** → folha retorna a **média** dos valores que caíram nela.
 - **Como aprende (qual o melhor split):** classificação → a divisão que **separa melhor as classes, reduzindo a impureza** dos grupos (ex.: 5 adimplentes + 5 inadimplentes, pergunta "teve atraso?" gera grupos 4×1 e 1×4); regressão → a divisão que **reduz o erro** entre o previsto e o real (critério padrão **squared error**; no sklearn `criterion`).
-- **Treino/teste:** separação típica **80% / 20%**; o teste é a "prova final" com dados nunca vistos. Em classificação usar **`stratify=y`** (mantém a proporção das classes). A profundidade da árvore é a mesma para treino e teste.
+- **Treino/teste:** separação típica **80% / 20%**; o teste é a "avaliação final" com dados nunca vistos. Em classificação usar **`stratify=y`** (mantém a proporção das classes). A profundidade da árvore é a mesma para treino e teste.
 - **Desvantagens:** **overfitting** (árvore cresce demais e "decora"); **sensível a pequenas mudanças** nos dados (árvore completamente diferente); sensível a **classes desbalanceadas**; **não extrapola** (previsões irreais fora da faixa de treino).
 - **Overfitting × underfitting:** overfitting = muito complexo, **acurácia de treino altíssima e queda no teste** (causas: árvore profunda, muitas variáveis irrelevantes, poucos dados); underfitting = modelo simples demais, aprende pouco. Busca-se o equilíbrio (boa generalização).
 - **Hiperparâmetros** (definidos **antes** do treino): `max_depth`, `min_samples_split`, `min_samples_leaf`, `criterion`. **Poda** (limitar a árvore) reduz overfitting. Ajuste: definir combinações → treinar versões → avaliar por **validação cruzada** → escolher a melhor.

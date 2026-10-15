@@ -1,5 +1,5 @@
 # 05 · Metodologias Ágeis I e II
-**Prof. Gino Terentim · 2 aulas (22 e 29/07/2025) · Prioridade: ALTA para o vocabulário (vira questão conceitual fácil de pontuar)**
+**Prof. Gino Terentim · 2 aulas · Prioridade: ALTA para o vocabulário (vira questão conceitual fácil de pontuar)**
 
 > Ideia central: **a abordagem de gestão (preditiva ou ágil) depende da natureza do problema** que você está tentando resolver — não do gosto do gestor.
 

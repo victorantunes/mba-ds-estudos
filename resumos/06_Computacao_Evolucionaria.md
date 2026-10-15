@@ -1,5 +1,5 @@
 # 06 · Computação Evolucionária
-**Profs. Renata da Encarnação Onety e Rubelmar Maia de Azevedo Cruz Neto · 2 aulas (05 e 12/08/2025) · Prioridade: ALTA (algoritmos genéticos têm vocabulário fixo e cai em prova)**
+**Profs. Renata da Encarnação Onety e Rubelmar Maia de Azevedo Cruz Neto · 2 aulas · Prioridade: ALTA (algoritmos genéticos têm vocabulário fixo e cai em avaliação)**
 *Complementa: Pesquisa Operacional (resumo 26), que usa a mesma modelagem.*
 
 ## 1. Contexto: otimização, heurística e meta-heurística

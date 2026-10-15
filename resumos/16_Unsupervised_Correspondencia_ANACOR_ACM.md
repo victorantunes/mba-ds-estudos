@@ -1,5 +1,5 @@
 # 16 · Unsupervised ML — Análise de Correspondência (ANACOR e ACM) + Exercícios Aplicados
-**Prof. Wilson Tarantin Jr. · 3 aulas (13, 20 e 27/01/2026) · Prioridade: ALTA (fecha o bloco não supervisionado; "qual técnica para qual tipo de variável" cai sempre)**
+**Prof. Wilson Tarantin Jr. · 3 aulas · Prioridade: ALTA (fecha o bloco não supervisionado; "qual técnica para qual tipo de variável" cai sempre)**
 
 ## 1. Objetivo
 - Para **variáveis categóricas (qualitativas)**. Verifica se há **associação estatisticamente significativa** entre variáveis **e entre suas categorias**, e cria o **mapa perceptual** (proximidade das categorias = associação). **Evita a "ponderação arbitrária"** (ex.: escala Likert: cada ponto da escala vira uma categoria). Variável métrica pode entrar se for **categorizada antes** (faixas de idade).

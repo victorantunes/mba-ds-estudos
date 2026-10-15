@@ -1,5 +1,5 @@
 # 10 · Analytics e Gestão de Riscos
-**Prof. Fabiano Guasti Lima · 2 aulas (30/09 e 07/10/2025) · Prioridade: ALTA (tem cálculo — treine as fórmulas)**
+**Prof. Fabiano Guasti Lima · 2 aulas · Prioridade: ALTA (tem cálculo — treine as fórmulas)**
 *Referências do professor: Fávero & Belfiore (Manual de análise de dados); Lima (Análise de Riscos).*
 
 ## 1. Retorno e risco de um ativo

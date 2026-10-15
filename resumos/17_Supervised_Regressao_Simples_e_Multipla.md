@@ -1,7 +1,7 @@
 # 17 · Supervised ML — Análise de Regressão Simples e Múltipla (OLS)
-**Prof. Dr. Luiz Paulo Fávero · 4 aulas (03/02, 10/02, 24/02 e 03/03/2026) · Prioridade: MÁXIMA — é o tema com **mais dicas explícitas de prova** do curso**
+**Prof. Dr. Luiz Paulo Fávero · 4 aulas · Prioridade: MÁXIMA — é o tema com **mais dicas explícitas de avaliação** do curso**
 
-> O professor falou "pergunta de prova" várias vezes: (1) **nomes do R²**, (2) **interpretar uma saída/tabela**, (3) **calcular R² de uma regressão simples a partir da correlação**, (4) **prever Y com dummies (somar betas)**, (5) **diferença entre F, t e R²**, (6) **por que não usar pesos arbitrários em categorias**. Treine essas.
+> O professor falou "pergunta de avaliação" várias vezes: (1) **nomes do R²**, (2) **interpretar uma saída/tabela**, (3) **calcular R² de uma regressão simples a partir da correlação**, (4) **prever Y com dummies (somar betas)**, (5) **diferença entre F, t e R²**, (6) **por que não usar pesos arbitrários em categorias**. Treine essas.
 
 ## 1. Contexto
 - Dentro de *Data Science → Machine Learning → **Supervised ML** → **modelos GLM** (Generalized Linear Models)*. GLMM = modelos multinível/painel (aulas 9–10). **A escala de medida da variável dependente (Y) determina o modelo**: Y quantitativa contínua → regressão (OLS); Y binária/politômica → logística; Y de contagem → Poisson/binomial negativo; dados aninhados → multinível.
@@ -12,7 +12,7 @@
 ## 2. Regressão linear simples
 - **Yi = α + β·Xi + ui** (α = intercepto; β = inclinação; u = **termo de erro/resíduo = Y real − Y previsto (Ŷ, "fitted value")**).
 - **Estimação por OLS/MQO (mínimos quadrados ordinários):** os parâmetros garantem **Σui = 0** e **Σui² = mínimo possível**. Em Python: `smf.ols('y ~ x', data=df).fit()` (statsmodels, `OLS from formula`). Resíduos: `modelo.resid`; fitted: `modelo.fittedvalues`.
-- **R² (coeficiente de ajuste)** — **também chamado coeficiente de explicação ou coeficiente de determinação** (PERGUNTA DE PROVA): **percentual da variância de Y que é explicado pelo comportamento conjunto da(s) variável(is) explicativa(s)**; varia de 0 a 1; **R² = Σ(Ŷ − Ȳ)² / [Σ(Ŷ − Ȳ)² + Σu²]** (soma dos quadrados do modelo / soma total). **Na regressão simples, R² = (correlação de Pearson entre X e Y)²** (ex.: correlação 0,4428 → R² = 0,196; "se eu rodar retorno contra disclosure, quanto dá o R²? o valor da correlação ao quadrado"). Com erros maiores a nuvem de pontos é mais dispersa e o R² cai.
+- **R² (coeficiente de ajuste)** — **também chamado coeficiente de explicação ou coeficiente de determinação** (PERGUNTA DE AVALIAÇÃO): **percentual da variância de Y que é explicado pelo comportamento conjunto da(s) variável(is) explicativa(s)**; varia de 0 a 1; **R² = Σ(Ŷ − Ȳ)² / [Σ(Ŷ − Ȳ)² + Σu²]** (soma dos quadrados do modelo / soma total). **Na regressão simples, R² = (correlação de Pearson entre X e Y)²** (ex.: correlação 0,4428 → R² = 0,196; "se eu rodar retorno contra disclosure, quanto dá o R²? o valor da correlação ao quadrado"). Com erros maiores a nuvem de pontos é mais dispersa e o R² cai.
 - **Só α, β e R² não dizem nada sobre eficiência preditiva.**
 
 ## 3. Significância estatística — F, t e R² não são a mesma coisa
@@ -30,7 +30,7 @@
 ## 5. Variáveis explicativas qualitativas → dummies (CAI SEMPRE)
 - **Erro clássico: "ponderação arbitrária"** (codificar categorias como 1, 2, 3…) → pressupõe que a mudança em Y entre categorias é **linear**, o que quase nunca é verdade.
 - Solução: **dummização / one-hot encoding**: variável binária (0/1) por categoria; **para n categorias usa-se n − 1 dummies** (a categoria omitida é a **referência/baseline**; evita **multicolinearidade perfeita**). O beta de cada dummy = diferença média de Y em relação à categoria de referência. Dummizar cria "modelos não lineares" que capturam idiossincrasias contextuais.
-- **Previsão com dummies (pergunta de prova):** soma-se α + betas das dummies que valem 1 (ex.: Y médio da América do Sul = α da categoria de referência, se ela é a omitida; Europa = α + β_Europa…). Leia o output e só some o que a observação ativa.
+- **Previsão com dummies (pergunta de avaliação):** soma-se α + betas das dummies que valem 1 (ex.: Y médio da América do Sul = α da categoria de referência, se ela é a omitida; Europa = α + β_Europa…). Leia o output e só some o que a observação ativa.
 
 ## 6. Pressupostos e diagnósticos
 **a) Normalidade dos termos de erro (principal pressuposto do OLS para inferência/IC):**

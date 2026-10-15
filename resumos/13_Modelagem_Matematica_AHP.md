@@ -1,7 +1,7 @@
 # 13 · Modelagem Matemática e Estruturação de Problemas Complexos
-**Prof. Dr. Marcos dos Santos (Marinha, IME/ITA/UFF) · 2 aulas (28/10 e 04/11/2025) · Prioridade: ALTA (cálculo passo a passo de AHP e AHP-Gaussiano; dica de prova do professor sobre a matriz de julgamentos)**
+**Prof. Dr. Marcos dos Santos (Marinha, IME/ITA/UFF) · 2 aulas · Prioridade: ALTA (cálculo passo a passo de AHP e AHP-Gaussiano; destaque do professor sobre a matriz de julgamentos)**
 
-> Dica dita em aula: *"Vai que um dia cai na prova… na matriz de ponderações, a diagonal principal tem valores sempre: **1**."* e *"se estou comparando custo com custo, o grau tem que ser um."*
+> Dica dita em aula: *"Vai que um dia cai na avaliação… na matriz de ponderações, a diagonal principal tem valores sempre: **1**."* e *"se estou comparando custo com custo, o grau tem que ser um."*
 
 ## 1. Contexto
 - **Pesquisa Operacional (OR):** abordagem científica para resolver problemas na gestão de sistemas complexos e **ajudar quem decide a decidir melhor**; usa analytics, modelagem, estruturação de problemas, simulação, otimização e ciência de dados. Áreas: apoio multicritério à decisão, análise envoltória (DEA), ciência de dados, teoria dos grafos, simulação de eventos, estatística, matemática.

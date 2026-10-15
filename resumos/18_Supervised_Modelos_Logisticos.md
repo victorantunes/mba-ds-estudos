@@ -1,5 +1,5 @@
 # 18 · Supervised ML — Modelos Logísticos Binários e Multinomiais
-**Prof. Dr. Luiz Paulo Fávero · 2 aulas (10 e 17/03/2026) · Prioridade: ALTA (classificação; "qual distribuição/modelo", logito, cutoff e ROC)**
+**Prof. Dr. Luiz Paulo Fávero · 2 aulas · Prioridade: ALTA (classificação; "qual distribuição/modelo", logito, cutoff e ROC)**
 *Itens marcados com (†) são padrão da disciplina e complementam o que o professor mostrou nas lousas/planilhas.*
 
 ## 1. Quando usar

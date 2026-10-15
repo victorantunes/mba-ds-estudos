@@ -1,7 +1,7 @@
 # 09 · Análise da Conjuntura Econômica em Cenários de Tecnologias Disruptivas
-**Prof. Dr. Fernando de Souza Coelho (USP) · 2 aulas (16 e 23/09/2025) · Prioridade: MÉDIA-ALTA (cálculos simples e conceitos de macroeconomia que caem como múltipla escolha)**
+**Prof. Dr. Fernando de Souza Coelho (USP) · 2 aulas · Prioridade: MÉDIA-ALTA (cálculos simples e conceitos de macroeconomia que caem como múltipla escolha)**
 
-> Dica de estratégia: as "enquetes" das aulas (questões resolvidas no fim) mostram exatamente o formato de prova. Resolvi todas abaixo.
+> Dica de estratégia: as "enquetes" das aulas (questões resolvidas no fim) mostram exatamente o formato de avaliação. Resolvi todas abaixo.
 
 ## 1. Conceitos de base
 - **Macroambiente** (ferramenta **PESTEL**): Político, Econômico, Social, Tecnológico, Ecológico (Environmental), Legal.

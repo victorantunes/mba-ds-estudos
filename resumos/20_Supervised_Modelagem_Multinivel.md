@@ -1,5 +1,5 @@
 # 20 · Supervised ML — Modelagem Multinível (HLM / GLMM)
-**Prof. Dr. Luiz Paulo Fávero · 2 aulas (07 e 14/04/2026) · Prioridade: ALTA (dica explícita: "vai cair esse tipo de pergunta na prova": prever valores, ICC, efeito escola × efeito estudante)**
+**Prof. Dr. Luiz Paulo Fávero · 2 aulas · Prioridade: ALTA (dica explícita: "vai cair esse tipo de pergunta na avaliação": prever valores, ICC, efeito escola × efeito estudante)**
 
 ## 1. Ideia e vocabulário
 - **Modelo multinível** = modelo que **reconhece estruturas de dados aninhadas/hierárquicas**: observações (nível 1) dentro de grupos (nível 2) dentro de grupos maiores (nível 3). Ex.: **alunos → escolas → municípios**; **empresas → países**; **medidas repetidas no tempo → indivíduos → grupos**.
@@ -18,8 +18,8 @@
 - **Modelo nulo/intercepto aleatório:** Nível 1: **desempenhoij = β0j + εij**; Nível 2: **β0j = γ00 + ν0j** → **desempenhoij = γ00 + ν0j + εij**.
 - **Interceptos e inclinações aleatórios:** N1: desempenhoij = β0j + β1j·horasij + εij; N2: β0j = γ00 + ν0j; β1j = γ10 + ν1j → desempenhoij = γ00 + γ10·horasij + ν0j + ν1j·horasij + εij.
 - **Modelo final com variável de nível 2 (ex.: texp = tempo médio de experiência dos professores da escola):** β0j = γ00 + γ01·texpj + ν0j; β1j = γ10 + γ11·texpj + ν1j → **desempenhoij = γ00 + γ10·horasij + γ01·texpj + γ11·texpj·horasij + ν0j + ν1j·horasij + εij** (aparece **interação entre níveis** texp × horas).
-- **ICC (coeficiente de correlação intraclasse)** (dica de prova: "qual é o efeito escola, qual é o efeito estudante, dado esse output") = **variância do nível grupo / (variância do nível grupo + variância do erro)** — **proporção da variância total atribuível ao contexto (escola)**; o restante é efeito do estudante. Quanto maior o ICC, mais importante o contexto.
-- **Previsão manual (PERGUNTA DE PROVA):** "valor previsto do desempenho do aluno da escola 1, que estuda 11 horas/semana e cuja escola tem texp = 3,6" → substituir na equação final **os γ do efeito fixo** e **somar os efeitos aleatórios ν0j e ν1j·horas da escola 1** (a função `fittedvalues` já inclui os efeitos aleatórios). Também há gráficos "tapinhas para cima ou para baixo" = **efeito aleatório de cada escola** (qual escola tem desempenho acima/abaixo da média).
+- **ICC (coeficiente de correlação intraclasse)** (destaque do professor: "qual é o efeito escola, qual é o efeito estudante, dado esse output") = **variância do nível grupo / (variância do nível grupo + variância do erro)** — **proporção da variância total atribuível ao contexto (escola)**; o restante é efeito do estudante. Quanto maior o ICC, mais importante o contexto.
+- **Previsão manual (PERGUNTA DE AVALIAÇÃO):** "valor previsto do desempenho do aluno da escola 1, que estuda 11 horas/semana e cuja escola tem texp = 3,6" → substituir na equação final **os γ do efeito fixo** e **somar os efeitos aleatórios ν0j e ν1j·horas da escola 1** (a função `fittedvalues` já inclui os efeitos aleatórios). Também há gráficos "tapinhas para cima ou para baixo" = **efeito aleatório de cada escola** (qual escola tem desempenho acima/abaixo da média).
 
 ## 4. HLM3 com medidas repetidas (growth model)
 - **Níveis:** **N1 = tempo (medidas repetidas)**, **N2 = indivíduo (aluno)**, **N3 = grupo (escola)**.

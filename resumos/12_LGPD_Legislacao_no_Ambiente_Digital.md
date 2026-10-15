@@ -1,5 +1,5 @@
 # 12 · Legislação no Ambiente Digital (LGPD)
-**Prof. Hélio Ferreira Moraes · 1 aula (21/10/2025) · Prioridade: ALTA (questões de múltipla escolha diretas; tudo abaixo cai)**
+**Prof. Hélio Ferreira Moraes · 1 aula · Prioridade: ALTA (questões de múltipla escolha diretas; tudo abaixo cai)**
 
 > Direito Digital: "o direito não é inimigo da tecnologia; é condição para seu florescimento sustentável". Características: **interdisciplinaridade, dinamismo, globalidade/transnacionalidade, proteção de direitos fundamentais, flexibilidade normativa** (princípios gerais; abordagem "tecnologicamente neutra").
 

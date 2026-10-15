@@ -1,5 +1,5 @@
 # 24 · Coleta de Dados: Crawlers e Web Scraping
-**Prof. Guilherme Lima · 1 aula (30/06/2026) · Prioridade: MÉDIA-BAIXA (você é dev: o técnico é fácil; foque nos aspectos legais/éticos e no vocabulário)**
+**Prof. Guilherme Lima · 1 aula · Prioridade: MÉDIA-BAIXA (você é dev: o técnico é fácil; foque nos aspectos legais/éticos e no vocabulário)**
 
 ## 1. Conceito
 - **Web scraping** = seu programa faz o papel de um **navegador**: acessa e interpreta sites automaticamente para extrair dados. **Crawler** = rastreia/percorre páginas seguindo links. Automatiza tarefas manuais para sobrar tempo para análise e decisão. Entra no **ETL** (extrair → transformar → carregar); com grande volume, a transformação não cabe no pandas (usar outra ferramenta).

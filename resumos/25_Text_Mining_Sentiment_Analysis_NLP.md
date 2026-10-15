@@ -1,5 +1,5 @@
 # 25 · Text Mining, Sentiment Analysis e NLP
-**Prof. Guilherme Bezerra de Lima · 3 aulas (14, 21 e 28/07/2026) · Prioridade: ALTA (pipeline de pré-processamento e granularidades caem em prova)**
+**Prof. Guilherme Bezerra de Lima · 3 aulas · Prioridade: ALTA (pipeline de pré-processamento e granularidades caem em avaliação)**
 
 ## 1. Definições (as 4 áreas)
 - **NLP / PLN (Processamento de Linguagem Natural):** processa e entende a linguagem humana por meio de algoritmos.

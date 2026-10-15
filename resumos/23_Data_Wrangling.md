@@ -1,5 +1,5 @@
 # 23 · Data Wrangling (pandas) — Tratamento e Preparação de Dados
-**Prof. Wilson Tarantin Jr. · 4 aulas (02, 09, 16 e 23/06/2026) · Prioridade: MÉDIA (para você é prática de pandas; fixe os conceitos e o vocabulário)**
+**Prof. Wilson Tarantin Jr. · 4 aulas · Prioridade: MÉDIA (para você é prática de pandas; fixe os conceitos e o vocabulário)**
 
 ## 1. O que é Data Wrangling
 - **Transformar a base de dados da estrutura original (dados brutos) para uma estrutura mais adequada** à extração de informações. É **preparação, organização e manipulação** dos bancos de dados; **ocorre antes da análise exploratória, da criação de gráficos e da modelagem**. **Quanto melhor, melhores os dados e a qualidade da análise** (modelos refletem a má qualidade dos dados). **Não é atividade padronizada** — depende do contexto.
