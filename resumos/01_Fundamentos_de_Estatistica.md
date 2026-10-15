@@ -1,160 +1,94 @@
 # 01 · Fundamentos de Estatística
-**Prof. Wilson Tarantin Jr. · 3 aulas · Prioridade: ALTA — base de regressão, logística, contagem, multinível, PCA e séries temporais**
+**Prof. Wilson Tarantin Jr. · 3 aulas · Prioridade: ALTA — é a base de regressão, logística, contagem, multinível, PCA e séries temporais**
 
-> **Em uma frase:** estatística é o conjunto de regras para **resumir dados** (descritiva) e para **decidir com segurança a partir de uma amostra** (inferência), sabendo o quanto você pode errar.
+## O fio condutor deste capítulo
 
-**Pré-requisitos:** nenhum. **Vem depois:** todo o resto de modelagem (17–20, 14–16, 22).
+Imagine que você recebeu uma planilha com os dados de 500 clientes de um banco: idade, renda, estado civil, se pagaram o empréstimo em dia. Ninguém consegue "ler" 500 linhas e enxergar um padrão. A estatística existe para responder a duas perguntas, nesta ordem.
 
-## Por que isso importa (intuição)
-Você nunca vê a população inteira (todos os clientes, todas as peças); vê uma **amostra**. Duas perguntas guiam o capítulo:
-1. *Como descrevo bem o que eu tenho?* → medidas de posição, dispersão e forma.
-2. *Posso generalizar para o que não vi?* → distribuições de probabilidade e testes de hipóteses.
+A primeira é **como resumir o que eu tenho** sem perder o essencial. A segunda é mais ousada: **o que posso concluir sobre os clientes que não estão na planilha**, ou seja, sobre a população inteira, tendo olhado só para uma amostra, e com que grau de segurança.
 
-Para quem programa: pense em **variável = coluna tipada**. O tipo da coluna decide quais operações fazem sentido (não se faz `mean()` de uma coluna categórica).
+O capítulo segue exatamente esse caminho. Primeiro aprendemos a distinguir os tipos de coluna da planilha, porque isso decide tudo o que vem depois. Depois aprendemos a resumir uma coluna. Em seguida descobrimos que certos fenômenos seguem "moldes" matemáticos (as distribuições), e é esse molde que nos deixa fazer o passo final: testar hipóteses e decidir.
 
----
+## 1. Primeiro, que tipo de coluna é essa?
 
-## 1. Tipos de variável — a primeira decisão sempre
-- **Qualitativa (categórica):** categorias sem valor numérico real (estado civil, cor, "aprovado/reprovado", faixa de renda, escala Likert). Só admite **tabela de frequências**, gráficos de barras e a **moda**.
-- **Quantitativa (métrica):** número com significado (idade, renda em R$, retorno). Admite tudo: posição, dispersão, forma. Pode ser **discreta** (contagem: nº de filhos) ou **contínua** (altura, salário).
+Quem programa já conhece a ideia: uma coluna tem um tipo, e o tipo define quais operações fazem sentido. Em estatística acontece o mesmo, com duas famílias.
 
-**Exemplo.** "Faixa de renda" (0–2 mil, 2–4 mil…) é qualitativa; "renda em reais" é quantitativa. Transformar a segunda na primeira perde informação — por isso só se agrupa em faixas quando for preciso montar tabela de frequências.
+**Variáveis qualitativas** (ou categóricas) dizem *a qual grupo* a linha pertence: estado civil, cor do carro, "aprovou ou não o crédito", faixa de renda. Os números que eventualmente as representam são apenas etiquetas. **Variáveis quantitativas** (ou métricas) dizem *quanto*: idade, renda em reais, número de filhos. Dentro delas, as **discretas** vêm de contagem (0, 1, 2 filhos) e as **contínuas** podem assumir qualquer valor num intervalo (altura, salário).
 
-**Armadilha clássica — ponderação arbitrária:** codificar cores (azul=1, verde=2, …) e calcular a média ("cor média = 5,68") **não significa nada**, porque os números são rótulos, não quantidades.
+Essa distinção importa porque ela decide quais contas são legítimas. Suponha que você codifique as cores de carro como branco = 1, preto = 2, prata = 3 e calcule a média: 5,68. O que isso significa? Nada. Os números eram só etiquetas, e a média de etiquetas não é uma cor. Esse erro tem nome na disciplina, **ponderação arbitrária**, e reaparece em todo o curso (é o motivo de, mais adiante, usarmos "dummies" em regressões). Para uma variável qualitativa só se contam frequências e se identifica a **moda**, isto é, a categoria mais comum.
 
-## 2. Estatística descritiva (uma variável)
+## 2. Resumindo uma coluna numérica: centro, espalhamento e forma
 
-### Tabela de frequências
-Conta quantas vezes cada valor/classe aparece. Quatro versões: **absoluta**, **relativa (%)**, **absoluta acumulada** e **relativa acumulada**. Variável contínua precisa ser agrupada em classes antes.
+Para uma variável quantitativa a pergunta natural é: *se eu tivesse de descrever essa coluna em três frases, o que diria?* A resposta tem três partes.
 
-### Medidas de posição — "onde está o centro?"
-- **Média:** soma ÷ n. Usa todos os valores, mas é **puxada por extremos (outliers)**.
-- **Mediana:** valor do meio (com n par, média dos dois centrais). **Robusta a outliers.**
-- **Moda:** valor mais frequente; pode não existir ou haver várias; é **a única que serve para qualitativas**.
-- **Percentis/quartis:** P25 = 179 significa "25% dos valores são ≤ 179". Q1 = P25, Q2 = mediana = P50, Q3 = P75.
+**Onde está o centro?** A **média** soma tudo e divide por n; usa toda a informação, mas é puxada por valores extremos. Considere cinco salários, em milhares de reais: 3, 3,2, 3,5, 4 e 30. A média é 8,74, um valor que ninguém na amostra ganha, porque o salário de 30 arrastou a conta. A **mediana**, o valor do meio quando ordenamos os dados, vale 3,5 e descreve melhor o "salário típico". Por isso, quando há valores extremos (os *outliers*), a mediana é mais confiável; e quando a média fica **acima** da mediana, sabemos que a distribuição tem cauda longa à **direita**. Os **quartis** (Q1, Q2, Q3) generalizam a mediana: dividem os dados ordenados em quatro partes iguais.
 
-**Exemplo resolvido.** Salários (mil R$): 3; 3,2; 3,5; 4; 30.
-Média = 43,7 ÷ 5 = **8,74**; mediana = **3,5**. Um único salário alto arrasta a média para um valor que **ninguém ganha** — por isso em dados com cauda longa a mediana descreve melhor.
+**O quanto os dados se espalham em torno desse centro?** Dizer que a média é 100 não informa se os valores ficam entre 99 e 101 ou entre 0 e 200. A **variância** mede o afastamento médio ao quadrado em relação à média: para os dados 2, 4 e 6 (média 4), os desvios são −2, 0 e 2, os quadrados somam 8, e dividimos por n − 1 = 2, obtendo variância 4. Dividimos por n − 1, e não por n, porque a própria média já foi estimada a partir dos mesmos dados e "consumiu" um grau de liberdade. Como a variância fica em unidade ao quadrado (reais², anos²), tiramos a raiz e obtemos o **desvio padrão**, que tem a mesma unidade dos dados: aqui, 2.
 
-### Medidas de dispersão — "o quanto os dados se espalham?"
-- **Amplitude:** máx − mín (muito sensível a outlier). **AIQ** (amplitude interquartil) = Q3 − Q1.
-- **Variância amostral:** Σ(Xi − X̄)² ÷ (n−1). Mede o desvio médio ao quadrado (unidade ao quadrado). Divide por **n−1** porque a média da amostra já "gastou" um grau de liberdade.
-- **Desvio padrão:** √variância; **mesma unidade** da variável.
-- **Erro padrão:** S ÷ √n = desvio padrão **da média**. Mostra o quanto a média amostral variaria entre amostras.
-- **Coeficiente de variação (CV):** (S ÷ X̄) × 100 = dispersão **relativa**, serve para comparar variáveis de escalas diferentes.
+Dois cuidados completam esta parte. Para comparar a dispersão de variáveis em escalas diferentes (altura em metros e peso em quilos) o desvio padrão não serve; usamos o **coeficiente de variação**, que é o desvio dividido pela média. Uma variável com média 100 e desvio 10 tem CV de 10%; outra com média 5 e desvio 2 tem CV de 40%, mais heterogênea, embora seu desvio absoluto seja menor. E, quando o interesse é saber quão precisa é a *média* calculada, usamos o **erro padrão**, o desvio dividido por √n. Com desvio 10, uma amostra de 100 casos dá erro padrão 1; uma de 400 dá 0,5. Quadruplicar a amostra só dobrou a precisão: a raiz explica por que ganhar precisão custa cada vez mais caro.
 
-**Exemplo resolvido.** Dados 2, 4, 6 → média 4; desvios −2, 0, 2; quadrados 4, 0, 4 (soma 8). Variância = 8 ÷ 2 = **4**; desvio padrão = **2**.
-**Erro padrão:** com S = 10, n = 100 → 1; com n = 400 → 0,5. **Quadruplicar a amostra só dobra a precisão** (por causa da raiz).
-**CV:** A (média 100, S 10) → 10%; B (média 5, S 2) → 40%. B é **4× mais heterogênea**, embora seu desvio padrão seja menor.
+**Qual a forma?** Por fim, olhamos para o desenho da distribuição: se é simétrica ou tem uma cauda (**assimetria**) e se é mais "pontuda" ou mais achatada que o padrão (**curtose**). A regra de Tukey usa os quartis para apontar outliers: qualquer valor abaixo de Q1 − 1,5·AIQ ou acima de Q3 + 1,5·AIQ, em que AIQ = Q3 − Q1.
 
-**Outlier (regra de Tukey):** valor < Q1 − 1,5·AIQ ou > Q3 + 1,5·AIQ. Com Q1 = 10 e Q3 = 20 (AIQ = 10) os limites são −5 e 35; um valor 40 é outlier.
+## 3. De resumo a molde: as distribuições de probabilidade
 
-### Medidas de forma
-- **Assimetria (g1):** 0 = simétrica; **> 0 = cauda longa à direita (média > mediana)**; < 0 = cauda à esquerda.
-- **Curtose (g2):** 0 = como a normal (mesocúrtica); > 0 = pontuda/caudas pesadas (leptocúrtica); < 0 = achatada (platicúrtica).
+Até aqui descrevemos dados que já tínhamos. Para dar o salto à população precisamos de uma ideia nova: muitos fenômenos se comportam como **moldes conhecidos**, as distribuições de probabilidade. Se sabemos qual é o molde, conseguimos calcular a chance de qualquer resultado sem observar tudo.
 
-## 3. Distribuições de probabilidade — o "molde" teórico
-Uma distribuição descreve **quais valores uma variável pode assumir e com que probabilidade**. Probabilidades ficam entre 0 e 1 e somam 1.
+O molde depende de *o que estamos contando*. Se há **um único experimento com dois desfechos** (compra ou não compra), a distribuição é a **Bernoulli**, e é ela que está por trás da regressão logística. Se repetimos esse experimento n vezes de forma independente e contamos os sucessos, temos a **Binomial**. Por exemplo, lançando uma moeda 3 vezes, a chance de exatamente 2 caras é C(3,2) · 0,5² · 0,5 = 0,375. Se, em vez de n tentativas fixas, contamos **eventos que ocorrem ao longo de uma janela** (pacientes por ano, chamadas por hora), usamos a **Poisson**, cuja taxa média λ é o único parâmetro: com λ = 2 pacientes por ano, a chance de ver exatamente um é e⁻² · 2 ≈ 27%. Poisson e uma variante chamada binomial negativa são a base dos modelos de contagem do curso.
 
-### Discretas (contagens e sim/não) — e onde cada uma reaparece no curso
-- **Bernoulli:** **um** ensaio, dois resultados (sucesso com prob. p, fracasso 1−p). **Base da regressão logística binária.**
-- **Binomial:** **n** ensaios Bernoulli independentes com p constante; conta o **nº de sucessos** k. P(k) = C(n,k)·pᵏ·(1−p)ⁿ⁻ᵏ. Base da logística multinomial.
-- **Binomial negativa:** nº de ensaios até obter k sucessos; base do **modelo de contagem binomial negativo** (dados com superdispersão).
-- **Poisson:** nº de eventos numa **janela** (tempo/área) com taxa média λ. P(k) = e⁻ˡ·λᵏ ÷ k! (com e⁻ˡ = e elevado a −λ). Base do **modelo de contagem Poisson** (média ≈ variância).
+Para variáveis contínuas o molde central é a **normal**, a curva em sino definida por média μ e desvio σ. Sua propriedade prática é a regra empírica: cerca de 68% dos valores ficam a até 1 desvio da média, 95% a até 2 e 99,7% a até 3. Para trabalhar com qualquer normal usamos o **escore Z**, Z = (X − μ) / σ, que responde "a quantos desvios padrão do centro está este valor?". Se o retorno médio de um ativo é 2,8% e o desvio é 1,2%, a chance de o retorno passar de 4% é a chance de Z passar de 1, aproximadamente 16%.
 
-**Como escolher:** *conto sucessos em n tentativas?* → Binomial. *Conto eventos soltos numa janela contínua, sem "n" definido?* → Poisson.
+Três outras distribuições entram porque aparecem em testes que veremos já. A **t de Student** parece a normal, mas com caudas mais pesadas: ela corrige a incerteza extra de quem tem poucos dados e não conhece o desvio padrão da população. A **qui-quadrado (χ²)** serve para comparar frequências de categorias. A **F** compara variâncias. Todas dependem dos **graus de liberdade**, que pode-se entender como "quantos valores ainda são livres para variar": se cinco números devem somar 18, escolhemos quatro livremente e o quinto fica determinado.
 
-**Exemplos resolvidos.**
-- Binomial: 3 lançamentos de moeda, P(exatamente 2 caras) = C(3,2)·0,5²·0,5 = 3 × 0,125 = **0,375**.
-- Poisson: λ = 2 pacientes/ano → P(1 paciente) = e⁻²·2 = **27,07%** (valor visto em aula).
+## 4. A lógica de um teste de hipóteses
 
-### Contínuas
-- **Normal:** curva em sino, simétrica, definida por μ e σ. **Regra empírica:** ±1σ ≈ 68%, ±2σ ≈ 95%, ±3σ ≈ 99,7%.
-- **Normal padrão / Z-score:** Z = (X − μ) ÷ σ → média 0, desvio 1. **Muda a escala, não a forma.** Responde "a quantos desvios padrão do centro este valor está?". Ex.: retorno médio 2,8%, σ 1,2%; P(retorno > 4%) = P(Z > 1) = **15,87%**.
-- **Qui-quadrado (χ²):** assimétrica à direita; usada em testes de **associação entre categóricas**.
-- **t de Student:** parece a normal com **caudas mais pesadas** (mais chance de extremos) — compensa a incerteza de **σ desconhecido em amostras pequenas**. Com mais graus de liberdade, converge para a normal.
-- **F de Snedecor:** **razão de variâncias**; assimétrica à direita; tem dois graus de liberdade.
-- **Graus de liberdade (gl):** nº de valores que podem variar livremente. Se 5 números devem somar 18, quatro são livres e o quinto fica determinado → gl = 4 = n−1.
+Agora podemos responder à segunda pergunta. Um fabricante afirma que seus potes têm 100 g. Você pesa 25 potes e encontra média 104 g. A diferença é real ou foi sorte da amostra?
 
-## 4. Testes de hipóteses — a lógica
+O raciocínio estatístico funciona como um tribunal. Parte-se de uma afirmação que se presume verdadeira até haver evidência forte contra ela: a **hipótese nula, H0** (aqui, "a média é 100"). A **hipótese alternativa, H1**, é o que se quer demonstrar ("a média é diferente de 100"). Você nunca *prova* H0; apenas verifica se os dados são tão improváveis, **supondo H0 verdadeira**, que ela deve ser rejeitada.
 
-**Ideia central (analogia do tribunal):** presume-se "inocente" (H0) até a evidência ser forte o bastante para rejeitá-la. Você **nunca prova** H0; só decide se os dados são **incompatíveis** com ela.
+Para medir "improvável" usamos o **p-valor**: a probabilidade de observar um resultado tão extremo quanto o seu (ou mais) *se H0 fosse verdadeira*. Um p-valor pequeno significa que o seu resultado seria raro num mundo em que H0 é verdadeira; então você desconfia de H0. Quão pequeno? Você decide antes, escolhendo um **nível de significância α** (usualmente 5%). A regra fica simples: **se p < α, rejeita-se H0**; caso contrário, não se rejeita, o que quer dizer apenas "evidência insuficiente", e não "H0 é verdadeira".
 
-**Passo a passo (sempre igual):**
-1. **H0** = "não há efeito/diferença" (sempre com igualdade). **H1** = o que você quer mostrar.
-2. O sinal de H1 define o tipo: **bilateral** (≠), **unilateral à esquerda** (<) ou **à direita** (>).
-3. Escolha **α** (1%, 5% ou 10%) = probabilidade máxima de rejeitar H0 **sendo ela verdadeira**. Nível de confiança = 1 − α.
-4. Calcule a **estatística de teste** e compare com o **valor crítico**; ou use o **p-valor**: **p < α → rejeita H0**.
+Há duas maneiras de errar. Rejeitar H0 quando ela é verdadeira é o **erro tipo I**, e sua probabilidade é exatamente α: é o "alarme falso". Não rejeitar H0 quando ela é falsa é o **erro tipo II**: o culpado que passou.
 
-**O que é o p-valor:** *se H0 fosse verdadeira, quão raro seria observar um resultado ao menos tão extremo quanto o meu?* p pequeno → resultado raro sob H0 → desconfia de H0.
+No exemplo dos potes, calcula-se a estatística t = (X̄ − μ₀) / (S/√n). Com média 104, desvio 10 e n = 25: t = 4 / (10/5) = 2,0, com 24 graus de liberdade. O valor crítico a 5% é cerca de 2,064. Como 2,0 < 2,064, **não rejeitamos H0**: apesar de 4 g parecer muito, com essa variabilidade e esse tamanho de amostra a diferença poderia ser acaso. Repare como a decisão combina três coisas: o tamanho da diferença, a variabilidade dos dados e o tamanho da amostra.
 
-- **Erro tipo I:** rejeitar H0 sendo verdadeira (probabilidade = **α**) — "alarme falso".
-- **Erro tipo II:** não rejeitar H0 sendo falsa — "deixar o culpado passar".
+## 5. Qual teste usar?
 
-### Qual teste usar?
-| Situação | Teste | Estatística |
-|---|---|---|
-| 2 variáveis **qualitativas** (associação?) | **Qui-quadrado de associação** | χ² = Σ(obs − esp)² ÷ esp; gl = (L−1)(C−1) |
-| 2 variáveis **quantitativas** (correlação?) | **r de Pearson + teste t** | r = cov(X,Y) ÷ (Sx·Sy); t = r ÷ √[(1−r²)÷(n−2)]; gl = n−2 |
-| Média de 1 amostra, σ conhecido (ou n grande) | **Teste Z** | Z = (X̄ − μ0) ÷ (σ/√n) |
-| Média de 1 amostra, σ desconhecido | **Teste t** | t = (X̄ − μ0) ÷ (S/√n); gl = n−1 |
-| 1 variável categórica: observado × esperado | **χ² de aderência** | χ² = Σ(O−E)²÷E; gl = k−1 |
-| Variâncias de 2 amostras | **Teste F** | F = S²maior ÷ S²menor |
-| Médias de 2 amostras independentes | **t de duas amostras** | faça antes o teste F: variâncias iguais → variância combinada; diferentes → Welch |
+O procedimento é sempre o mesmo; o que muda é a estatística, e a escolha depende do tipo de variável e da pergunta.
 
-**Intervalo de confiança da média:** X̄ ± (Z ou t) × erro padrão. Um IC de 95% que **não contém** o valor de H0 equivale a rejeitar H0 a 5%.
+Se queremos saber se **duas variáveis qualitativas** estão associadas (sexo e compra, por exemplo), usamos o **qui-quadrado de associação**. Montamos a tabela de contingência, calculamos para cada célula quantos casos *esperaríamos* se não houvesse associação ((total da linha × total da coluna) / N) e comparamos com o observado. Exemplo: 100 casos, com 30 e 20 compras entre os dois sexos de uma linha e 10 e 40 na outra. Os esperados são 20, 30, 20 e 30; χ² = Σ (observado − esperado)² / esperado = 5 + 3,33 + 5 + 3,33 ≈ 16,7, com (2−1)(2−1) = 1 grau de liberdade. Como o crítico a 5% é 3,84, rejeita-se H0: **há associação**.
 
-### Exemplos resolvidos
-**(a) Teste t, 1 amostra.** Um fabricante afirma μ = 100. Amostra: n = 25, X̄ = 104, S = 10. H0: μ = 100; H1: μ ≠ 100.
-t = (104 − 100) ÷ (10/√25) = 4 ÷ 2 = **2,0**; gl = 24. O valor crítico bilateral a 5% é ≈ **2,064**. Como 2,0 < 2,064 → **não rejeita H0** (evidência insuficiente a 5%, mesmo a diferença parecendo grande).
+Se queremos saber se **duas variáveis quantitativas** caminham juntas, usamos o **coeficiente de correlação de Pearson**, que vai de −1 a 1, e testamos H0: correlação = 0 com um teste t.
 
-**(b) Qui-quadrado de associação.** Tabela 2×2 (sexo × comprou?): observados [[30, 20], [10, 40]]; N = 100. Totais: linhas 50/50; colunas 40/60.
-Esperados = (total linha × total coluna) ÷ N → 20, 30, 20, 30. χ² = 100/20 + 100/30 + 100/20 + 100/30 ≈ **16,7**; gl = (2−1)(2−1) = 1; crítico a 5% = 3,84 → **rejeita H0**: há associação.
+Se a pergunta é sobre a **média de um grupo**, usamos o teste **Z** quando o desvio padrão populacional é conhecido (ou a amostra é grande) e o teste **t** quando é desconhecido, como no exemplo dos potes. Para **comparar as médias de dois grupos**, antes fazemos o **teste F** para ver se as variâncias dos grupos são iguais, porque isso define a versão do teste t. E se queremos comparar **observado e esperado** de uma só variável categórica, usamos o χ² de aderência.
 
-**(c) Correlação.** r = 0,5 com n = 27 → t = 0,5 ÷ √(0,75/25) ≈ **2,89**; gl = 25 → significativa a 5%.
+Por fim, um **intervalo de confiança** diz o mesmo de outra forma: em vez de responder "sim/não", entrega a faixa de valores plausíveis para a média (X̄ ± t · erro padrão). Se o valor de H0 estiver fora do intervalo de 95%, o teste a 5% rejeita H0.
 
----
+## O que levar daqui
 
-## Armadilhas e confusões comuns
-| Confusão | O correto |
-|---|---|
-| "p = 0,03 significa 3% de chance de H0 ser verdadeira" | p é a probabilidade dos **dados** (ou mais extremos) **se H0 for verdadeira**, não de H0 |
-| "Não rejeitei H0, logo H0 é verdadeira" | só significa **evidência insuficiente** para rejeitar |
-| α e p-valor são a mesma coisa | α é **escolhido antes** (tolerância ao erro tipo I); p é **calculado dos dados** |
-| Tirar média/mediana de variável qualitativa | só **moda** e frequências |
-| Usar desvio padrão para comparar variáveis com escalas diferentes | use o **CV** |
-| Média = mediana sempre | **média > mediana** indica cauda à direita |
-| Binomial × Poisson | Binomial: nº **fixo** de tentativas; Poisson: eventos numa janela, **sem teto** natural |
-| Mais amostra faz o desvio padrão diminuir | diminui o **erro padrão** (o desvio padrão da variável não muda) |
+A estatística começa em classificar cada variável, porque isso delimita as contas permitidas. Resumimos uma coluna com centro, espalhamento e forma, escolhendo medidas robustas (mediana) quando há outliers. As distribuições são moldes que permitem calcular probabilidades: Bernoulli e Binomial para sucessos, Poisson para eventos numa janela, normal para variáveis contínuas. E um teste de hipóteses é um tribunal: presume-se H0, calcula-se quão raros seriam os dados sob H0 (p-valor) e rejeita-se H0 apenas quando p < α.
 
-## Resumo-relâmpago
-- Tipo da variável decide a ferramenta. Qualitativa → frequência e moda.
-- Média é sensível a outliers; mediana não. Média > mediana → cauda à direita.
-- Variância usa n−1; erro padrão = S/√n; CV compara escalas diferentes.
-- Bernoulli → logística binária; Binomial → logística multinomial; Poisson e Binomial negativa → contagem.
-- Teste: H0 com igualdade; **p < α → rejeita H0**; α = prob. do erro tipo I.
-- Associação entre categóricas = χ²; entre métricas = Pearson; médias = Z/t; variâncias = F.
+## Erros que todo mundo comete
 
-## Teste-se (responda antes de abrir a resposta)
-1. Por que "média da cor do carro = 5,68" não faz sentido?
-<details markdown="1"><summary>Ver resposta</summary>Porque os números são apenas rótulos de categorias (ponderação arbitrária); a média só vale para variável quantitativa. Para cor, use frequências e moda.</details>
+Dizer que "p = 0,03 significa 3% de chance de H0 ser verdadeira" está errado: o p-valor é a probabilidade dos *dados* sob H0, não de H0. Concluir que H0 é verdadeira só porque não foi rejeitada também está errado. Confundir α (escolhido antes) com o p-valor (calculado dos dados) é frequente. E calcular média ou mediana de uma variável qualitativa produz números sem sentido.
 
-2. Em um teste com α = 5% e p = 0,03, qual a decisão? E com α = 1%?
-<details markdown="1"><summary>Ver resposta</summary>Com 5%: p < α → rejeita H0. Com 1%: p > α → não rejeita H0.</details>
+## Teste-se
 
-3. Quantos graus de liberdade tem o χ² de associação de uma tabela 3×4?
-<details markdown="1"><summary>Ver resposta</summary>(3−1)(4−1) = 6.</details>
+1. Por que a "média" das cores dos carros não faz sentido, e o que se pode calcular?
+<details markdown="1"><summary>Ver resposta</summary>Porque os números são apenas etiquetas de categorias (ponderação arbitrária). Para uma variável qualitativa só se calculam frequências e a moda.</details>
 
-4. A distribuição t tem caudas mais longas ou mais curtas que a normal? Por que isso importa?
-<details markdown="1"><summary>Ver resposta</summary>Mais longas. Em amostras pequenas com σ desconhecido, há mais incerteza; as caudas pesadas evitam subestimar a variabilidade (valores críticos maiores).</details>
+2. Cinco salários: 3; 3,2; 3,5; 4; 30. Qual medida descreve melhor o salário típico e por quê?
+<details markdown="1"><summary>Ver resposta</summary>A mediana (3,5): o valor extremo de 30 puxa a média (8,74) para um valor que ninguém recebe.</details>
+
+3. Em um teste com α = 5% e p = 0,03, qual a decisão? E com α = 1%?
+<details markdown="1"><summary>Ver resposta</summary>Com 5%, p < α: rejeita H0. Com 1%, p > α: não rejeita H0.</details>
+
+4. Quantos graus de liberdade tem um qui-quadrado de associação de uma tabela 3×4?
+<details markdown="1"><summary>Ver resposta</summary>(3 − 1)(4 − 1) = 6.</details>
 
 5. Qual teste fazer antes de comparar as médias de dois grupos, e para quê?
-<details markdown="1"><summary>Ver resposta</summary>O teste F de variâncias, para escolher entre o t com variâncias iguais (variância combinada) ou com variâncias diferentes (Welch).</details>
-
-6. Dados 2, 4, 6: quanto vale a variância amostral?
-<details markdown="1"><summary>Ver resposta</summary>Média 4; soma dos quadrados dos desvios = 8; 8 ÷ (3−1) = 4.</details>
+<details markdown="1"><summary>Ver resposta</summary>O teste F das variâncias, para decidir entre o t com variâncias iguais ou diferentes.</details>
 
 ## Pergunta típica
 Para variável qualitativa, qual medida de posição posso usar · o que significa p < α · α é a probabilidade de qual erro · média > mediana indica qual assimetria · por que mais amostra reduz o erro padrão · quando usar o CV · qual teste para associação entre categóricas e qual para duas métricas · qual distribuição está na base de cada modelo (Bernoulli, Binomial, Poisson, Binomial negativa) · diferença entre Z e t
 
-*Fonte: slides do Prof. Tarantin (baseados em Fávero e Belfiore, "Manual de análise de dados") e transcrições das 3 aulas. Exercícios: lista complementar e planilha de suporte da aula.*
+*Fonte: slides do Prof. Tarantin (baseados em Fávero e Belfiore, "Manual de análise de dados") e transcrições das 3 aulas.*
