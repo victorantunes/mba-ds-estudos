@@ -38,14 +38,40 @@ def fix_md(text):
     return "\n".join(out)
 
 
+def _protect_math(text):
+    r"""Isola fórmulas \( ... \) e \[ ... \] antes do markdown (que comeria as barras)."""
+    store = []
+
+    def keep(kind):
+        def f(m):
+            store.append((kind, m.group(1)))
+            return "@@MATH%d@@" % (len(store) - 1)
+        return f
+    text = re.sub(r"\\\[(.+?)\\\]", keep("d"), text, flags=re.S)
+    text = re.sub(r"\\\((.+?)\\\)", keep("i"), text, flags=re.S)
+    return text, store
+
+
+def _restore_math(html, store):
+    import html as H
+    for i, (kind, body) in enumerate(store):
+        b = H.escape(body.strip(), quote=False)
+        rep = ("\\[" + b + "\\]") if kind == "d" else ("\\(" + b + "\\)")
+        html = html.replace("@@MATH%d@@" % i, rep)
+    return html
+
+
 def render(text):
+    text, store = _protect_math(text)
     md = markdown.Markdown(extensions=["tables", "fenced_code", "sane_lists", "toc", "md_in_html"],
                            extension_configs={"toc": {"toc_depth": "2-3"}})
     html = md.convert(fix_md(text))
+    html = _restore_math(html, store)
     return html, md.toc_tokens
 
 
 def plain(s):
+    s = re.sub(r"\\\((.+?)\\\)", lambda m: m.group(1), s)
     s = re.sub(r"\*\*|__|`|\*", "", s)
     s = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", s)
     return s.strip()

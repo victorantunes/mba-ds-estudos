@@ -57,3 +57,18 @@ mark{background:var(--hi);color:inherit;border-radius:3px;padding:0 2px}
 .home-grid a{display:block;text-decoration:none;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
 .home-grid a:hover{border-color:var(--ac)}
 @media(max-width:860px){body.collapsed #side{display:block}#side{position:fixed;left:0;top:53px;z-index:15;background:var(--bg);transform:translateX(-100%);transition:transform .2s;width:min(88vw,330px);height:calc(100vh - 53px)}body.menu #side{transform:none;box-shadow:0 0 40px #0006}.layout{display:block}}
+
+.callout{border-left-width:5px;border-radius:0 10px 10px 0;padding:.8em 1.1em;margin:1.2em 0}
+.callout p{margin:.3em 0}
+.c-ex{border-left-color:#2f5bea;background:color-mix(in srgb,#2f5bea 8%,var(--card))}
+.c-warn{border-left-color:#d9480f;background:color-mix(in srgb,#d9480f 9%,var(--card))}
+.c-mem{border-left-color:#12805c;background:color-mix(in srgb,#12805c 9%,var(--card))}
+.c-ana{border-left-color:#7048e8;background:color-mix(in srgb,#7048e8 9%,var(--card))}
+.c-prof{border-left-color:#e0a100;background:color-mix(in srgb,#e0a100 12%,var(--card))}
+figure{margin:1.4em 0;text-align:center}
+figure img{max-width:100%;height:auto;background:#fff;border-radius:10px;padding:8px;border:1px solid var(--bd)}
+figcaption{font-size:.88rem;color:var(--mut);margin-top:.4em}
+.mermaid{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin:1.2em 0;text-align:center;overflow:auto}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:.3em 0}
+details{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:.4em .8em;margin:.3em 0 1em}
+summary{cursor:pointer;color:var(--ac);font-size:.92rem}

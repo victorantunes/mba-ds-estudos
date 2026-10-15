@@ -8,6 +8,18 @@ const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&qu
 const short=t=>t.replace(/^(Un)?[Ss]upervised ML — /,'').replace(/\s*\([^)]*\)/g,'').replace(/^Análise de /,'').replace(/^Introdução à /,'').replace(/ \+ .*$/,'').replace(/^Análise da /,'');
 const pad=n=>String(n).padStart(2,'0');
 
+
+const CALL={'exemplo':'ex','exemplo resolvido':'ex','na prática':'ex','atenção':'warn','cuidado':'warn','armadilha':'warn','memorize':'mem','regra de ouro':'mem','analogia':'ana','destaque do professor':'prof','dica do professor':'prof','em uma frase':'mem'};
+function enhance(root){
+  root.querySelectorAll('blockquote').forEach(b=>{const s=b.querySelector('p>strong');if(!s)return;const k=s.textContent.trim().replace(/[.:]$/,'').toLowerCase();const c=CALL[k];if(c){b.classList.add('callout','c-'+c);}});
+  root.querySelectorAll('pre>code.language-mermaid').forEach(c=>{const d=document.createElement('div');d.className='mermaid';d.textContent=c.textContent;c.parentNode.replaceWith(d);});
+  root.querySelectorAll('img').forEach(i=>{if(i.alt&&!i.closest('figure')){const f=document.createElement('figure');i.replaceWith(f);f.appendChild(i);const cp=document.createElement('figcaption');cp.textContent=i.alt;f.appendChild(cp);}});
+  const go=()=>{try{if(window.renderMathInElement)renderMathInElement(root,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredClasses:['mermaid'],throwOnError:false});}catch(e){}
+    try{if(window.mermaid){const dark=(document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';mermaid.initialize({startOnLoad:false,theme:dark?'dark':'default',securityLevel:'loose'});
+      root.querySelectorAll('.mermaid').forEach((n,k)=>{const src=n.textContent;n.dataset.src=src;mermaid.render('mmd'+Date.now()+'_'+k,src).then(r=>{n.innerHTML=r.svg;}).catch(e=>{n.innerHTML='<pre>'+src.replace(/</g,'&lt;')+'</pre>';});});}}catch(e){}};
+  if(window.renderMathInElement&&window.mermaid)go();else window.addEventListener('load',go);
+}
+
 function buildNav(cur){
   let h='<div class="nav-top"><a class="nav-a'+(cur==='home'?' on':'')+'" href="#/">Início</a><a class="nav-a'+(cur==='plano'?' on':'')+'" href="#/plano">Plano</a><a class="nav-a'+(cur==='cards'?' on':'')+'" href="#/cards">Flashcards</a><a class="nav-a'+(cur==='quiz'?' on':'')+'" href="#/quiz">Autoteste</a></div>';
   D.groups.forEach(g=>{h+='<div class="nav-h">'+esc(g.name)+'</div>';
@@ -45,14 +57,14 @@ function disc(id){
   h+='<div class="card row"><label><input type="checkbox" id="doneCb" '+(done[id]?'checked':'')+'> Marcar como estudada</label><span class="spacer" style="flex:1"></span>'+
      (d.cards.length?'<a class="btn ghost" href="#/cards/'+id+'">Flashcards ('+d.cards.length+')</a>':'')+(d.questions.length?'<a class="btn ghost" href="#/quiz/'+id+'">Autoteste ('+d.questions.length+')</a>':'')+'</div>';
   h+='<div class="row">'+(prev?'<a class="btn ghost" href="#/d/'+prev.id+'">← '+esc(prev.title)+'</a>':'')+'<span style="flex:1"></span>'+(next?'<a class="btn ghost" href="#/d/'+next.id+'">'+esc(next.title)+' →</a>':'')+'</div>';
-  main.innerHTML=h;
+  main.innerHTML=h;enhance(main);
   main.querySelectorAll('[data-sec]').forEach(a=>a.onclick=e=>{e.preventDefault();const el=document.getElementById(a.dataset.sec);if(el)el.scrollIntoView()});
   $('#doneCb').onchange=e=>{done[id]=e.target.checked;store.set('done',done);buildNav('d'+id)};
 }
 
 function plan(){
   buildNav('plano');
-  main.innerHTML='<div id="planDoc">'+D.plan+'</div>';
+  main.innerHTML='<div id="planDoc">'+D.plan+'</div>';enhance(main);
   const rows=[...main.querySelectorAll('#planDoc tbody tr')].filter(tr=>/^\d+$/.test(tr.cells[0].textContent.trim()));
   rows.forEach(tr=>{const day=tr.cells[0].textContent.trim();const cb=document.createElement('input');cb.type='checkbox';cb.className='plan-cb';cb.checked=!!planDone[day];
     const apply=()=>tr.classList.toggle('plan-done',cb.checked);apply();
