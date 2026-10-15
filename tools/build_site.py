@@ -15,6 +15,9 @@ GROUPS = [
 ]
 
 
+SHORT = {1:"Estatística",2:"Python e mapa de ML",3:"BI e Data Viz",4:"Engenharia de Dados",5:"Metodologias Ágeis",6:"Comp. Evolucionária",7:"Cloud Computing",8:"Análise de Redes (SNA)",9:"Conjuntura Econômica",10:"Riscos e Analytics",11:"Liderança em DS",12:"LGPD",13:"Modelagem / AHP",14:"Clustering",15:"Fatorial e PCA",16:"ANACOR e ACM",17:"Regressão",18:"Logística",19:"Dados de Contagem",20:"Multinível",21:"Big Data e MLOps",22:"Séries Temporais",23:"Data Wrangling",24:"Web Scraping",25:"Text Mining / NLP",26:"Pesquisa Operacional",27:"Árvores e Ensemble",28:"Deep Learning",29:"APIs e LLMs",30:"Gestão da Mudança"}
+
+
 def fix_md(text):
     """python-markdown exige linha em branco antes de listas/tabelas e 4 espaços no aninhamento."""
     out, prev = [], ""
@@ -36,7 +39,7 @@ def fix_md(text):
 
 
 def render(text):
-    md = markdown.Markdown(extensions=["tables", "fenced_code", "sane_lists", "toc"],
+    md = markdown.Markdown(extensions=["tables", "fenced_code", "sane_lists", "toc", "md_in_html"],
                            extension_configs={"toc": {"toc_depth": "2-3"}})
     html = md.convert(fix_md(text))
     return html, md.toc_tokens
@@ -86,7 +89,7 @@ def main():
         html, toc = render(text)
         prio = re.search(r"Prioridade[^A-Za-zÁ-ú]*([A-ZÁ-Ú][A-ZÁ-Ú-]+(?: [A-ZÁ-Ú-]+)?)", text)
         discs.append({
-            "id": num, "title": title, "file": os.path.basename(f),
+            "id": num, "title": title, "short": SHORT.get(num, title), "file": os.path.basename(f),
             "priority": prio.group(1).strip() if prio else "",
             "html": html,
             "toc": [{"id": t["id"], "name": t["name"]} for t in toc[0]["children"]] if toc and False else

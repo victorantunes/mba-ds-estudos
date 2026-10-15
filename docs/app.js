@@ -5,13 +5,14 @@ const store={get(k,def){try{const v=localStorage.getItem('estudos:'+k);return v?
  set(k,v){try{localStorage.setItem('estudos:'+k,JSON.stringify(v))}catch(e){}}};
 let done=store.get('done',{}), qdone=store.get('q',{}), cardState=store.get('cards',{}), planDone=store.get('plan',{});
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=t=>t.replace(/^(Un)?[Ss]upervised ML — /,'').replace(/\s*\([^)]*\)/g,'').replace(/^Análise de /,'').replace(/^Introdução à /,'').replace(/ \+ .*$/,'').replace(/^Análise da /,'');
 const pad=n=>String(n).padStart(2,'0');
 
 function buildNav(cur){
   let h='<div class="nav-top"><a class="nav-a'+(cur==='home'?' on':'')+'" href="#/">Início</a><a class="nav-a'+(cur==='plano'?' on':'')+'" href="#/plano">Plano</a><a class="nav-a'+(cur==='cards'?' on':'')+'" href="#/cards">Flashcards</a><a class="nav-a'+(cur==='quiz'?' on':'')+'" href="#/quiz">Autoteste</a></div>';
   D.groups.forEach(g=>{h+='<div class="nav-h">'+esc(g.name)+'</div>';
     g.ids.forEach(id=>{const d=byId[id];if(!d)return;
-      h+='<a class="nav-a'+(cur==='d'+id?' on':'')+'" href="#/d/'+id+'"><span class="n">'+pad(id)+'</span><span>'+esc(d.title)+'</span>'+(done[id]?'<span class="dn">✓</span>':'')+'</a>'});});
+      h+='<a class="nav-a'+(cur==='d'+id?' on':'')+'" href="#/d/'+id+'"><span class="n">'+pad(id)+'</span><span title="'+esc(d.title)+'">'+esc(d.short)+'</span>'+(done[id]?'<span class="dn">✓</span>':'')+'</a>'});});
   $('#navList').innerHTML=h;
   const n=Object.values(done).filter(Boolean).length;
   $('#globalProgress').textContent=n+'/'+D.disciplines.length+' estudadas';
@@ -117,7 +118,8 @@ function route(){
   if(p[0]!=='d')window.scrollTo(0,0);else window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
-$('#menuBtn').onclick=()=>document.body.classList.toggle('menu');
+$('#menuBtn').onclick=()=>{if(matchMedia('(max-width:860px)').matches)document.body.classList.toggle('menu');else{const c=document.body.classList.toggle('collapsed');store.set('collapsed',c)}};
+if(store.get('collapsed',false))document.body.classList.add('collapsed');
 $('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';store.set('theme',r.dataset.theme)};
 const th=store.get('theme',null);if(th)document.documentElement.dataset.theme=th;
 let st;$('#search').addEventListener('input',e=>{clearTimeout(st);const v=e.target.value;st=setTimeout(()=>{if(v.trim().length>=2)search(v);else route()},200)});

@@ -1,52 +1,81 @@
 # 03 · Business Intelligence e Data Visualization
 **Profa. Viviane Martins Ferreira · 3 aulas · Prioridade: MÉDIA (conceitual + Power BI)**
 
-> Disciplina muito prática (Power BI). Para avaliação, o que tende a ser cobrado são **conceitos**: o que é BI, ETL, self-service, dataviz, governança, privacidade, e **boas práticas de gráficos/dashboards**.
+> **Em uma frase:** BI é o processo de transformar dados dispersos em informação confiável e visual para decidir melhor — e a visualização é a ponte entre o número e a decisão.
 
-## 1. Conceitos de Business Intelligence
-- **BI** = transformar **dados em informação** para apoiar decisões nas organizações; analisar dados e correlacioná-los para trazer uma informação coerente. **BI é um conceito, não uma ferramenta** ("vou pegar no BI" = vou pegar em uma ferramenta; o conceito não é isso).
-- Quanto mais cedo você entende o **contexto do negócio**, melhor o resultado. Fluxo do trabalho de análise: **entender o contexto → identificar a fonte → importar/tentar → desenvolver reports e dashboards**. Fatores importantes: entendimento do cenário, **definição de escopo**, mapeamento de tecnologia, profissionais envolvidos, "qual o destino / como chegar".
-- **Premissa:** nunca trabalhar com "achismo" ("eu acho que…"); definir as **métricas de acordo com o objetivo inicial** (se não está no objetivo, não calcula).
-- Documentação é trabalhosa mas essencial para o sucesso do projeto.
-- **Análise preditiva** dá um norte do que pode acontecer, não certeza.
-- **Data mining**: separar o que presta do que não presta nos dados (inclusive colunas aparentemente inúteis podem ser úteis combinadas com outras).
+**Pré-requisitos:** noção de tabelas e bancos de dados. **Vem depois:** 04 (engenharia de dados) e 12 (LGPD).
 
-### Fases do processo de BI (ETL → modelagem → visualização → publicação)
-**ETL = Extract – Transform – Load.** Etapas: identificação → coleta → limpeza e transformação → modelagem → armazenamento → visualização → publicação.
-- Fontes: arquivos (.txt, .csv, .xlsx), bancos (Oracle, SQL Server, MySQL, DB2), data warehouses.
+## Por que isso importa (intuição)
+Dados brutos em planilhas e bancos ninguém lê. BI cria um **caminho organizado** (extrair → limpar → modelar → mostrar) para que a pessoa de negócio enxergue a resposta. Um bom gráfico responde uma pergunta; um gráfico ruim esconde a resposta mesmo com dados certos.
 
-### Self-Service Analytics
-Simplifica a análise para usuários que **não são da área de tecnologia**: autonomia para criar análises, relatórios e dashboards **com suporte de uma base tecnológica estruturada** (analogia do restaurante self-service).
-- **Pilares técnicos:** DW (Data Warehouse), Analytics (análises avançadas), Data Viz. **Pilares humanos/organizacionais:** skills, recursos. **Entregáveis:** reports, análises, dataviz.
-- **Fatores de sucesso:** governança de dados, cultura orientada a dados, capacitação, estrutura robusta.
-- **Benefícios:** agilidade na tomada de decisão, **independência dos times de TI**, redução de custos, aumento da produtividade, foco em análises estratégicas.
+## 1. Conceitos de BI
+- **BI:** conjunto de processos para **transformar dados em informação** de apoio à decisão. **É um conceito, não uma ferramenta** (Power BI é uma ferramenta de BI).
+- **Premissas:** entender o contexto do negócio primeiro; **definir escopo e métricas a partir do objetivo** (se não está no objetivo, não se calcula); nunca decidir por "achismo"; **documentar**.
+- **Fluxo do trabalho:** entender o contexto → identificar a fonte → importar → desenvolver reports e dashboards.
+- **Data mining:** separar o que presta do que não presta nos dados (colunas aparentemente inúteis podem ajudar combinadas). **Análise preditiva** dá um norte do que pode acontecer, não certeza.
 
-## 2. Data Visualization (#dataviz)
-- Objetivo: ir do **incompreensível para o compreensível**; "contar a história" com objetividade e clareza.
-- **Processo de DataViz (7 etapas):** definir o objetivo → adquirir os dados → formatar os dados → filtrar → analisar → representar → refinar e interagir.
-- **Pergunte antes de desenhar:** *o que* quero mostrar? *como* quero mostrar? *para quem* (público-alvo)?
-- **Erros comuns (o que NÃO fazer):** excesso de dados no gráfico, visuais inadequados, dados repetidos/redundantes, objetivo não claro, sem título, sem cor/padrão, "nem todos os dados são importantes".
-- **Escolha do gráfico:** comparação **por data/período → gráfico de linha**; **categorias e quantidades → pizza/rosca** (com cuidado: vários autores desaconselham pizza com muitas fatias); colunas/barras para comparação; tabela quando precisa dos valores exatos; **o melhor gráfico não é o que você gosta e sim o que é interpretável**.
-- **Hierarquia visual:** fontes, títulos, subtítulos; padronizar tamanho, posição, cores e fontes; usar **grades (grid)**; respeitar a **identidade visual do cliente** (cores da marca; evitar cores de concorrente). Cores quentes (vermelho/laranja) chamam atenção/alerta, mas nem sempre vermelho = problema; azul = mais sério/fechado.
-- **Drill down** = detalhar o dado investigando níveis mais granulares. **UX (User Experience)** = facilidade para o usuário interpretar o que vê.
-- Dashboard × infográfico: dashboard é analítico/interativo; infográfico é mais ilustrativo. Ferramentas de design: Figma, Adobe Color, Flaticon (ícones), bancos de imagens.
+### ETL e fases do BI
+- **ETL = Extract – Transform – Load:** **extrair** das fontes (arquivos, bancos, data warehouses) → **transformar** (limpar, padronizar, tipar) → **carregar** no destino.
+- **Fases:** identificação → coleta → limpeza e transformação → modelagem → armazenamento → visualização → publicação.
+
+### Self-service analytics
+Permite que **usuários de negócio** (não de TI) criem análises e dashboards sozinhos, **sobre uma base técnica estruturada** (analogia do restaurante self-service: o cliente se serve, mas a cozinha está organizada).
+- **Pilares:** técnicos (DW, analytics, dataviz) e humanos (skills, recursos). **Sucesso depende de:** governança, cultura de dados, capacitação, estrutura robusta.
+- **Benefícios:** agilidade na decisão, **independência da TI**, redução de custos, mais produtividade.
+
+## 2. Visualização de dados (dataviz)
+- **Objetivo:** do incompreensível ao compreensível; contar a história com clareza.
+- **Processo (7 etapas):** definir o objetivo → adquirir → formatar → filtrar → analisar → representar → refinar e interagir.
+- **Antes de desenhar, pergunte:** *o que* mostrar? *como*? *para quem*?
+- **Escolha do gráfico:** **série no tempo → linha**; comparar categorias → barras/colunas; **partes de um todo → pizza/rosca (poucas fatias)**; valores exatos → tabela. O melhor gráfico é **o mais interpretável**, não o mais bonito.
+- **Erros comuns:** excesso de dados, visual inadequado, informação repetida, objetivo confuso, falta de título, ausência de padrão de cores.
+- **Hierarquia visual e identidade:** padronize fontes, tamanhos, posições e cores; use **grid**; respeite a identidade visual do cliente. Cor quente chama atenção.
+- **Drill down:** detalhar do nível agregado ao granular. **UX:** facilidade de interpretação para o usuário. Dashboard = analítico e interativo; infográfico = ilustrativo.
+
+**Exemplo.** "Vendas por mês nos últimos 24 meses" → gráfico de **linha** (tempo no eixo X). "Participação de cada região nas vendas do ano" → **rosca/pizza** com 4–5 regiões; com 15 regiões, prefira barras ordenadas.
 
 ## 3. Power BI (o que apareceu)
-- Lançado em **2015**; líder de mercado segundo o Gartner. Componentes: **Desktop** (desenvolver reports), **Service** (consumo/publicação), **Mobile**, **Embedded** (embarcar em apps de terceiros).
-- **Power Query** = editor de transformação de dados (renomear colunas, remover colunas, criar coluna condicional, mudar tipos). Cuidado com o tipo de dado: `AVERAGE` não funciona com texto (string).
-- **Medidas (DAX):** cálculos criados por funções DAX (SUM, AVERAGE, COUNT, CALCULATE…). Medida ≠ coluna. Usar **COUNT de uma coluna sempre preenchida** (ex. ID), não de uma com brancos.
-- **Modelagem de dados:** relacionar tabelas por **chave primária / chave estrangeira** (ex. ID_localidade, ID_depto). **Nunca remova um relacionamento sem saber** (corrompe visuais). Quando há várias tabelas e joins, filtros nem sempre funcionam como esperado → testar o resultado.
-- **Hierarquia de datas** (dia/mês/ano) ao definir coluna como data. **Atualização agendada** exige Power BI Service + **gateway** instalado.
-- Importar fonte: pasta/arquivo/banco (precisa nome do servidor e **permissão de acesso**; falar com TI/cibersegurança).
+- **Componentes:** Desktop (desenvolver), Service (publicar/consumir), Mobile, Embedded.
+- **Power Query:** editor de transformação (renomear, remover colunas, coluna condicional, mudar tipos). **Tipo de dado errado** quebra cálculos (média de texto não funciona).
+- **Medidas DAX:** cálculos como SUM, AVERAGE, COUNT, CALCULATE; **medida ≠ coluna**. Use COUNT em coluna sempre preenchida (ID).
+- **Modelo de dados:** tabelas relacionadas por **chave primária/estrangeira**; **não remova relacionamentos sem saber**.
+- **Atualização agendada:** exige Service + **gateway**. Acesso a bancos exige servidor e permissão (alinhar com TI/segurança).
 
-## 4. Gestão, governança e privacidade de dados (aula 3)
-- **Governança de dados** = definir **quem** gerencia a informação como **ativo da organização**, **como** (regras, procedimentos, políticas, papéis e responsabilidades sobre o ciclo de vida da informação), e **tecnologia** que suporta. Garante qualidade, consistência, completude, disponibilidade e segurança.
-- **Privacidade de dados:** sigilo e confidencialidade — não só dados de clientes, mas também estratégia do negócio, documentos do projeto, e-mails e etapas de negociação.
-- **NDA (Non-Disclosure Agreement)** = acordo de sigilo / contrato de confidencialidade assinado entre as partes.
-- Boas práticas: senhas seguras, não usar Wi-Fi público, antivírus atualizado, cautela com documentação do cliente.
-- **Shadow IT** = qualquer sistema, dispositivo ou serviço usado na organização **sem conhecimento ou aprovação do departamento de TI**.
-- **ANPD** (Autoridade Nacional de Proteção de Dados): conscientizar, fiscalizar; regulamentação **LGPD** (ver resumo 12). Riscos citados: ataques cibernéticos, privacidade, fraude, shadow IT.
-- **Cultura data-driven**: decisões guiadas por dados; usabilidade de ferramentas de analytics.
+## 4. Governança, privacidade e riscos
+- **Governança de dados:** define **quem** gerencia a informação como ativo, **como** (regras, políticas, papéis) e com que **tecnologia**; garante qualidade, consistência, disponibilidade e segurança.
+- **Privacidade:** vale para dados de clientes **e** para estratégia, documentos e negociações. **NDA** = acordo de confidencialidade assinado entre as partes.
+- **Shadow IT:** sistema, dispositivo ou serviço usado **sem conhecimento/aprovação da TI**.
+- **ANPD** fiscaliza a LGPD (resumo 12). **Cultura data-driven:** decisões guiadas por dados.
+- Boas práticas: senhas fortes, não usar Wi-Fi público, antivírus atualizado, cuidado com documentos do cliente.
+
+## Armadilhas e confusões comuns
+| Confusão | O correto |
+|---|---|
+| BI = Power BI | BI é o **conceito**; Power BI é uma **ferramenta** |
+| Quanto mais dados no gráfico, melhor | excesso de dados atrapalha; mostre o que responde ao objetivo |
+| Pizza serve para tudo | só para **poucas** partes de um todo |
+| Shadow IT = ataque hacker | é uso de TI **não autorizada/desconhecida** pela TI |
+| Self-service dispensa TI | exige **base estruturada e governança** da TI |
+| Medida = coluna calculada | medida é calculada na consulta (DAX); coluna é armazenada na tabela |
+
+## Resumo-relâmpago
+- BI: dados → informação para decidir. ETL: extrair, transformar, carregar.
+- Self-service: autonomia do negócio sobre base governada.
+- Linha para tempo; barras para comparar; pizza para poucas partes.
+- Governança = quem, como e com qual tecnologia; NDA = sigilo; Shadow IT = TI sem aprovação.
+
+## Teste-se
+1. Defina ETL e cite as fases do BI.
+<details markdown="1"><summary>Ver resposta</summary>ETL = Extract, Transform, Load. Fases: identificação, coleta, limpeza/transformação, modelagem, armazenamento, visualização, publicação.</details>
+
+2. Qual gráfico usar para uma série temporal?
+<details markdown="1"><summary>Ver resposta</summary>Gráfico de linha, com o tempo no eixo X.</details>
+
+3. O que é shadow IT e por que é um risco?
+<details markdown="1"><summary>Ver resposta</summary>Uso de sistemas/serviços sem conhecimento ou aprovação da TI; escapa de controles de segurança, governança e LGPD.</details>
+
+4. Para que serve uma chave estrangeira no modelo do Power BI?
+<details markdown="1"><summary>Ver resposta</summary>Para relacionar duas tabelas (liga a coluna de uma tabela à chave primária da outra), permitindo que filtros e medidas funcionem entre elas.</details>
 
 ## Pergunta típica
-- Defina ETL e as fases do BI. · O que é self-service analytics e quais seus benefícios? · Qual gráfico usar para série temporal? · O que é shadow IT? · O que é NDA? · Para que serve uma chave estrangeira no modelo de dados do Power BI? · Diferença entre BI (conceito) e Power BI (ferramenta).
+Defina ETL e as fases do BI · o que é self-service analytics e quais seus benefícios · qual gráfico usar para série temporal · o que é shadow IT · o que é NDA · para que serve uma chave estrangeira no Power BI · diferença entre BI (conceito) e Power BI (ferramenta)

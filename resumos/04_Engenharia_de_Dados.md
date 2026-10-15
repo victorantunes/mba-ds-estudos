@@ -1,54 +1,88 @@
 # 04 · Engenharia de Dados
-**Prof. Guilherme Lima · 3 aulas · Prioridade: MÉDIA (você, como dev, já domina boa parte; foque nos conceitos e vocabulário)**
+**Prof. Guilherme Lima · 3 aulas · Prioridade: MÉDIA (você, como dev, já domina boa parte; foque nos conceitos e no vocabulário)**
 
-> Dica do professor (aula 1): *"se cair na avaliação 'O que é engenharia de dados?', provavelmente eu vou errar se só decorar a definição"* → entenda o papel. E na aula 3: *"O que é uma view? Se cair na avaliação, não erre isso."*
+> **Em uma frase:** engenharia de dados constrói e mantém a "tubulação" que coleta, limpa, organiza e entrega dados confiáveis para analistas, BI e modelos de ML.
+
+**Pré-requisitos:** noção de SQL. **Vem depois:** 21 (Big Data/MLOps), 23 (wrangling).
+
+> **Destaque do professor:** *"O que é engenharia de dados?"* e *"O que é uma view?"* — entenda o papel, não decore a definição.
+
+## Por que isso importa (intuição)
+Cientistas de dados gastam cerca de **80% do tempo preparando dados** e só ~20% modelando. O engenheiro de dados **automatiza essa preparação** (coleta, limpeza, transformação) para inverter a proporção. Pense em uma fábrica: o engenheiro cuida da linha de produção; o cientista usa o produto final.
 
 ## 1. O que é engenharia de dados
-- **Definição:** área responsável pelo **desenvolvimento e manutenção de sistemas que coletam, organizam e processam dados**. Trata de **movimentação, manipulação e gerenciamento de dados**: construir a base para a ciência de dados.
-- Fluxo: **dados brutos → engenharia (coleta, armazenamento, transformação, entrega) → cientista de dados / BI / ML (análise e modelos)**.
-- **Problema que resolve:** cientistas de dados gastam ~**80% do tempo preparando dados** (limpeza, tratamento de nulos, criação de variáveis) e ~20% no modelo. O engenheiro de dados **automatiza coleta, limpeza e transformação** e inverte essa divisão.
-- **O engenheiro de dados normalmente NÃO:** cria modelos de ML, faz relatórios/dashboards, faz análises, cria KPIs nem desenvolve aplicativos de software.
-- É comum usar **cloud** em projetos maiores. SQL e Python são as linguagens do dia a dia.
-- Problemas típicos ao preparar dados: **valores ausentes, dados duplicados, formatos diferentes/despadronizados**.
+- **Definição:** desenvolvimento e manutenção de sistemas que **coletam, organizam e processam dados** — movimentação, manipulação e gerenciamento. Fluxo: **dados brutos → engenharia (coleta, armazenamento, transformação, entrega) → ciência de dados/BI/ML**.
+- **Normalmente NÃO faz:** modelos de ML, dashboards/relatórios, análises, KPIs ou aplicativos de software.
+- **Ferramentas do dia a dia:** SQL e Python; cloud em projetos maiores.
+- **Problemas típicos dos dados:** valores ausentes, duplicados e formatos despadronizados.
 
-### ETL
-**Extract – Transform – Load:** coletar de diferentes fontes (CSV, API, bancos) → transformar para atender às necessidades (limpar, padronizar, tratar nulos: remover linhas ou preencher com média/mediana/regra de negócio) → carregar no destino (banco/DW) já estruturado. A automação disso = **pipeline de dados**.
+### ETL e pipeline
+- **ETL (Extract–Transform–Load):** **extrair** de fontes (CSV, API, bancos) → **transformar** (limpar, padronizar, tratar nulos: remover linhas ou preencher com média/mediana/regra de negócio) → **carregar** no destino estruturado (banco/DW).
+- **Pipeline de dados** = a automação desse fluxo.
+
+**Exemplo.** Vendas chegam por API (JSON), por planilha (CSV) e do ERP (SQL). O pipeline: lê as três fontes → padroniza datas e moedas → remove duplicados → grava em uma tabela única no DW. Os analistas consultam só essa tabela.
 
 ### Big Data
-- **1998: John Mashey** usa o termo "Big Data" para o crescimento do armazenamento/produção de dados. Em **2001 aparecem os 3 Vs: Volume, Velocidade, Variedade.**
-- Previsão citada: ~175 zettabytes de dados em 2025.
-- Resposta histórica: dividir dados em **clusters** com hardware comum (commodity) → origem do Hadoop e afins.
-- **Maturidade dos dados:** começa simples — **não precisa de microsserviços/Redis/cluster para poucos dados**. Papel do engenheiro: não criar problemas que não existem.
+- Termo popularizado em **1998 (John Mashey)**; em **2001** surgem os **3 Vs: Volume, Velocidade e Variedade**. A resposta histórica foi dividir dados em **clusters** com hardware comum (origem do Hadoop).
+- **Maturidade:** poucos dados **não precisam** de microsserviços nem cluster — o engenheiro não deve criar problemas que não existem.
 
-## 2. Bancos relacionais e SQL (revisão rápida)
-- **Banco relacional:** dados em **tabelas** (linhas/colunas) que se **relacionam**. **Chave primária (PK)** identifica cada linha; **chave estrangeira (FK)** liga tabelas. *Priorize PK simples* (performance e relacionamentos).
-- Comandos: `CREATE DATABASE`, `USE`, `CREATE TABLE … (id INT PRIMARY KEY AUTO_INCREMENT, …)`, `INSERT INTO … VALUES`, `SELECT`, `UPDATE … SET … WHERE`, `DELETE … WHERE`. **Sempre `WHERE` em UPDATE/DELETE.** Strings entre aspas. Erro 1064 do MySQL = erro de sintaxe.
-- **String vazia ≠ NULL.** Dados nulos impedem cálculos estatísticos.
-- `JOIN` ligando tabelas (livros ↔ autores ↔ gêneros) e `GROUP BY` para agregar (ex.: total de livros por idioma).
-- **Vantagem de centralizar dados em um banco:** performance, consistência (um único ID por autor mesmo que o nome venha escrito de formas diferentes), não depender de Excel/CSV/API soltos.
-- Convenção: tabelas no plural quando representam coleção; o time de back-end orientado a objetos costuma usar singular.
+## 2. Bancos relacionais e SQL (revisão)
+- **Banco relacional:** dados em **tabelas** que se relacionam. **Chave primária (PK)** identifica cada linha; **chave estrangeira (FK)** liga tabelas.
+- **Comandos:** `CREATE TABLE`, `INSERT`, `SELECT`, `UPDATE … SET … WHERE`, `DELETE … WHERE` (**sempre `WHERE` em UPDATE/DELETE**), `JOIN`, `GROUP BY`.
+- **String vazia ≠ NULL.** Nulos impedem cálculos estatísticos.
+- **Por que centralizar em um banco?** performance e **consistência** (um único ID por autor, mesmo que o nome apareça escrito de formas diferentes), em vez de depender de planilhas e APIs soltas.
 
-## 3. Modelagem: MER (aula 2)
-- **Entidade** = elemento do mundo real relevante ao sistema (cliente, produto). **Atributo** = característica/propriedade da entidade (nome, preço).
-- **Entidade forte:** existe por si só, tem chave primária própria (clientes, produtos).
-- **Entidade fraca:** depende de outra para existir, **não tem chave primária completa sem a chave da entidade da qual depende** (ex.: **itens de pedido** dependem de **pedido**).
-- **Entidade associativa:** representa um relacionamento que tem atributos próprios (ex.: **vendas** liga clientes e produtos e guarda data e quantidade).
-- **Relacionamento** entre duas tabelas por PK/FK.
-- **Sistemas operacionais × analíticos:** *operacionais* = backend, regras de negócio, aplicação modifica os dados (muitas escritas); *analíticos* = atendem analistas de negócio e cientistas de dados (leitura/consulta). A base de dados analítica muda com **frequência menor** que a operacional. O desafio da engenharia é servir **pessoas diferentes com necessidades diferentes**.
+## 3. Modelagem: MER
+- **Entidade:** elemento do mundo real (cliente, produto). **Atributo:** propriedade da entidade (nome, preço).
+- **Entidade forte:** existe por si só, com chave primária própria.
+- **Entidade fraca:** depende de outra e **não tem chave primária completa sem a chave da entidade da qual depende** (ex.: **itens de pedido** dependem de **pedido**).
+- **Entidade associativa:** representa um **relacionamento com atributos próprios** (ex.: **vendas** liga clientes e produtos e guarda data e quantidade).
+- **Operacional × analítico:** operacional = aplicação/backend, muitas **escritas**; analítico = analistas e cientistas, muita **leitura**, atualiza com menos frequência.
 
-## 4. View × Stored Procedure (aula 3 — caiu na destaque do professor)
-| | **View** | **Stored procedure** |
+## 4. View × Stored Procedure
+- **View:** **consulta salva** que se comporta como tabela virtual; **não altera** dados; sem lógica de programação. Serve para reaproveitar consultas complexas e simplificar relatórios.
+- **Stored procedure:** **bloco de código SQL armazenado**, como uma função; **pode alterar dados**, ter lógica e parâmetros. Serve para automatizar tarefas repetitivas, com segurança e reutilização.
+
+| | View | Stored procedure |
 |---|---|---|
-| O que é | **tabela virtual**/consulta SQL salva, baseada em uma ou mais tabelas | **bloco de código SQL armazenado**, como uma função pré-programada |
-| Altera dados? | **Não**, só consulta (abstrai dados) | **Pode** alterar dados (insert/update/delete) |
-| Lógica/params | sem lógica de programação | pode ter lógica, aceitar parâmetros de entrada e saída |
-| Para quê | reutilizar **consultas complexas**, facilitar relatórios, simular uma **tabela personalizada**, otimizar consultas | automatizar tarefas repetitivas (relatórios, cálculos, inserções, atualizações); **segurança e controle, organização do banco, reutilização de código** |
-- Exemplo: `CREATE VIEW livros_por_idioma AS SELECT idioma, COUNT(*) … GROUP BY idioma;` depois `SELECT * FROM livros_por_idioma;`.
+| Altera dados? | Não | Pode |
+| Lógica/parâmetros | Não | Sim |
+| Uso típico | consulta reutilizável | rotina automatizada |
+
+**Exemplo.** `CREATE VIEW livros_por_idioma AS SELECT idioma, COUNT(*) … GROUP BY idioma;` → depois `SELECT * FROM livros_por_idioma;`.
 
 ## 5. Arquitetura: monólito × Data Mesh
-- **Centralizado (monólito):** uma equipe coleta e organiza todos os dados; toda a base em um banco só. **Vantajoso no início pela simplicidade**, mas esteja pronto para dividir no futuro.
-- **Data Mesh:** **cada time cuida dos dados do seu domínio** e os prepara para uso por outros times (domínios precisam conversar).
-- A separação rígida entre **arquitetura e engenharia** de dados está desaparecendo.
+- **Centralizado (monólito):** uma equipe cuida de toda a base; **simples e bom no começo**.
+- **Data Mesh:** **cada time cuida dos dados do seu domínio** e os disponibiliza aos outros.
+
+## Armadilhas e confusões comuns
+| Confusão | O correto |
+|---|---|
+| Engenheiro de dados cria modelos de ML | normalmente **não**; prepara a base para quem cria |
+| View altera dados | view só **consulta**; quem altera é a stored procedure |
+| String vazia = NULL | são coisas diferentes |
+| UPDATE/DELETE sem WHERE é inofensivo | atinge **todas** as linhas |
+| Entidade fraca = tabela menos importante | é a que **depende** de outra para existir |
+| Todo projeto precisa de cluster/microsserviços | poucos dados dispensam |
+
+## Resumo-relâmpago
+- Eng. de dados = coletar, organizar, processar e entregar dados; ETL = extrair, transformar, carregar.
+- View = tabela virtual (só leitura); procedure = código armazenado (pode alterar).
+- Entidade fraca depende de outra (itens de pedido); associativa = relacionamento com atributos (vendas).
+- 3 Vs: Volume, Velocidade, Variedade. Operacional escreve; analítico lê.
+
+## Teste-se
+1. Defina engenharia de dados e diga o que o engenheiro normalmente não faz.
+<details markdown="1"><summary>Ver resposta</summary>Desenvolve/mantém sistemas que coletam, organizam e processam dados. Normalmente não cria modelos de ML, dashboards, análises, KPIs nem aplicativos.</details>
+
+2. Qual a diferença entre view e stored procedure?
+<details markdown="1"><summary>Ver resposta</summary>View é tabela virtual/consulta salva, só leitura e sem lógica. Procedure é bloco de código armazenado que pode alterar dados, ter lógica e parâmetros.</details>
+
+3. Dê um exemplo de entidade fraca.
+<details markdown="1"><summary>Ver resposta</summary>Itens de pedido: dependem do pedido e sua chave inclui a chave do pedido.</details>
+
+4. Cite três problemas comuns ao preparar dados.
+<details markdown="1"><summary>Ver resposta</summary>Valores ausentes, dados duplicados e formatos despadronizados.</details>
 
 ## Pergunta típica
-- Defina engenharia de dados e diga o que o engenheiro **não** faz. · O que é ETL? · Diferencie view e stored procedure. · O que é entidade fraca? Dê exemplo. · Diferencie sistema operacional e analítico. · Cite 3 problemas ao preparar dados. · Quais os 3 Vs?
+Defina engenharia de dados e diga o que o engenheiro não faz · o que é ETL · diferencie view e stored procedure · o que é entidade fraca e dê exemplo · diferencie sistema operacional e analítico · cite 3 problemas ao preparar dados · quais os 3 Vs
