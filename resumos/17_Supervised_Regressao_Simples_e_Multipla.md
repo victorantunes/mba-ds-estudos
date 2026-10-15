@@ -1,54 +1,94 @@
 # 17 · Supervised ML — Análise de Regressão Simples e Múltipla (OLS)
-**Prof. Dr. Luiz Paulo Fávero · 4 aulas · Prioridade: MÁXIMA — é o tema com **mais dicas explícitas de avaliação** do curso**
+**Prof. Dr. Luiz Paulo Fávero · 4 aulas · Prioridade: MÁXIMA — é o tema com mais destaques de avaliação do curso**
 
-> O professor falou "pergunta de avaliação" várias vezes: (1) **nomes do R²**, (2) **interpretar uma saída/tabela**, (3) **calcular R² de uma regressão simples a partir da correlação**, (4) **prever Y com dummies (somar betas)**, (5) **diferença entre F, t e R²**, (6) **por que não usar pesos arbitrários em categorias**. Treine essas.
+> **Em uma frase:** a regressão encontra a **reta (ou plano) que melhor descreve como Y varia com X**, escolhendo os coeficientes que minimizam a soma dos quadrados dos erros — e depois testa se o modelo e cada variável realmente contam.
+
+**Pré-requisitos:** correlação, testes t e F, distribuições (01). **Vem depois:** 18–20 (outros tipos de Y) e 22 (séries).
+
+> **O que o professor destacou como pergunta de avaliação:** (1) **nomes do R²**; (2) **interpretar uma saída/tabela**; (3) **calcular o R² da regressão simples a partir da correlação**; (4) **prever Y com dummies (somando betas)**; (5) **diferença entre F, t e R²**; (6) **por que não usar pesos arbitrários em categorias**.
+
+## Por que isso importa (intuição)
+Você quer prever o tempo de entrega a partir da distância. Se desenhar os pontos (distância × tempo), a reta que passa "no meio da nuvem" resume a relação. O **OLS** escolhe a reta que **minimiza os erros ao quadrado** (distância vertical de cada ponto à reta). Depois vêm as perguntas de qualidade: *a reta explica quanto?* (R²), *existe modelo?* (F), *cada variável pesa?* (t), *os pressupostos valem?* (diagnósticos).
 
 ## 1. Contexto
-- Dentro de *Data Science → Machine Learning → **Supervised ML** → **modelos GLM** (Generalized Linear Models)*. GLMM = modelos multinível/painel (aulas 9–10). **A escala de medida da variável dependente (Y) determina o modelo**: Y quantitativa contínua → regressão (OLS); Y binária/politômica → logística; Y de contagem → Poisson/binomial negativo; dados aninhados → multinível.
-- **Modelos supervisionados:** estabelecem **Y = f(X1, X2, …, Xk)**; são **confirmatórios/inferenciais**, estimados para **previsão** (fitted values) com **inferência para fora da amostra** (dentro do range de X usado no treino — ex.: distância entre 5 e 32). "Todos os modelos estão errados, mas alguns são úteis" (Box): o objetivo é o modelo com **maior aderência entre valores reais e previstos** (mais próximo da reta de 45°).
-- **Correlação não implica causalidade** (exemplo: chocolate × prêmios Nobel).
-- Para diagnosticar um modelo precisa-se de **indicadores de eficiência preditiva**, não só dos betas e do R².
+- Dentro de *Machine Learning → Supervised → modelos GLM*. **A escala de Y define o modelo:** contínua → **OLS**; binária/multinomial → logística (18); contagem → Poisson/BN (19); dados aninhados → multinível (20).
+- Supervisionado: **Y = f(X₁, …, Xₖ)**, confirmatório, com **previsão e inferência fora da amostra** (dentro da faixa de X do treino). *"Todos os modelos estão errados, mas alguns são úteis"* (Box).
+- **Correlação não implica causalidade.**
 
 ## 2. Regressão linear simples
-- **Yi = α + β·Xi + ui** (α = intercepto; β = inclinação; u = **termo de erro/resíduo = Y real − Y previsto (Ŷ, "fitted value")**).
-- **Estimação por OLS/MQO (mínimos quadrados ordinários):** os parâmetros garantem **Σui = 0** e **Σui² = mínimo possível**. Em Python: `smf.ols('y ~ x', data=df).fit()` (statsmodels, `OLS from formula`). Resíduos: `modelo.resid`; fitted: `modelo.fittedvalues`.
-- **R² (coeficiente de ajuste)** — **também chamado coeficiente de explicação ou coeficiente de determinação** (PERGUNTA DE AVALIAÇÃO): **percentual da variância de Y que é explicado pelo comportamento conjunto da(s) variável(is) explicativa(s)**; varia de 0 a 1; **R² = Σ(Ŷ − Ȳ)² / [Σ(Ŷ − Ȳ)² + Σu²]** (soma dos quadrados do modelo / soma total). **Na regressão simples, R² = (correlação de Pearson entre X e Y)²** (ex.: correlação 0,4428 → R² = 0,196; "se eu rodar retorno contra disclosure, quanto dá o R²? o valor da correlação ao quadrado"). Com erros maiores a nuvem de pontos é mais dispersa e o R² cai.
-- **Só α, β e R² não dizem nada sobre eficiência preditiva.**
+- **Yᵢ = α + β·Xᵢ + uᵢ:** α = intercepto; β = inclinação; **u = resíduo = Y real − Ŷ** (valor previsto/"fitted").
+- **OLS/MQO:** escolhe α e β com **Σu = 0** e **Σu² mínima**. Python: `smf.ols('y ~ x', data=df).fit()`.
+- **R² (coeficiente de ajuste = de explicação = de determinação):** **percentual da variância de Y explicado pelas variáveis explicativas**; vai de 0 a 1. **Na regressão simples, R² = r²** (correlação de Pearson ao quadrado).
 
-## 3. Significância estatística — F, t e R² não são a mesma coisa
-- **Teste F (significância conjunta do modelo):** **H0: β1 = β2 = … = βk = 0**; **H1: pelo menos um β ≠ 0**. **p-valor do F < 5%** → rejeita H0 → **existe modelo**: pelo menos uma variável X explica Y. **A definição de haver ou não modelo preditivo não é o R², é o F.** Pode haver modelo (F significativo) com R² muito baixo (baixa capacidade preditiva, variáveis omitidas "fazendo as vezes" no termo de erro) — mas isso não autoriza dizer que não há modelo. Gl do F: k (modelo) e n − k − 1 (resíduos). Tabela de **ANOVA** existe na estimação por OLS.
-- **Teste t (significância individual de cada parâmetro):** H0: βj = 0; **t = estimativa/erro padrão**; |t| < 1,96 ⇒ p > 0,05 ⇒ não significante (95% de confiança). Em regressão simples, t e F levam à mesma conclusão. Origem da distribuição t: Gosset ("Student", Guinness) para pequenas amostras.
-- **Intervalo de confiança** do parâmetro: se contém o zero, o parâmetro não é significante.
-- **O alfa (intercepto) NÃO deve ser excluído** mesmo que não significante (frequentemente é problema de tamanho de amostra; triplicando a amostra com os mesmos dados ele passa a ser significante). **Forçar α = 0 gera viés nos betas** para compensar (Σu = 0). O t do alfa "não serve para nada".
-- Tabelas de papers: asteriscos indicam significância a 90/95/99%; erros padrão entre parênteses.
+**Exemplo resolvido.** X = 1, 2, 3, 4, 5; Y = 2, 4, 5, 4, 5. Médias: X̄ = 3; Ȳ = 4.
+Σ(x−X̄)(y−Ȳ) = 4 + 0 + 0 + 0 + 2 = **6**; Σ(x−X̄)² = **10**; Σ(y−Ȳ)² = **6**.
+**β = 6 ÷ 10 = 0,6**; **α = 4 − 0,6 × 3 = 2,2** → Ŷ = 2,2 + 0,6X. **R² = 6² ÷ (10 × 6) = 0,60** (r = √0,6 ≈ 0,77). Previsão para X = 6: 2,2 + 3,6 = **5,8** (fora da faixa 1–5: extrapolação, cuidado).
+**Interpretação:** cada unidade a mais de X aumenta Y em média 0,6; X explica 60% da variância de Y.
+
+## 3. F, t e R² não são a mesma coisa
+- **Teste F (modelo como um todo):** **H0: β₁ = … = βₖ = 0; H1: ao menos um β ≠ 0.** **p < 5% → existe modelo.** **Quem diz se há modelo é o F, não o R².** Pode haver modelo com R² baixo (baixo poder preditivo); gl: k e n−k−1.
+- **Teste t (cada parâmetro):** H0: βⱼ = 0; **t = estimativa ÷ erro padrão**; |t| < 1,96 → não significante a 95%. Na simples, t e F concluem o mesmo.
+- **Intervalo de confiança:** se contém zero, o parâmetro não é significante.
+- **Nunca exclua o intercepto α** só por não ser significante: forçar α = 0 **vicia os betas**.
 
 ## 4. Regressão múltipla
-- **Yi = α + β1X1i + β2X2i + … + βkXki + ui** (única diferença: mais variáveis explicativas). Forma matricial: **Y = X·b + u; b = (X′X)⁻¹X′Y**.
-- **R² ajustado** = 1 − (1 − R²)·(n − 1)/(n − k − 1) → **para comparar modelos com quantidades diferentes de parâmetros e/ou amostras de tamanhos diferentes**.
-- Interpretação do beta (múltipla): efeito de X sobre Y mantendo as demais constantes (ceteris paribus).
+- **Y = α + β₁X₁ + … + βₖXₖ + u**; forma matricial b = (X′X)⁻¹X′Y. O beta é o efeito de Xⱼ com **as demais constantes (ceteris paribus)**.
+- **R² ajustado = 1 − (1 − R²)(n − 1)/(n − k − 1):** **compara modelos com números diferentes de variáveis** (penaliza variáveis inúteis).
 
-## 5. Variáveis explicativas qualitativas → dummies (CAI SEMPRE)
-- **Erro clássico: "ponderação arbitrária"** (codificar categorias como 1, 2, 3…) → pressupõe que a mudança em Y entre categorias é **linear**, o que quase nunca é verdade.
-- Solução: **dummização / one-hot encoding**: variável binária (0/1) por categoria; **para n categorias usa-se n − 1 dummies** (a categoria omitida é a **referência/baseline**; evita **multicolinearidade perfeita**). O beta de cada dummy = diferença média de Y em relação à categoria de referência. Dummizar cria "modelos não lineares" que capturam idiossincrasias contextuais.
-- **Previsão com dummies (pergunta de avaliação):** soma-se α + betas das dummies que valem 1 (ex.: Y médio da América do Sul = α da categoria de referência, se ela é a omitida; Europa = α + β_Europa…). Leia o output e só some o que a observação ativa.
+**Exemplo.** R² = 0,60, n = 5, k = 1 → R² ajustado = 1 − 0,4 × (4 ÷ 3) ≈ **0,47**.
+
+## 5. Variáveis qualitativas → dummies (cai sempre)
+- **Erro clássico: ponderação arbitrária** (Europa = 1, Ásia = 2, …): supõe efeito **linear** entre categorias, o que quase nunca é verdade.
+- **Solução:** **n − 1 dummies** (0/1) para n categorias; a omitida é a **referência/baseline** (evita multicolinearidade perfeita). O beta da dummy = diferença média de Y **em relação à referência**.
+- **Previsão com dummies:** some **α + betas das dummies que valem 1**.
+
+**Exemplo resolvido.** Índice = 40 + 12·Europa − 6·África (referência: Ásia). Ásia = **40**; Europa = 40 + 12 = **52**; África = 40 − 6 = **34**.
 
 ## 6. Pressupostos e diagnósticos
-**a) Normalidade dos termos de erro (principal pressuposto do OLS para inferência/IC):**
-- Se os erros **não aderem à normalidade** → **forma funcional inadequada** (a especificação linear não se ajusta aos dados) e os intervalos de confiança não são fidedignos.
-- **Teste de normalidade: Shapiro-Francia (sf)**; **H0: os resíduos seguem distribuição normal**; queremos **p > 0,05 (não rejeitar H0)**. (Em Python: `shapiro_francia` / `sfrancia` + gráficos histograma/QQ.) *Atenção: aqui o desejo é NÃO rejeitar H0 — oposto do teste F/t.*
-- **Normalização × padronização:** **padronização (Z-score)** muda média/desvio mas **não** a forma da distribuição; **normalização (Box-Cox)** transforma Y para aproximar da normal.
+**a) Normalidade dos resíduos (para inferência/IC).** Teste **Shapiro-Francia**; **H0: normais; queremos p > 0,05 (não rejeitar)** — o oposto dos testes F/t. Se não normal, a forma funcional é inadequada.
+**b) Box-Cox:** Y* = (Yλ − 1) ÷ λ; escolhe-se o **λ** que mais aproxima a normalidade. **λ = 1** linear; 2 quadrática; 0,5 raiz; −1 inversa; **λ = 0 → ln(Y)**. Os betas do modelo transformado **não são comparáveis** aos do linear.
+**c) Stepwise:** remove variáveis **não significantes** passo a passo (p ex. 0,05) e ajuda na multicolinearidade; **não conserta** heterocedasticidade nem forma funcional.
+**d) Multicolinearidade:** alta correlação entre explicativas → **sinais invertidos, t baixo com F significante e R² alto**. **Tolerance = 1 − R²ₐᵤₓ; VIF = 1 ÷ Tolerance** (VIF > 10 = alerta). Solução: stepwise, remover variável ou **PCA**.
+**e) Heterocedasticidade:** variância dos erros **não constante** (gráfico em cone). Causas: **variável relevante omitida** e forma funcional errada. **Breusch-Pagan: H0 = homocedasticidade; p < 0,05 → heterocedasticidade.**
 
-**b) Transformação de Box-Cox (modelos não lineares):** Y* = (Y^λ − 1)/λ; escolhe-se o **λ (de −∞ a +∞) que maximiza a aderência da nova variável à normalidade** (e o R²). **Casos de λ:** 1 = linear; 2 = quadrática; 3 = cúbica; 0,5 = raiz; −1 = inversa; **0 = ln(Y) (semilogarítmica)**. Estimar o modelo com Y* e depois testar a normalidade dos novos resíduos. **Parâmetros do modelo com Y transformado NÃO são diretamente comparáveis** com os do linear (a métrica de Y mudou). Variáveis podem aparecer/sumir ao transformar.
+**Exemplo (VIF).** Regressão auxiliar de X₂ nas outras dá R² = 0,90 → Tolerance = 0,10 → **VIF = 10**: colinearidade problemática.
 
-**c) Procedimento Stepwise:** retira, passo a passo, **variáveis cujos betas não são estatisticamente significantes** (limite p, ex. 0,05 → 95% de confiança) **e também resolve problemas de multicolinearidade** (uma variável pode cair por estar correlacionada com outra, mesmo sozinha sendo boa preditora). Em Python: `stepwise(modelo, pvalue_limit=0.05)`. O stepwise **não** conserta heterocedasticidade nem forma funcional.
+## 7. Roteiro de estimação (script da aula)
+1) explorar correlações/gráficos → 2) estimar OLS (com dummies) → 3) **stepwise** (95%) → 4) **Shapiro-Francia** dos resíduos → 5) se não normal, **Box-Cox** em Y e repetir → 6) **VIF** e **Breusch-Pagan** → 7) prever com `.predict()` **dentro da faixa de X**.
 
-**d) Multicolinearidade:** alta correlação entre **duas ou mais variáveis explicativas**. **Consequências:** distorção de **sinais e significâncias** (risco de inversão de sinal), **estatísticas t baixas com F significante e R² alto**, **erros na predição**. **Causas:** variáveis com mesma tendência, **amostras pequenas**, **valores defasados** como novas explicativas. Matematicamente, det(X′X) → 0 e **(X′X)⁻¹ com valores muito altos na diagonal → ↓ estatística t sem alterar o F**. **Detecção:** sinais inesperados, t não significante e F significante, **VIF e Tolerance**: regressão auxiliar de cada X nas demais; **Tolerance = 1 − R²p; VIF = 1 / Tolerance**. VIF alto (> 10 como regra) / Tolerance baixa → problema. Solução: stepwise/remover variável, reduzir com **PCA (fatores ortogonais)**.
+## Armadilhas e confusões comuns
+| Confusão | O correto |
+|---|---|
+| R² baixo = não há modelo | quem decide é o **F** |
+| Shapiro-Francia: queremos p < 0,05 | queremos **p > 0,05** (normalidade) |
+| Breusch-Pagan: p > 0,05 indica problema | p **< 0,05** = heterocedasticidade |
+| Para n categorias, n dummies | **n − 1** (uma é referência) |
+| Codificar 1, 2, 3 para categorias | é **ponderação arbitrária**; use dummies |
+| Excluir o intercepto se não significante | **não exclua** (vicia os betas) |
+| Betas Box-Cox comparáveis ao linear | a métrica de Y mudou: **não comparáveis** |
+| Stepwise resolve heterocedasticidade | só variáveis não significantes/multicolinearidade |
+| R² simples ≠ correlação | R² simples = **r²** |
 
-**e) Heterocedasticidade:** **variância não constante dos termos de erro** (gráfico em "cone": resíduos crescem com Ŷ; correlação resíduos × Ŷ). **Causas:** **omissão de variável X relevante** e/ou forma funcional errada. **Teste de Breusch-Pagan:** H0 = homocedasticidade (variância constante); **p < 0,05 → heterocedasticidade**. Mitigação: **incluir variáveis preditoras significantes** (conhecer o fenômeno) ou **modelos multinível**.
+## Resumo-relâmpago
+- OLS: Σu = 0, Σu² mínimo. R² = variância de Y explicada; simples: R² = r².
+- F: existe modelo? t: variável significante? R² ajustado compara modelos.
+- Dummies: n − 1, beta = diferença à referência. Shapiro-Francia p > 0,05; BP p < 0,05 = heterocedástico; VIF > 10.
 
-## 7. Roteiro de estimação OLS (script da aula)
-1) correlações/gráficos exploratórios → 2) estimar OLS com variáveis (dummies) → 3) **Stepwise** (95%) → 4) **Shapiro-Francia dos resíduos** → 5) se não normal, **Box-Cox** em Y e repetir stepwise e teste → 6) checar **VIF** e **Breusch-Pagan** → 7) **previsão** (`.predict()`) apenas dentro do range de X do treino.
-Exemplos: tempo × distância/semáforos (modelo simples/múltiplo); **CPI (índice de corrupção) por região (dummies)** — ponderação arbitrária 1–5 × dummies; **retorno de ações × disclosure × endividamento** (endividamento cai no stepwise; disclosure só no modelo com Box-Cox); comprimento de bebês × idade (não linear); notas SAEB (heterocedasticidade); econometria × RH1 × RH2 (multicolinearidade).
+## Teste-se
+1. Correlação entre X e Y é 0,5. Qual o R² da regressão simples?
+<details markdown="1"><summary>Ver resposta</summary>R² = 0,5² = 0,25 (25%).</details>
+
+2. O F é significativo e o R² é 0,08. Existe modelo?
+<details markdown="1"><summary>Ver resposta</summary>Sim, existe modelo (ao menos uma variável explica Y), mas com baixa capacidade preditiva.</details>
+
+3. Uma variável qualitativa tem 5 categorias. Quantas dummies?
+<details markdown="1"><summary>Ver resposta</summary>4; a quinta é a referência.</details>
+
+4. O que se espera do Shapiro-Francia dos resíduos?
+<details markdown="1"><summary>Ver resposta</summary>Não rejeitar H0 (p > 0,05): resíduos normais.</details>
+
+5. Cite duas consequências da multicolinearidade.
+<details markdown="1"><summary>Ver resposta</summary>Sinais invertidos/instáveis nos betas e t baixo com F significante e R² alto (erros de predição).</details>
 
 ## Pergunta típica
-Nomes do R² e o que mede · diferença entre F, t e R² (há modelo ≠ R² alto) · hipóteses do F e do t · por que usar R² ajustado · n−1 dummies e por que não usar pesos 1,2,3 · calcular valor previsto com dummies · R² na simples = r² · o que testa o Shapiro-Francia e qual resultado se espera · o que é Box-Cox (λ=0 → ln) · stepwise · multicolinearidade (VIF/Tolerance, consequências) · heterocedasticidade (causas, Breusch-Pagan) · por que não excluir o intercepto.
+Nomes do R² e o que mede · diferença entre F, t e R² (há modelo ≠ R² alto) · hipóteses do F e do t · por que usar o R² ajustado · n−1 dummies e por que não usar pesos 1, 2, 3 · calcular valor previsto com dummies · R² na simples = r² · o que testa o Shapiro-Francia e qual resultado se espera · Box-Cox (λ = 0 → ln) · stepwise · multicolinearidade (VIF/Tolerance) · heterocedasticidade (causas, Breusch-Pagan) · por que não excluir o intercepto
