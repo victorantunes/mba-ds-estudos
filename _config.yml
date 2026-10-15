@@ -1,0 +1,10 @@
+title: Estudos MBA Data Science e Analytics
+description: Resumos e plano de estudos para a prova final de 17/11/2026
+theme: jekyll-theme-cayman
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+exclude:
+  - MATERIAIS.md

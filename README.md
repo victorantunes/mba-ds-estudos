@@ -6,7 +6,7 @@ Comece por **[plano_de_estudos.md](plano_de_estudos.md)** (calendário de 33 dia
 |---|---|
 | [plano_de_estudos.md](plano_de_estudos.md) | Plano dia a dia, método de estudo, prioridades e o que cortar se faltar tempo |
 | [resumos/](resumos) | **30 resumos** (um por disciplina): conceitos, fórmulas, tabelas comparativas e a seção **"Pergunta típica"** de cada |
-| [MATERIAIS.md](MATERIAIS.md) | Índice de **todos os materiais** baixados (slides, material complementar, planilhas, scripts, zips) por disciplina, **sem vídeos** |
+| MATERIAIS.md (só no repositório) | Índice de **todos os materiais** baixados (slides, material complementar, planilhas, scripts, zips) por disciplina, **sem vídeos** |
 | `_disciplinas/` | Texto bruto extraído (slides, código, transcrições condensadas) — fonte dos resumos |
 | `_fontes_zips/` | Zips dos "Arquivos e Scripts" já extraídos |
 | `../aulas/` | Arquivos originais por aula (vídeo, legenda, slides, materiais) |
