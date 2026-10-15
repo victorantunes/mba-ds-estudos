@@ -1,63 +1,129 @@
 # 30 · Gestão da Mudança na Era Digital
-**Profa. Fátima Cador Jinnyat · 1 aula · Prioridade: MÉDIA (teórica/conceitual; cai como dissertativa ou múltipla escolha de conceitos — memorize os modelos e as listas)**
+**Profa. Fátima Cador Jinnyat · 1 aula · Prioridade: média (teórica; costuma aparecer como dissertativa ou múltipla escolha de conceitos: memorize os modelos e as listas)**
+
+## O fio condutor deste capítulo
+
+A empresa decide, numa segunda-feira, adotar uma plataforma de inteligência artificial. Em uma semana, a tecnologia está instalada. Mas o cientista de dados que construiu sua identidade profissional em "eu sei analisar dados" está se perguntando: *e agora que a máquina faz parte disso melhor que eu, o que me torna valioso?* O ponto central do capítulo é este descompasso: **a tecnologia muda o trabalho; a transição muda o trabalhador.** Gerir a mudança não é apenas treinar pessoas em uma ferramenta nova; é cuidar da **dimensão humana** (emoções, identidade, poder, cultura).
+
+O percurso é: (1) o *contexto* de uma IA que cresce rápido e de um mundo ambivalente; (2) a diferença entre **mudança** e **transição** (Bridges); (3) as **dimensões** da organização que se alteram; (4) o **método** de Kotter e as **10 chaves**; e (5) o papel de **poder, emoção, aprendizagem e comunicação** na mudança.
+
+```mermaid
+flowchart LR
+  A["IA e mundo ambivalente"] --> B["Mudança x transição"]
+  B --> C["5 dimensões da organização"]
+  C --> D["Kotter: 8 passos"]
+  D --> E["10 chaves da mudança"]
+  E --> F["Poder, emoção, aprendizagem, comunicação"]
+```
 
 ## 1. Contexto: IA e um mundo ambivalente
-- A transformação digital **não é apenas tecnológica, mas também cognitiva, cultural e humana**. A internet mudou a noção de tempo/espaço; crescimento **exponencial** (Kurzweil, Diamandis).
-- **Visões de futuro sobre a IA (quatro pioneiros):** **Andrew Ng** — a IA tende a **transformar tarefas**, não eliminar o profissional ("pode eliminar determinadas tarefas que o profissional realiza") · **Geoffrey Hinton** — preocupação com sistemas difíceis de controlar e com o impacto no trabalho · **Fei-Fei Li** — **IA centrada no ser humano** (tecnologia inserida no mundo humano; inteligência espacial) · **Sam Altman** — avançar rápido aprendendo no caminho (paradoxo: aceleração exige cuidado e controle).
-- **Mundo ambivalente:** partes extremamente avançadas e partes ancoradas no século XX, na mesma realidade (contraponto: milhões de refugiados/deslocados). Ortega y Gasset: há quem cultue a tecnologia de modo ignorante (deveria ter medo) e quem lute contra ela de modo ignorante (não deveria ter medo). **O desafio é lidar com a ambivalência:** nem otimismo nem medo tecnológico; **humanizar a transformação** = não impedi-la, mas impedir que seus criadores determinem sozinhos o que é desejável; **preservar a autonomia humana**.
-- **Paradoxo McKinsey (2026):** **88%** das empresas usam IA em pelo menos uma área, mas só **37%** relatam impacto real no lucro (EBIT) → produtividade individual ainda não virou retorno financeiro em escala.
-- **A visão tradicional de gestão da mudança é insuficiente** diante da velocidade do contexto → abrir diálogo para: (1) construção de sentido; (2) avaliar o que ficou para o futuro / o que não serve mais; (3) cuidar do impacto humano (emocional); (4) valorizar experimentação e inovação; (5) ampliar a discussão de como integrar a IA aos processos existentes.
 
-## 2. Mudança × Transição (William Bridges) — CAI
-**"Mudança é um evento. Transição é um processo psicológico."**
-| Mudança | Transição |
+A internet mudou a noção de tempo e espaço, e o crescimento é **exponencial**. Quatro vozes dão leituras diferentes da IA:
+
+| Autor | Visão |
 |---|---|
-| Acontece **fora** das pessoas | Acontece **dentro** das pessoas |
-| Pode ser planejada | Precisa ser vivenciada |
-| É visível | Muitas vezes invisível |
-| Envolve estrutura, tecnologia, processos | Envolve **identidade, emoções** |
-| Pode acontecer rapidamente | Tem ritmo próprio |
-| É imposta ou decidida | Precisa ser assimilada |
-- **Adoção não é consequência automática da superioridade técnica** — a pessoa pode reconhecer que a tecnologia é melhor e ainda assim resistir (a empresa troca de plataforma em uma semana, mas não muda a identidade profissional nesse tempo). **"As pessoas não resistem à mudança, mas à perda que percebem por trás dela."**
-- **Três fases da transição:** **1) Ending (fim, perda, desapego)** — deixar algo para trás (rotina, status, crença sobre expertise, identidade); **2) Neutral Zone (zona neutra)** — o antigo já não funciona e o novo ainda não se consolidou: **incerteza + experimentação + aprendizagem + ambiguidade** — a mais desconfortável e **potencialmente a mais criativa**; não há procedimento "by the book"; **3) New Beginning** — surge o novo sentido ("é assim que eu trabalho agora"; o profissional passa a incorporar a IA à identidade).
-- **Preparar para a mudança** = ensinar novas ferramentas/processos/competências/sistemas; **preparar para a transição** = ajudar a compreender o que está deixando para trás, o que ainda não vê, o que precisa reconstruir e que nova identidade emerge. **"A tecnologia muda o trabalho; a transição muda o trabalhador."** O maior risco da IA talvez não seja substituir pessoas, mas **tornar obsoleta uma identidade profissional** que elas ainda não aprenderam a reconstruir (ex.: o cientista de dados cuja identidade era "eu sei analisar dados").
+| **Andrew Ng** | a IA tende a **transformar tarefas**, não a eliminar o profissional |
+| **Geoffrey Hinton** | preocupação com sistemas difíceis de controlar e com o impacto no trabalho |
+| **Fei-Fei Li** | IA **centrada no ser humano** |
+| **Sam Altman** | avançar rápido aprendendo no caminho (o paradoxo: aceleração exige cuidado) |
 
-## 3. As 5 dimensões da gestão da mudança
-**Estratégia · Estrutura · Sistemas · Cultura · Estilo de gestão** (e **pessoas** como aspecto transversal).
-- **Estratégia:** inicia/provoca a mudança (fusões, novas tecnologias, redução de custos); resulta do confronto entre forças do mercado (riscos/oportunidades) e da empresa (forças/fraquezas); depende da **capacidade de mudar**; criada de cima para baixo (estrategistas) ou de baixo para cima (melhoria contínua).
-- **Estrutura:** define a segmentação, os papéis, níveis de autoridade; a IA **redefine funções e elimina tarefas**; eficiência depende da relação entre as partes.
-- **Pessoas** (relacionamentos intergrupos, disposição para conhecer): **mais importantes que a estrutura** nos processos de reestruturação.
-- **Sistemas:** controlam o fluxo de informações, matéria-prima, dinheiro, pessoas; apoiam a **tomada de decisão** e a capacidade de reação; **big data amplia as variáveis** da decisão (pode ser bom ou ruim); **considerar os aspectos formais e sobretudo os informais** dos sistemas de comunicação; automação.
-- **Cultura:** **conjunto de valores compartilhados e praticados** (comportamentos, hábitos, rituais); **parte mais sensível, estável e difícil de mudar**; muda mais no dia a dia e nas decisões da liderança do que em treinamentos; **IA exige mudança de mindset: cultura migra de controle para experimentação**.
-- **Estilo de gestão:** líderes são **alavanca** da mudança (referência e inspiração); precisam adaptar o estilo às metas.
-- **Perguntas norteadoras:** o que pretendo com a mudança? qual problema resolve? qual o impacto? estou preparado? foco em resultado/eficiência ou cultura de inovação?
-- **Case — implementar IA na organização (3 desafios):** (1) **conhecer a caixa de ferramentas**; (2) **não partir de um recurso em busca de um problema** (entender o contexto e mapear como a IA ajuda); (3) **a IA resolve problemas de forma diferente** (não imaginar soluções iguais às do passado; antes, arrumar o que precisa ser arrumado). Fonte: Rodrigo Helcer.
-- **A mudança em Data Science — 5 dimensões que se alteram:** decisão baseada em **experiência → dados + experiência**; **conhecimento concentrado → distribuído**; **hierarquia → dados como fonte de autoridade**; **trabalho previsível → dinâmico/criativo**; **especialista "dono" do conhecimento → especialista + algoritmo**. Pergunta: *quem decide quando o algoritmo discorda do especialista?* **Dados não eliminam o julgamento; eles mudam o lugar onde o julgamento acontece.**
-- **Perigo da mecanização do pensamento:** "só é relevante o que pode ser medido" — **medir → modelar → automatizar**; passamos a tomar decisões com base nos padrões e tentamos fazer a realidade caber na métrica. **Pensamento mecanicista** vê a organização como **máquina**; **adaptativo/complexo**, como **sistema vivo**.
-- **High Concept × High Touch (Daniel Pink):** **high concept** = reconhecer padrões e oportunidades, criar beleza, gerar narrativa, combinar ideias aparentemente desconexas; **high touch** = empatia, entender as sutilezas da interação humana, ajudar os outros. **Techies × Fuzzies (Scott Hartley):** "precisamos de mais techies tradicionalmente fuzzy e de mais fuzzy erguendo empresas de tecnologia" (ciência/tecnologia/engenharia/matemática × artes/humanidades).
-- **Complexidade:** o que determina a complexidade de um sistema **não é o número de componentes, mas o grau de interconectividade e interdependência**; sistemas vivos são **autoorganizáveis**; pensamento complexo = reúne modelo mental **linear e não linear**. Combater a incerteza com: aceitar a **desordem como parte da mudança**, **ambientes psicologicamente seguros**, **cultura de experimentação**, soluções de diversas áreas (em vez de só estabilidade, controles e especialistas).
+Ortega y Gasset resume: há quem cultue a tecnologia de forma ignorante e quem lute contra ela de forma ignorante. O desafio é **lidar com a ambivalência**, nem otimismo nem medo tecnológico, **humanizando a transformação** sem impedi-la e **preservando a autonomia humana**. Um dado ilustra o descompasso (**McKinsey, 2026**): **88%** das empresas usam IA em ao menos uma área, mas só **37%** relatam impacto real no lucro. A visão tradicional de gestão da mudança não basta; é preciso abrir diálogo sobre **construção de sentido**, **impacto emocional**, **experimentação** e **integração da IA aos processos**.
 
-## 4. Modelos de mudança
-### Kotter — 8 passos (pesquisou a mudança em ~100 empresas, Harvard) — CAI
-1. **Criar um senso de urgência** · 2. **Estabelecer uma equipe-guia** (coalizão; profissionais de diversos níveis/áreas; dissolvida ao término) · 3. **Esclarecer a visão da mudança** (onde estamos e onde queremos chegar) · 4. **Comunicar-se para conquistar adesão** (vários canais; atitude coerente; evitar só o vertical) · 5. **Dar poder para as pessoas agirem** (empowerment) · 6. **Criar vitórias de curto prazo** (reconhecer e recompensar; reduz ceticismo) · 7. **Persistir** (cuidar da moral; não esmorecer) · 8. **Fazer a mudança perdurar** (novos estímulos para fixar o padrão; gerar a nova cultura).
+## 2. Mudança × transição (William Bridges)
 
-### As 10 Chaves da Mudança (modelo da professora, baseado em Kotter, com 2 passos a mais)
-Agrupadas em: **definição da visão · catalisação · realização · obtenção de [participação]**, com **dimensão emocional, questões de poder, treinamento e supervisão** como suporte. As 10 chaves:
-1. **Definição da visão** — dá sentido e justifica a mudança, ponto de referência que deve ser reafirmado; exige leitura de contexto (ambiente externo/interno, riscos); **5 estágios:** formalização da necessidade → identificação dos riscos e alternativas → desenvolvimento das visões → escolha da visão → formalização da visão.
-2. **Mobilização** — começa o processo real (e a ansiedade); cria-se a **ruptura** (situação atual × visão); buscar sentido de urgência, validar riscos, escolher iniciativas; **lei da inércia: força maior para iniciar o movimento, menor para mantê-lo**; passagem **estabilidade → instabilidade** (desestabilização orientada e parcialmente controlada; a instabilidade abre espaço para resistência ou acomodação).
-3. **Catalisação** — acelerar/facilitar; identificar **agentes catalisadores** que superam a inércia/estagnação (pessoas não avessas ao risco).
-4. **Direção** — sistema de orientação para "não perder o prumo": estruturar a lógica, planejar, monitorar, facilitar a aceleração, aconselhar de forma imparcial, monitorar catalisadores e líderes, disponibilizar métodos/ferramentas, iniciar e manter treinamento, **garantir que as outras 9 chaves sejam aplicadas**.
-5. **Realização** — execução; **5 subetapas:** análise detalhada da situação atual → plano detalhado por iniciativa → **testes-piloto (experimentação)** → aplicar o resultado dos testes → **criar sistemas que garantam que a mudança seja duradoura**.
-6. **Obtenção da participação** — natureza **cooperativa** da mudança; equipes multifuncionais; avaliar o desempenho reconhecendo contribuições (sem punir o que deu errado: faz parte da experimentação); comunicação contínua.
-7. **Dimensão emocional** — ninguém gosta de mudanças alheias à própria vontade; incerteza = ameaça; identificar a natureza dos bloqueios; comunicação, treinamento, **coaching e mentoria (peer-to-peer, rodas de conversa)**; validar e comemorar avanços. **Fator biológico:** o cérebro resiste para economizar energia; **neuroplasticidade** permite novas conexões e hábitos. **Entropia × sinergia** (teoria dos sistemas: sistemas perdem energia com o tempo — entropia; **sinergia** = ações que eliminam/minimizam a perda de energia; o líder deve criar momentos de sinergia quando a equipe entra em entropia).
-8. **Questões de poder** — poder e mudança quase sempre em conflito (quem ganha/perde?); o poder é **redistribuído**, vem de todas as direções ("feudos"), relações de poder são **intencionais**; resposta inevitável = **resistência**; **detentores do poder só questionam o status quo se acreditam que podem se beneficiar ou são forçados**; liderança deve: definir o **equilíbrio planejado do poder**, lidar com a dimensão emocional do poder e usar novos sistemas/procedimentos para **redirecionar o poder**. Exemplos: o "bobo da corte" que fala a verdade ao rei; Marco Aurélio e o escravo que lembrava "és apenas um mortal"; pesquisa de **Berkeley (Keltner e Obhi): o poder tende a inibir a empatia** dos poderosos.
-9. **Treinamento e supervisão** — **upskilling/reskilling**; avaliar necessidades; habilidades técnicas **e interpessoais**; supervisão; autoaperfeiçoamento. Cuidado com modelos tradicionais de treinamento: criar também **diálogo e conversação**. **Organizações que aprendem (Peter Senge, "A Quinta Disciplina"):** **pensamento sistêmico, domínio pessoal, modelos mentais, construção de visão compartilhada, aprendizagem em equipe**; **metanoia** = mudança fundamental de mentalidade (aprendizagem generativa).
-10. **Comunicação ativa** — vai além de informar: tranquiliza, incentiva criatividade e experimentação; **comunicadores como facilitadores**; restaurar a confiança. Papéis: conscientizar sobre a visão, informar o progresso, garantir que a mudança é justificada e bem gerenciada, acompanhar o desenvolvimento individual, destacar ações dos envolvidos, acelerar a resolução de dificuldades, divulgar os novos padrões de comportamento, restaurar a confiança dos envolvidos externos.
+> **Memorize.** **Mudança é um evento. Transição é um processo psicológico.**
 
-## 5. Trabalho em grupo e liderança
-- Trabalhar em grupo é: entender que a solução pertence ao grupo; chegar a consenso sem "capitular"; definir objetivos, resultado, cronograma e responsabilidades; recorrer a especialistas para problemas técnicos; ignorar barreiras hierárquicas.
-- **Líder:** cuida do estilo de liderança coerente com a mudança; entende que **decisão baseada só em dados, só em experiência ou nos dois** são escolhas com consequências; hoje é preciso **fazer cada vez melhor e fazer diferente**. Metáfora do **barqueiro europeu (age por um plano) × barqueiro Truk (parte de um objetivo e lida com as circunstâncias)** → adaptação em contextos complexos.
-- **Inovação:** obtida por meio de uma técnica, **se não por uma mentalidade que a sustente**; pessoas inovadoras têm atitudes e mentalidade inovadoras.
+| **Mudança** | **Transição** |
+|---|---|
+| acontece **fora** das pessoas | acontece **dentro** das pessoas |
+| pode ser planejada | precisa ser vivenciada |
+| é visível | muitas vezes invisível |
+| envolve estrutura, tecnologia, processos | envolve **identidade e emoções** |
+| pode ser rápida | tem **ritmo próprio** |
+| é imposta ou decidida | precisa ser assimilada |
+
+Por isso a **adoção não é consequência automática da superioridade técnica**: a pessoa pode reconhecer que a tecnologia é melhor e ainda assim resistir. **"As pessoas não resistem à mudança; resistem à perda que percebem por trás dela."** A transição tem **três fases**:
+
+| Fase | O que acontece |
+|---|---|
+| **1. Ending** (fim, perda, desapego) | deixar algo para trás: uma rotina, um status, uma crença sobre expertise, uma identidade |
+| **2. Neutral Zone** (zona neutra) | o antigo já não funciona e o novo ainda não se consolidou: **incerteza, experimentação, aprendizagem, ambiguidade**; a fase mais desconfortável e potencialmente **a mais criativa** |
+| **3. New Beginning** | surge o novo sentido ("é assim que eu trabalho agora") |
+
+**Preparar para a mudança** é ensinar ferramentas, processos e competências; **preparar para a transição** é ajudar a compreender o que se está deixando para trás e que nova identidade profissional emerge. O maior risco da IA talvez não seja substituir pessoas, mas **tornar obsoleta uma identidade profissional** que elas ainda não aprenderam a reconstruir.
+
+## 3. As cinco dimensões da gestão da mudança
+
+| Dimensão | Ideia |
+|---|---|
+| **Estratégia** | inicia ou provoca a mudança (fusão, nova tecnologia); depende da **capacidade da empresa de mudar** |
+| **Estrutura** | papéis, autoridade e segmentação; a IA **redefine funções e elimina tarefas** |
+| **Sistemas** | controlam o fluxo de informação e apoiam decisões; o **big data** amplia as variáveis |
+| **Cultura** | **valores compartilhados e praticados**; a parte **mais estável e difícil de mudar**; com a IA, migra do **controle para a experimentação** |
+| **Estilo de gestão** | os líderes são a **alavanca** da mudança |
+
+As **pessoas** são mais importantes que a estrutura em processos de reestruturação. Em **data science**, a mudança altera pelo menos cinco dimensões: da decisão por **experiência** para **dados + experiência**; do conhecimento **concentrado** para **distribuído**; da **hierarquia** para os **dados** como fonte de autoridade; do trabalho **previsível** para o **criativo**; do especialista "dono do conhecimento" para **especialista + algoritmo**. Fica a pergunta: *quem decide quando o algoritmo discorda do especialista?* **Dados não eliminam o julgamento; mudam o lugar onde ele acontece.**
+
+Ao implantar IA há três desafios: **conhecer a caixa de ferramentas**, **não partir de um recurso em busca de um problema** e aceitar que **a IA resolve problemas de forma diferente**. E há o perigo da **mecanização do pensamento**: "só é relevante o que pode ser medido", seguindo o ciclo *medir → modelar → automatizar*, até tentarmos fazer a realidade caber na métrica. Conta também a ideia de **High Concept** (reconhecer padrões, criar narrativas, combinar ideias) e **High Touch** (empatia, sutilezas da interação), de Daniel Pink; e a de Scott Hartley, de que precisamos de **techies mais "fuzzy"** e de **fuzzies** construindo empresas de tecnologia. Um sistema é **complexo** não pelo número de componentes, mas pelo grau de **interconectividade e interdependência**.
+
+## 4. Os 8 passos de Kotter
+
+| # | Passo | Ideia |
+|---|---|---|
+| 1 | **Criar senso de urgência** | despertar todos para a oportunidade |
+| 2 | **Estabelecer uma equipe-guia** | profissionais de diversos níveis e áreas |
+| 3 | **Esclarecer a visão** | onde estamos e onde queremos chegar |
+| 4 | **Comunicar para conquistar adesão** | vários canais; atitude coerente |
+| 5 | **Dar poder para agir** | *empowerment* |
+| 6 | **Criar vitórias de curto prazo** | reconhecer e recompensar; reduz o ceticismo |
+| 7 | **Persistir** | cuidar da moral do grupo |
+| 8 | **Fazer a mudança perdurar** | fixar o novo padrão e gerar a nova cultura |
+
+## 5. As 10 chaves da mudança (modelo da professora, baseado em Kotter)
+
+| # | Chave | Ideia central |
+|---|---|---|
+| 1 | **Definição da visão** | dá sentido e justifica a mudança; 5 estágios: formalizar a necessidade → identificar riscos e alternativas → desenvolver visões → escolher → formalizar |
+| 2 | **Mobilização** | cria a **ruptura** (situação atual × visão); **lei da inércia**: força maior para iniciar, menor para manter; da estabilidade à instabilidade |
+| 3 | **Catalisação** | **agentes catalisadores** superam a inércia (pessoas pouco avessas ao risco) |
+| 4 | **Direção** | orientação para "não perder o prumo"; garante que as outras 9 chaves sejam aplicadas |
+| 5 | **Realização** | a execução: análise → plano → **testes-piloto** → aplicar → **sistemas que tornem a mudança duradoura** |
+| 6 | **Obtenção da participação** | natureza **cooperativa**; equipes multifuncionais; reconhecer contribuições |
+| 7 | **Dimensão emocional** | medos e resistências; coaching, mentoria, rodas de conversa; **neuroplasticidade**; **entropia × sinergia** |
+| 8 | **Questões de poder** | quem ganha e quem perde; o poder é redistribuído; **resistência inevitável** |
+| 9 | **Treinamento e supervisão** | **upskilling/reskilling**; habilidades técnicas e interpessoais |
+| 10 | **Comunicação ativa** | vai além de informar: tranquiliza, estimula criatividade, restaura a confiança |
+
+Sobre a **dimensão emocional**: o cérebro resiste à mudança para **economizar energia**, mas tem **neuroplasticidade** (forma novas conexões). Na teoria dos sistemas, a **entropia** é a perda de energia ao longo do tempo e a **sinergia** é o movimento inverso: ações que minimizam essa perda; o líder precisa criar momentos de sinergia quando a equipe entra em entropia. Sobre o **poder**: ele e a mudança estão quase sempre em conflito; os detentores do poder **só questionam o status quo se acreditam que podem se beneficiar ou são forçados**; a liderança deve definir o equilíbrio de poder e **redirecioná-lo**. A pesquisa de Berkeley (Keltner e Obhi) mostra que o poder tende a **inibir a empatia** dos poderosos, e daí os exemplos do bobo da corte e do escravo que lembrava Marco Aurélio de que ele era mortal. Sobre **aprendizagem**, Peter Senge (*A Quinta Disciplina*) lista as cinco disciplinas das organizações que aprendem: **pensamento sistêmico, domínio pessoal, modelos mentais, visão compartilhada e aprendizagem em equipe**; **metanoia** é uma mudança fundamental de mentalidade.
+
+## O que levar daqui
+
+Mudança é evento; transição é processo psicológico em três fases (ending, zona neutra, novo começo). As pessoas resistem à perda, e a IA ameaça identidades. As cinco dimensões são estratégia, estrutura, sistemas, cultura e estilo de gestão. Kotter tem 8 passos; as 10 chaves cobrem visão, mobilização, catalisação, direção, realização, participação, emoção, poder, treinamento e comunicação.
+
+## Erros que todo mundo comete
+
+| Erro | Correção |
+|---|---|
+| "Mudança e transição são a mesma coisa" | mudança é o **evento externo**; transição é o **processo interno** |
+| "Quem é melhor tecnicamente será adotado" | **adoção não decorre** da superioridade técnica |
+| "Resistir é ser contra a mudança" | resiste-se à **perda percebida** |
+| "Treinar na ferramenta basta" | é preciso preparar também para a **transição** |
+| "Cultura muda com um treinamento" | muda no dia a dia e nas **decisões da liderança** |
+| "A zona neutra é um fracasso" | é desconfortável, mas **potencialmente a mais criativa** |
+
+## Teste-se
+
+1. Diferencie mudança e transição.
+<details markdown="1"><summary>Ver resposta</summary>Mudança é um evento externo, planejável e visível; transição é o processo psicológico interno (identidade, emoções), com ritmo próprio.</details>
+
+2. Quais as três fases da transição de Bridges?
+<details markdown="1"><summary>Ver resposta</summary>Ending (fim/perda), zona neutra e novo começo.</details>
+
+3. Cite os 8 passos de Kotter.
+<details markdown="1"><summary>Ver resposta</summary>Urgência, equipe-guia, visão, comunicação, empowerment, vitórias de curto prazo, persistir e fazer a mudança perdurar.</details>
+
+4. O que é o paradoxo da McKinsey citado na aula?
+<details markdown="1"><summary>Ver resposta</summary>88% das empresas usam IA, mas só 37% relatam impacto real no lucro (EBIT).</details>
 
 ## Pergunta típica
-Diferença entre mudança e transição (Bridges) e as 3 fases (ending, zona neutra, novo começo) · por que as pessoas "resistem" (à perda, não à mudança) · preparar para a mudança × para a transição · as 5 dimensões (estratégia, estrutura, sistemas, cultura, estilo de gestão) · o paradoxo McKinsey (88% × 37%) · os 8 passos de Kotter · as 10 chaves e o que cada uma pede · papel do poder e da dimensão emocional · entropia × sinergia · como a ciência de dados muda as decisões (dados + experiência) · high concept × high touch · 5 disciplinas de Senge.
+Diferença entre mudança e transição (Bridges) e as 3 fases · por que as pessoas "resistem" · preparar para a mudança × para a transição · as 5 dimensões · o paradoxo McKinsey (88% × 37%) · os 8 passos de Kotter · as 10 chaves e o que cada uma pede · papel do poder e da dimensão emocional · entropia × sinergia · como a ciência de dados muda as decisões · high concept × high touch · as 5 disciplinas de Senge

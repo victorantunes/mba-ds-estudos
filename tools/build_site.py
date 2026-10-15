@@ -87,7 +87,36 @@ def questions(text):
 
 
 def cards(text):
-    res = []
+    res, seen = [], set()
+
+    def add(q, a):
+        q, a = plain(q).strip(), plain(a).strip()
+        if len(q) < 4 or len(a) < 12 or len(a) > 520 or q in seen:
+            return
+        seen.add(q)
+        res.append({"q": q.rstrip(" .?") + "?", "a": a})
+
+    # 1) perguntas do "Teste-se" com a resposta escondida
+    for m in re.finditer(r"^\d+\.\s+(.+?)\n<details[^>]*><summary>.*?</summary>(.*?)</details>", text, re.M | re.S):
+        add(m.group(1), m.group(2))
+    # 2) tabelas de definição: primeira coluna = termo, demais = definição
+    blocks = re.findall(r"(?:^\|.*\n)+", text, re.M)
+    for b in blocks:
+        rows = [r for r in b.strip().split("\n") if not re.match(r"^\|\s*:?-{2,}", r)]
+        if len(rows) < 3:
+            continue
+        head = [c.strip() for c in rows[0].strip("|").split("|")]
+        if not head or re.match(r"(?i)^(erro|confus)", head[0]) or len(head) < 2 or len(head) > 3:
+            continue
+        for r in rows[1:]:
+            c = [x.strip() for x in r.strip("|").split("|")]
+            if len(c) != len(head):
+                continue
+            term = plain(c[0])
+            if not term or len(term) > 70 or len(re.findall(r"[A-Za-zÀ-ú]", term)) < 3 or head[0] in ("#", "Nível", "Fase"):
+                continue
+            add("%s (%s): %s" % (term, head[0].lower(), " / ".join(h.lower() for h in head[1:])), " — ".join(plain(x) for x in c[1:]))
+    # 3) bullets "- **Termo:** definição" (formato antigo)
     for line in text.split("\n"):
         m = re.match(r"^\s*[-*] \*\*([^*]{2,90}?)\*\*\s*(.*)$", line)
         if not m:
@@ -99,9 +128,7 @@ def cards(text):
             rest = rest[1:].strip()
         else:
             continue
-        rest = plain(rest)
-        if 25 <= len(rest) <= 420 and len(term) >= 2:
-            res.append({"q": f"{plain(term)}?", "a": rest})
+        add(term, rest)
     return res
 
 
