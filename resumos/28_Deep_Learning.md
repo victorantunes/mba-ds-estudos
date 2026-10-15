@@ -1,67 +1,176 @@
 # 28 · Deep Learning e Inteligência Artificial (Introdução + I, II e III)
-**Prof. Luis Augusto Libório O. Fonseca · 4 aulas · Prioridade: ALTA (conceitos, fórmulas e comparações; nada de código complicado)**
+**Prof. Luis Augusto Libório O. Fonseca · 4 aulas · Prioridade: alta (conceitos, fórmulas e comparações; nada de código complicado)**
 
-## 1. Fundamentos
-- **IA** = campo amplo da computação para simular/aprender habilidades. **Machine Learning (Samuel, 1959):** dar ao computador a capacidade de aprender **sem ser explicitamente programado**. **Mitchell (1997):** um programa aprende com a experiência **E** em relação a uma tarefa **T** e medida de desempenho **D**, se o desempenho em T melhora com E. ML = "**Software 2.0**": em vez de escrever regras, dá-se **dados + respostas** e o modelo descobre as regras (caixa-preta difícil de interpretar).
-- **ML tradicional × Deep Learning:** no ML clássico os **features são feitos à mão** (feature engineering — limitado, falho, não escalável); no DL a rede **aprende as representações** (*representation learning*) em **níveis hierárquicos**: baixo (bordas/cantos) → médio (olho, boca) → alto (rosto). Desvantagem: **interpretabilidade** e, em dados tabulares pequenos, algoritmos de ML tradicionais costumam ser **mais eficientes**.
-- **Maldição da dimensionalidade:** espaços de combinações gigantes (Xadrez ≈ 10¹²⁰; Go ≈ 10¹⁷⁰ jogadas; átomos do universo ≈ 10⁸⁰) → força bruta não basta. Deep Blue (1996/97, força bruta + engenharia de features de xadrezistas) × **AlphaGo (2016, Deep Reinforcement Learning, aprendeu jogando contra si mesmo)**.
-- **Por que agora?** 1) **Big Data** (volume/variedade), 2) **Hardware** (GPU, computação distribuída), 3) **Software** (melhores algoritmos de treino, frameworks).
-- **Linha do tempo:** 1943 McCulloch–Pitts · 1958 **Perceptron (Rosenblatt)** · 1974–86 **Backpropagation** · 2012 **AlexNet (ImageNet)** · 2015 ResNet supera humanos na classificação · 2017 **Transformer** · 2022 ChatGPT/DALL·E 2 · hoje reasoning LLMs.
-- **Rede neural = função aproximadora.** Fenômeno real f(x) desconhecido; a rede a(x) ≈ f(x). **Teorema da aproximação universal (Hornik et al., 1989):** uma rede feedforward com **uma camada oculta suficientemente larga** aproxima **qualquer função contínua** com precisão arbitrária (≈ problemas computáveis / Turing completo). O limite deixa de ser a arquitetura e passa a ser **encontrar os pesos certos e ter dados** que descrevam o fenômeno. **"Garbage in ⇒ garbage out":** o modelo aprende as amostras, não o fenômeno; onde os dados não olham, a(x) "inventa"; amostragem esparsa/enviesada → modelo confiante e errado. Redes neurais são **algoritmos estocásticos/probabilísticos** (resultados variam; por isso fixar a **seed**).
-- **Tensores:** **rank** (nº de eixos = `ndim`) × **shape** (dimensões por eixo) — "ndim ≠ shape" é confusão clássica. rank-0 escalar `()`, rank-1 vetor `(512,)`, rank-2 matriz `(128,256)`, rank-3 `(10000,128,16)`; rank > 3 = hiperespaço. Imagem em cinza `(H,W,1)`, dataset `(N,H,W,1)`; RGB `(H,W,3)`.
+## O fio condutor deste capítulo
+
+No machine learning clássico, **você** desenha as variáveis (features) que o modelo vai usar. No **deep learning**, a rede **aprende sozinha** quais características importam, em camadas: das mais simples (bordas) às mais abstratas (um rosto). Essa ideia sustenta tudo o que se vê hoje, de reconhecimento de imagens aos modelos de linguagem. A tese do capítulo é que, por trás das arquiteturas que mudam a cada ano, existem **poucos princípios estáveis**: função, tensor, neurônio, camada, ativação e treino.
+
+A narrativa segue a ordem em que o conhecimento se constrói: (1) o *porquê* do deep learning e a ideia de **rede como função aproximadora**; (2) a unidade básica, o **perceptron**, e sua composição em **MLP**; (3) **como a rede aprende** (loss, gradiente, otimizadores, overfitting); (4) a arquitetura para **imagens** (CNN); e (5) a arquitetura para **texto** (embeddings, atenção e Transformer).
+
+```mermaid
+flowchart LR
+  A["Dados em tensores"] --> B["Forward: a rede prediz"]
+  B --> C["Loss: mede o erro"]
+  C --> D["Backpropagation: gradientes"]
+  D --> E["Atualiza os pesos"]
+  E --> B
+```
+
+## 1. Por que deep learning
+
+**IA** é o campo amplo de simular habilidades inteligentes. **Machine learning** (Samuel, 1959) é dar ao computador a capacidade de aprender **sem ser explicitamente programado**; por isso é chamado de "**Software 2.0**": em vez de escrever regras, você fornece **dados e respostas** e o modelo descobre as regras. A diferença para o ML tradicional está na origem das features:
+
+| | **ML tradicional** | **Deep learning** |
+|---|---|---|
+| Features | feitas **à mão** (feature engineering): limitadas e pouco escaláveis | **aprendidas** pela rede (*representation learning*) |
+| Hierarquia | — | baixo nível (bordas) → médio (olho, boca) → alto (rosto) |
+| Ponto fraco | depende do especialista | **interpretabilidade**; em dados tabulares pequenos o ML clássico costuma ser mais eficiente |
+
+Por que agora? Porque se juntaram **Big Data** (volume e variedade), **hardware** (GPUs) e **software** (melhores algoritmos de treino e frameworks). A linha do tempo: 1943 McCulloch–Pitts · 1958 **Perceptron** · 1974–86 **backpropagation** · 2012 **AlexNet** (ImageNet) · 2017 **Transformer** · 2022 ChatGPT. Dois exemplos mostram a **maldição da dimensionalidade**: no xadrez, a força bruta (Deep Blue) bastou; no **Go** (10¹⁷⁰ jogadas), foi preciso o **AlphaGo**, que usou aprendizado por reforço profundo, jogando contra si mesmo.
+
+### A rede como função aproximadora
+
+O fenômeno real é uma função \(f(x)\) desconhecida; a rede \(a(x)\) tenta aproximá-la. O **teorema da aproximação universal** (Hornik et al., 1989) diz que uma rede *feedforward* com **uma camada oculta suficientemente larga** aproxima **qualquer função contínua** com precisão arbitrária. O limite deixa de ser a arquitetura e passa a ser **achar os pesos certos e ter dados que descrevam o fenômeno**: *garbage in, garbage out*. A rede aprende as **amostras**, e onde os dados não olham ela "inventa", produzindo um modelo confiante e errado. As redes são algoritmos **estocásticos**, por isso se fixa a **seed**.
+
+Os dados entram como **tensores**, que se descrevem por **rank** (nº de eixos, `ndim`) e **shape** (tamanho de cada eixo). Não confunda os dois.
+
+| Rank | Nome | Shape de exemplo |
+|---|---|---|
+| 0 | escalar | `()` |
+| 1 | vetor | `(512,)` |
+| 2 | matriz | `(128, 256)` |
+| 3 | espaço 3D | `(10000, 128, 16)` |
+| imagem em cinza / RGB | | `(H, W, 1)` / `(H, W, 3)`; dataset: `(N, H, W, ·)` |
 
 ## 2. Perceptron e MLP
-- **Perceptron:** **ŷ = g(Σ xᵢ·wᵢ)**; xᵢ entradas, **wᵢ pesos (o que a rede aprende)**, **w₀ = bias** (entrada fixa 1), **g = função de ativação**. Sem ativação, o perceptron univariado é uma **regressão linear** (f = w₁x + w₀: w₁ gira a reta, w₀ a desloca). Treinar = achar os pesos.
-- **MLP (Multi-Layer Perceptron):** camadas de perceptrons = **composição de funções**; **DNN (deep)** = muitas camadas ocultas. **Sem ativação não linear, a composição continua linear** (uma MLP vira uma reta) → a **ativação não linear** é o que dá poder.
-- **Ativações:** **Sigmoid** g(z) = 1/(1+e⁻ᶻ) — comprime em (0,1), **satura nas pontas (gradiente quase zero → vanishing gradient)**; **ReLU** g(z) = max(0,z) — barata, não satura para z>0, **padrão nas camadas ocultas**; com ReLU a probabilidade de o gradiente desaparecer em redes profundas é menor que com sigmoid. Modernas: ELU, SELU, Softplus, GELU, Swish, Mish. **Softmax** (S(zᵢ)=e^zᵢ/Σe^zⱼ): vetor de logits → **distribuição de probabilidade que soma 1**; saída de **classificação multiclasse**. **Sigmoid** na saída: classificação binária.
-- **Problema XOR:** nenhuma reta separa as classes → um perceptron **sem camada oculta e sem ativação não linear nunca resolve o XOR** (travou as redes neurais por ~2 décadas); AND e OR são linearmente separáveis.
+
+O **perceptron** é a "caricatura matemática" de um neurônio: soma as entradas ponderadas e decide.
+
+\[ \hat{y} = g\!\left(\sum_i x_i\,w_i\right) \]
+
+Aqui \(x_i\) são as entradas, \(w_i\) os **pesos** (o que a rede aprende), \(w_0\) o **bias** (entrada fixa em 1) e \(g\) a **função de ativação**. Sem ativação, um perceptron univariado é só uma **regressão linear** (\(w_1\) gira a reta; \(w_0\) a desloca). Empilhando perceptrons em camadas obtém-se o **MLP (Multi-Layer Perceptron)**; com muitas camadas ocultas, uma **rede profunda**. **Sem ativação não linear, a composição de camadas continua linear**: a ativação é o que dá poder à rede.
+
+![Funções de ativação: sigmoid, ReLU e softmax](img/28_ativacoes.png)
+
+| Ativação | Característica | Uso |
+|---|---|---|
+| **Sigmoid** \(\frac{1}{1+e^{-z}}\) | comprime em (0, 1); **satura nas pontas** (gradiente quase zero) | saída binária |
+| **ReLU** \(\max(0, z)\) | barata; não satura para \(z > 0\) | **padrão nas camadas ocultas** |
+| **Softmax** | transforma logits em distribuição de probabilidade que **soma 1** | saída **multiclasse** |
+
+O **problema XOR** mostra a necessidade de camada oculta e ativação não linear: nenhuma reta separa as classes do XOR, então um perceptron simples **nunca o resolve** (AND e OR são linearmente separáveis). Esse limite travou o campo por cerca de duas décadas.
 
 ## 3. Como a rede aprende
-- **Loop de treino:** dados viram **tensores** (feeding) → **forward** (predição ŷ) → **Loss** (função de perda/objetivo; qualquer função **contínua e diferenciável** que represente o objetivo) → **backpropagation** (calcula **dJ/dW**, a derivada da loss em relação aos pesos) → **atualiza os pesos** → repete. Se o resultado satisfaz a métrica de negócio → **deployment**. Anotar dados (rótulos) é caro.
-- **Gradient Descent:** **W ← W − η·∇J(W)** (η = **learning rate/taxa de aprendizagem**, ∇J = gradiente da loss). Tatear a direção de descida (derivada) → passo pequeno → repetir. A superfície de erro tem vários vales: risco de **mínimo local**.
-  - **Learning rate:** **grande = rápido e instável** (oscila/passa do ponto); **pequeno demais = lento e pode estagnar** em mínimos; "pequeno garante ir ao mínimo global" só se o treino terminar.
-  - **Mini-batch SGD:** usa subconjuntos (batch) → aproveita **paralelização de GPU**, acelera o treino. **Batch maior** = treino mais rápido, mais memória; **batch menor** = **ruído benéfico** (regulariza). Regra: se multiplicar o batch size por K, multiplique o LR por K; batch em múltiplos de 8.
-  - **Otimizadores:** **SGD** (simples, lento), **SGD + Momentum** (ganha velocidade, melhor convergência), **Adam** (**escolha padrão**, rápido e adaptativo), **AdamW** (weight decay desacoplado; Transformers/modelos grandes), RMSprop (RNNs/RL), Adagrad (features esparsas), Adadelta, Nadam.
-- **Funções de perda (loss):**
-  - **MAE** = (1/N)Σ|y−ŷ| (ex.: 0,38 no dataset dos asteroides NEO, pesos não treinados); regressão também usa MSE.
-  - **BCE (Binary Cross Entropy)** = −[y·log(ŷ) + (1−y)·log(1−ŷ)] — classificação **binária** (1 neurônio + sigmoid) ou **multirrótulo**; ex.: y=1, ŷ=0,75 → BCE = −log(0,75) ≈ 0,288. **Predição confiante e errada é punida de forma explosiva.**
-  - **CCE (Categorical CE)** = −Σ yᵢ·log(ŷᵢ) — **rótulo em one-hot** + softmax.
-  - **SCCE (Sparse CCE)** = −log(ŷ[y]) — **rótulo como inteiro** (índice da classe); mesmo valor da CCE (ex.: 0,049) e usa menos memória com muitas classes. **Erro comum: trocar a loss sem trocar o formato do rótulo.**
-- **Underfitting × balanceado × overfitting:** underfit = vai mal em treino e teste (modelo simples); overfit = erro de treino ≈ 0 e **erro de teste dispara** (memoriza outliers). Nas curvas: loss de treino cai sempre; **loss de validação cai e depois sobe** → pare/restaure o melhor ponto (**early stopping**, ex.: paciência 15; reduzir LR quando a validação piora). **Dropout:** desliga aleatoriamente uma fração dos neurônios a cada passo (ex.: 20% de 64 ≈ 13) para regularizar.
-- **Prática guiada — dataset Abalone (UCI):** prever a **idade** do molusco (cara de medir: contar anéis, como dendrocronologia) a partir de features baratas (8, categóricas + numéricas). Passos: **fixar seed** · **analisar os dados numericamente antes de modelar** (outliers, intervalos) · split treino/validação/teste (perder dados de treino = perder capacidade) · **encoding** · **scaling**.
-  - **Encoding categórico:** **one-hot** (sem ordem; cresce com N), **label/sparse** (alvo categórico), **ordinal** (ordem genuína: Likert, escolaridade), **embedding** (alta cardinalidade).
-  - **Feature scaling (dados em escala original são "tiro no pé"):** **MinMax** [0,1] (sensível a outliers; ex.: pixels) · **Standard** média 0/dp 1 (dados ~normais) · **Robust** mediana e IQR (**resistente a outliers**; renda/preços) · MaxAbs [-1,1] (preserva esparsidade, TF-IDF) · Normalizer (por amostra, norma 1) · **PowerTransformer** (Box-Cox exige X>0; Yeo-Johnson aceita X≤0).
-  - **Repeated cross-validation:** K folds repetidos R vezes → média e desvio das métricas (estimativa mais robusta).
-- **Pergunta sobre "modelo especialista com poucos milhares de registros":** talvez rede neural não seja o melhor algoritmo — considere ML tradicional.
+
+O ciclo é: os dados viram **tensores** → a rede faz o **forward** (\(\hat{y}\)) → a **loss** mede o erro → o **backpropagation** calcula o gradiente da loss em relação aos pesos → os **pesos são atualizados** → repete. O **gradient descent** atualiza assim:
+
+\[ W \leftarrow W - \eta\,\nabla J(W) \]
+
+com \(\eta\) o **learning rate** e \(\nabla J\) o gradiente da loss. A analogia é descer uma duna de olhos vendados: o **gradiente** dá a direção e o **learning rate** dá o tamanho do passo; a superfície pode ter **mínimos locais**.
+
+![Efeito da taxa de aprendizado no gradient descent](img/28_gradient_descent.png)
+
+No **mini-batch SGD**, usam-se subconjuntos dos dados: aproveita a **GPU**, acelera o treino e o ruído de batches pequenos tem efeito regularizador. **Otimizadores:** SGD (simples e lento), SGD + Momentum, **Adam** (**escolha padrão**), AdamW (Transformers) e RMSprop (RNNs).
+
+### As funções de perda
+
+| Loss | Quando | Fórmula/ideia |
+|---|---|---|
+| **MAE / MSE** | regressão | erro médio absoluto ou quadrático |
+| **BCE** (binary cross entropy) | classificação **binária** (1 neurônio + sigmoid) | \(-[y\log\hat{y} + (1-y)\log(1-\hat{y})]\) |
+| **CCE** (categorical) | multiclasse com rótulo em **one-hot** + softmax | \(-\sum y_i\log\hat{y}_i\) |
+| **SCCE** (sparse) | multiclasse com rótulo como **inteiro** | \(-\log\hat{y}_{[y]}\) (mesmo valor da CCE) |
+
+> **Exemplo resolvido (BCE).** \(y = 1\) e \(\hat{y} = 0{,}75\): \(BCE = -\log 0{,}75 \approx 0{,}288\). Uma predição **confiante e errada** é punida de forma explosiva. Trocar a loss sem trocar o formato do rótulo é um dos erros mais comuns.
+
+### Overfitting e regularização
+
+No **underfitting**, o modelo vai mal no treino e no teste. No **overfitting**, o erro de treino cai a quase zero e o **erro de teste dispara**. Nas curvas, a loss de validação cai e depois **sobe**: usa-se **early stopping** (parar no melhor ponto) e **dropout** (desligar aleatoriamente uma fração dos neurônios a cada passo). A **prática guiada** usou o dataset **Abalone** (prever a idade do molusco a partir de medidas baratas): fixar a seed, **analisar os dados antes de modelar**, e preparar com *encoding* e *scaling*:
+
+| Encoding | Quando |
+|---|---|
+| **One-hot** | categorias **sem ordem** |
+| **Ordinal** | ordem genuína (Likert, escolaridade) |
+| **Embedding** | alta cardinalidade |
+
+| Scaler | Característica |
+|---|---|
+| **MinMax** | [0, 1]; sensível a outliers |
+| **Standard** | média 0 e desvio 1 (dados ~normais) |
+| **Robust** | mediana e IQR; **resistente a outliers** |
 
 ## 4. Visão computacional e CNN
-- Crescer a MLP (largura/profundidade) **não resolve estrutura espacial**: a rede densa **achata** a imagem e perde a vizinhança entre pixels. Cada família de arquitetura resolve um tipo de dado (imagens, sequências, grafos, texto).
-- **Tarefas clássicas de CV:** **classificação, localização, detecção e segmentação**. Aplicações: busca por imagem, filtros/realidade aumentada, diagnóstico médico, varejo autônomo, agricultura, manufatura. Contexto: 2012 AlexNet/ImageNet → CV impulsiona o DL; 2017 Transformers → NLP.
-- **FCN × CNN:** FCN (densa) = features **globais**, sem relação espacial, **sensível a deslocamentos**. **CNN** = features **locais**, **hierarquia espacial**, **invariância à translação**, preserva a estrutura espacial.
-- **Convolução:** um **kernel** (ex.: 3×3) **desliza sobre a imagem**; em cada posição faz **produto elemento a elemento + soma** → gera o **feature map**. Os **pesos do kernel são aprendidos por gradient descent**. Com **ReLU** a rede aprende kernels que "deletam o ruído". Em RGB o kernel tem **profundidade igual ao nº de canais**.
-  - **Padding:** **'valid'** (sem preencher; saída menor — ex.: input 4×4, kernel 3×3 → 2×2; 5×5 → 3×3) × **'same'** (preenche; **mantém a resolução** — 5×5 → 5×5).
-  - **Stride:** tamanho do passo do kernel; **stride (2,2)** reduz a resolução (5×5, same → 3×3) — "maneira de aprender a diminuir a resolução".
-  - **MaxPooling2D:** reduz a resolução **mantendo o maior valor de cada janela** (pool 2×2, stride 2 → (4,4,1) vira (2,2,1)); sem parâmetros treináveis.
-- **Arquiteturas famosas:** **YOLO** (detecção de objetos em tempo real), **U-Net** (segmentação densa, encoder-decoder com skip connections, biomédica). Convnets 1D servem para dados sequenciais. **MNIST** = classificação de dígitos (exemplo da aula).
 
-## 5. NLP e Transformers
-- **A máquina não lê, ela conta.** Linguagem natural é ambígua (uso vem primeiro) × linguagem de máquina (sintaxe fixa); frases com sentido igual podem não compartilhar palavras → é preciso **vetorizar** o texto.
-- **Text → tensor (3 decisões):** **padronização** (minúsculas/sem pontuação), **tokenização** (granularidade do token: split por espaço), **indexação** (índice único por token; reservados **0 = padding**, **1 = [UNK]** fora do vocabulário). Keras `TextVectorization(max_tokens=20000, output_sequence_length=7, ...)`; **`adapt()` aprende o vocabulário só nos dados de treino**.
-- **Tipos de encoding (ordem × frequência × semântica):**
-| Encoding | Ordem | Frequência | Semântica | Shape |
-|---|---|---|---|---|
-| N-gram multi-hot (bag-of-words) | não | não | não | (vocab,) binário |
-| N-gram **TF-IDF** | não | sim | não | (vocab,) float |
-| Sequence one-hot | **sim** | sim | não | (s, vocab) esparso |
-| Sequence **embedding** | sim | sim | **sim** | (s, d) denso |
-  - **Multi-hot:** só presença; "o meu cachorro comeu o meu sapato" e "o meu sapato comeu o meu cachorro" dão o **mesmo vetor**.
-  - **TF-IDF** = tf(t,d)·log(N/df(t)): palavra **frequente no documento e rara no corpus** = informativa; palavras comuns não dominam.
-  - **One-hot de sequência:** preserva ordem, mas é **esparso e enorme** (7×20000) e **todos os tokens ficam à mesma distância** (sem semântica).
-  - **Word embedding:** vetor **denso e treinável** (d tipicamente 8–512; iniciado aleatoriamente; palavras de uso parecido ficam próximas); o índice **seleciona uma linha de uma matriz de pesos**. Keras `Embedding(input_dim=vocab, output_dim=d, mask_zero=True)`; parâmetros = vocab × d (20000×8 = 160.000). Referências: Bengio 2003, **Word2Vec (Mikolov 2013)**. **Limite:** o embedding é **fixo** — "banco" tem o mesmo vetor em "banco da praça" e "banco da esquina" (falta contexto).
-- **Self-Attention (Transformer):** reescreve cada vetor como **mistura dos vetores da própria frase** (depende do contexto). Cada token gera **Query (o que procura), Key (o que oferece), Value (o conteúdo que entrega)** por três matrizes de pesos treináveis. **3 operações:** (1) **comparar:** score(i,j) = kⱼ·qᵢ (produto escalar); (2) **normalizar:** softmax(score/√d) → cada linha da **matriz de atenção (S×S)** soma 1 (√d mantém a escala estável); (3) **misturar:** yᵢ = Σⱼ s(i,j)·vⱼ (média ponderada dos values).
-- **Positional Encoding:** a atenção compara todos os tokens ao mesmo tempo e **não sabe a ordem** → soma-se um sinal de posição ao vetor: **PE(pos,2i) = sin(pos/10000^(2i/d)); PE(pos,2i+1) = cos(...)** (determinístico, não ambíguo, expansível a sequências maiores).
-- **LSTM × Transformer:** LSTM — complexidade **linear O(N)**, **treino sequencial (não paraleliza)**, memória longa **limitada (esquece)**, pouco dado, memória na inferência **constante**; usos: séries temporais, IoT, áudio de baixa latência. **Transformer** — **O(N²)**, **paraleliza no treino**, **conecta todos os pares** (longo prazo), exige muitos dados, memória na inferência alta e crescente; usos: **LLMs, VLMs, tradução**. Referência: "Attention Is All You Need" (Vaswani, 2017).
-- **Ordem em que o DL consolidou:** dados estruturados → imagem ("chutou a porta") → áudio → NLP (por último, com dificuldade). Ideia citada: sistemas caóticos amplificam micro-erros no estado inicial. Aula também menciona **tf.data (TF Dataset)** para eficiência e **autoencoder**.
+Uma MLP que **achata** a imagem perde a vizinhança entre pixels. A **CNN** preserva a estrutura espacial, com **features locais**, **hierarquia espacial** e **invariância à translação**. As tarefas clássicas são **classificação, localização, detecção e segmentação** (arquiteturas famosas: YOLO para detecção em tempo real, U-Net para segmentação). O núcleo é a **convolução**: um **kernel** (ex.: 3×3) **desliza sobre a imagem**; em cada posição faz produto elemento a elemento e soma, gerando o **feature map**. Os pesos do kernel são **aprendidos** por gradient descent.
+
+| Conceito | O que faz | Exemplo |
+|---|---|---|
+| **Padding 'valid'** | não preenche as bordas; a saída **diminui** | entrada 5×5, kernel 3×3 → 3×3 |
+| **Padding 'same'** | preenche; a saída **mantém** a resolução | 5×5 → 5×5 |
+| **Stride (2,2)** | passo maior; **reduz a resolução** | 5×5, same → 3×3 |
+| **MaxPooling2D** | maior valor de cada janela; sem parâmetros treináveis | (4,4,1) com janela 2×2 → (2,2,1) |
+
+Em imagens RGB, o kernel tem **profundidade igual ao nº de canais**.
+
+## 5. Texto: embeddings, atenção e Transformer
+
+O computador "não lê, ele conta". O texto passa por **padronização**, **tokenização** e **indexação** (0 = padding; 1 = fora do vocabulário), e depois escolhe-se uma **representação**:
+
+| Encoding | Preserva ordem? | Frequência? | Semântica? |
+|---|---|---|---|
+| **N-gram multi-hot** (bag of words) | não | não | não |
+| **N-gram TF-IDF** | não | sim | não |
+| **Sequence one-hot** | **sim** | sim | não |
+| **Embedding** | sim | sim | **sim** |
+
+O **TF-IDF** pesa cada termo por \(tf \cdot \log(N/df)\): frequente no documento e raro no corpus é informativo. O **embedding** é um vetor **denso e treinável** (poucas dimensões, em vez de milhares do one-hot), em que palavras de uso parecido ficam próximas. O limite é que o embedding é **fixo**: "banco" tem o mesmo vetor em "banco da praça" e "banco da esquina".
+
+A **self-attention** reescreve cada vetor como uma **mistura dos vetores da própria frase**, dependendo do contexto. Cada token gera **Query** (o que procura), **Key** (o que oferece) e **Value** (o conteúdo). Em três operações:
+
+\[ \text{score}(i,j) = k_j\cdot q_i \qquad s(i,j) = \text{softmax}_j\!\left(\frac{\text{score}}{\sqrt{d}}\right) \qquad y_i = \sum_j s(i,j)\,v_j \]
+
+comparar, **normalizar** (cada linha soma 1; \(\sqrt{d}\) mantém a escala estável) e **misturar**. Como a atenção compara todos os tokens ao mesmo tempo e **não sabe a ordem**, soma-se o **positional encoding** (\(\sin\) e \(\cos\) em frequências diferentes).
+
+| | **LSTM** | **Transformer** |
+|---|---|---|
+| Complexidade | linear, \(O(N)\) | quadrática, \(O(N^2)\) |
+| Treino | **sequencial** (não paraleliza) | **paralelo** |
+| Relações de longo prazo | limitadas (esquece) | todos os pares conectados |
+| Dados exigidos | poucos/médios | muitos |
+| Usos | séries temporais, IoT, áudio de baixa latência | LLMs, tradução |
+
+## O que levar daqui
+
+O deep learning aprende features em camadas e funciona como aproximador universal, dependendo de bons dados. O neurônio soma entradas ponderadas e aplica uma ativação não linear (ReLU nas ocultas, softmax na saída multiclasse). A rede aprende minimizando a loss por gradient descent (W ← W − η∇J). A CNN usa convolução, padding, stride e pooling; para texto, embeddings e atenção (Q, K, V) levam ao Transformer.
+
+## Erros que todo mundo comete
+
+| Erro | Correção |
+|---|---|
+| "Rank = shape" | rank é o **nº de eixos**; shape é o **tamanho de cada eixo** |
+| "Sem ativação a rede ainda aprende curvas" | sem ativação não linear, a composição é **linear** |
+| "Sigmoid é a melhor ativação nas ocultas" | **ReLU** é o padrão (a sigmoid satura) |
+| "Learning rate maior é sempre melhor" | alto demais **oscila**; baixo demais é lento |
+| "CCE e SCCE são diferentes na perda" | mesmo valor; muda o **formato do rótulo** |
+| "Overfitting = erro alto no treino" | erro **baixo no treino e alto no teste** |
+| "Embedding resolve a ambiguidade de 'banco'" | o embedding é **fixo**; a atenção traz o contexto |
+
+## Teste-se
+
+1. Por que a rede neural é chamada de "função aproximadora"?
+<details markdown="1"><summary>Ver resposta</summary>Porque aproxima uma função desconhecida do fenômeno real; o teorema da aproximação universal garante que uma rede suficientemente larga aproxima qualquer função contínua.</details>
+
+2. Qual a fórmula do gradient descent e o papel do learning rate?
+<details markdown="1"><summary>Ver resposta</summary>W ← W − η∇J(W). O learning rate (η) define o tamanho do passo: grande demais oscila; pequeno demais é lento.</details>
+
+3. Qual loss usar para classificação binária e qual para multiclasse com rótulo inteiro?
+<details markdown="1"><summary>Ver resposta</summary>Binária: BCE (com sigmoid). Multiclasse com rótulo inteiro: SCCE (com softmax).</details>
+
+4. Entrada 5×5, kernel 3×3, padding 'same', stride (2,2). Qual a saída?
+<details markdown="1"><summary>Ver resposta</summary>3×3.</details>
+
+5. Diferença entre LSTM e Transformer?
+<details markdown="1"><summary>Ver resposta</summary>LSTM é sequencial, linear em N e esquece o longo prazo; o Transformer paraleliza no treino e conecta todos os pares, ao custo quadrático em N.</details>
 
 ## Pergunta típica
-ML tradicional × DL (feature engineering × representation learning) · por que rede neural é "função aproximadora" e o que diz o teorema da aproximação universal · rank × shape de tensor · fórmula do perceptron, papel do bias e da ativação não linear (e por que sem ela vira regressão linear) · sigmoid × ReLU × softmax · gradient descent (fórmula, learning rate, mini-batch, mínimo local) · escolher entre BCE, CCE e SCCE · overfitting × underfitting e como combatê-los (early stopping, dropout) · scalers (MinMax, Standard, Robust) · diferença FCN × CNN, convolução, padding, stride, pooling · bag-of-words × TF-IDF × embedding · Query/Key/Value e softmax(QKᵀ/√d)V · positional encoding · LSTM × Transformer.
+ML tradicional × DL (feature engineering × representation learning) · por que rede neural é função aproximadora e o que diz o teorema da aproximação universal · rank × shape de tensor · fórmula do perceptron, papel do bias e da ativação não linear · sigmoid × ReLU × softmax · gradient descent (fórmula, learning rate, mini-batch, mínimo local) · BCE, CCE e SCCE · overfitting × underfitting e como combatê-los · scalers (MinMax, Standard, Robust) · FCN × CNN, convolução, padding, stride, pooling · bag-of-words × TF-IDF × embedding · Query/Key/Value e softmax(QKᵀ/√d)V · positional encoding · LSTM × Transformer

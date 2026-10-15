@@ -1,68 +1,139 @@
 # 27 · Árvores, Redes e Ensemble Models (I, II, III)
-**Profa. Valquíria Alencar · 3 aulas · Prioridade: ALTA (conceitos de ML supervisionado + métricas caem; você já sabe Python, foque nos conceitos)**
+**Profa. Valquíria Alencar · 3 aulas · Prioridade: alta (ML supervisionado: conceitos e métricas são cobrados; você já sabe Python, foque nos conceitos)**
 
-## 1. Árvore de decisão
-- **Método de aprendizado supervisionado, não paramétrico:** não impõe fórmula rígida; a própria árvore constrói a estrutura fazendo uma sequência de perguntas "verdadeiro/falso".
-- **Estrutura:** **nó raiz** (dados completos, ponto de partida) → **nós internos** (perguntas sobre as características) → **folhas** (resultado final).
-- **Vantagens:** pouca preparação dos dados (em geral **não precisa normalizar/padronizar**); aceita variáveis **numéricas e categóricas**; **"caixa branca"** (cada previsão é explicável por regras — oposto das redes neurais); robusta a dados reais fora de distribuições "ideais".
-- **Classificação × regressão:** **classificação** → folha retorna a **classe mais frequente**; **regressão** → folha retorna a **média** dos valores que caíram nela.
-- **Como aprende (qual o melhor split):** classificação → a divisão que **separa melhor as classes, reduzindo a impureza** dos grupos (ex.: 5 adimplentes + 5 inadimplentes, pergunta "teve atraso?" gera grupos 4×1 e 1×4); regressão → a divisão que **reduz o erro** entre o previsto e o real (critério padrão **squared error**; no sklearn `criterion`).
-- **Treino/teste:** separação típica **80% / 20%**; o teste é a "avaliação final" com dados nunca vistos. Em classificação usar **`stratify=y`** (mantém a proporção das classes). A profundidade da árvore é a mesma para treino e teste.
-- **Desvantagens:** **overfitting** (árvore cresce demais e "decora"); **sensível a pequenas mudanças** nos dados (árvore completamente diferente); sensível a **classes desbalanceadas**; **não extrapola** (previsões irreais fora da faixa de treino).
-- **Overfitting × underfitting:** overfitting = muito complexo, **acurácia de treino altíssima e queda no teste** (causas: árvore profunda, muitas variáveis irrelevantes, poucos dados); underfitting = modelo simples demais, aprende pouco. Busca-se o equilíbrio (boa generalização).
-- **Hiperparâmetros** (definidos **antes** do treino): `max_depth`, `min_samples_split`, `min_samples_leaf`, `criterion`. **Poda** (limitar a árvore) reduz overfitting. Ajuste: definir combinações → treinar versões → avaliar por **validação cruzada** → escolher a melhor.
-- **Pré-processamento citado:** não usar **IDs/CPF/RG** como feature; tratar datas (`pd.to_datetime`); variáveis categóricas: **`get_dummies`** (exploração) × **`OneHotEncoder` em pipeline** (produção, lida com categorias novas); cuidado com **vazamento de dados (data leakage)** — variável quase igual ao alvo faz o teste ficar "bom demais".
+## O fio condutor deste capítulo
 
-## 2. Métricas
-**Classificação (matriz de confusão: VP, VN, FP, FN — "verdadeiro/falso" diz se o modelo acertou):**
-- **Acurácia** = (VP+VN)/(VP+VN+FP+FN) — enganosa em bases **desbalanceadas**.
-- **Precisão** = VP/(VP+FP) — "quando diz que é positivo, quanto posso confiar?" (importa quando **falso alarme** é caro).
-- **Recall / sensibilidade** = VP/(VP+FN) — capacidade de **encontrar os positivos reais** (crucial quando perder um positivo é grave: doença, fraude).
-- **F1** = 2·(Precisão·Recall)/(Precisão+Recall) — **média harmônica** (penaliza desequilíbrio entre os dois).
-- **Curva ROC / AUC:** capacidade de distinguir as classes; a diagonal = **classificador aleatório**.
-- Exemplos: crédito (FN = concedeu crédito a quem não pagou; FP = negou a bom pagador); doença cardíaca (FN = previu baixo risco para quem tem alto risco → muito ruim).
+Imagine decidir, numa sexta à noite, se vai pedir delivery: *tenho comida em casa? estou cansado? há promoção?* Você faz uma **sequência de perguntas de sim ou não** até chegar à decisão. Uma **árvore de decisão** é exatamente isso, aprendida automaticamente a partir de dados. Ela é fácil de explicar, mas tem um defeito sério: **decora os dados** e muda muito com pequenas variações. A solução é **combinar muitas árvores** (os *ensembles*), e é daí que surgem a **Random Forest** e o **XGBoost**.
 
-**Regressão:** **MAE** (erro médio absoluto; mesma unidade, **robusto a outliers**) · **MSE** (erro quadrático médio; **penaliza erros grandes**) · **RMSE** (raiz do MSE; unidade original) · **R²** (proporção da variância explicada) · **MAPE** (distorce quando o valor real é ~0). Exemplo da aula: RMSE ≈ 30,6 e R² ≈ 0,65 no teste (previsão de tempo de entrega).
+O capítulo avança em quatro passos: (1) a **árvore** em si; (2) as **métricas** para avaliar um modelo; (3) o **diagnóstico** de viés e variância, que explica *por que* combinar modelos funciona; (4) as técnicas de **ensemble** (voting, bagging, boosting, stacking) e seus dois representantes mais usados.
 
-**Validação cruzada K-fold:** divide em K partes; cada fold é teste uma vez, o resto treino; média dos resultados → avaliação **mais robusta** (não depende da "sorte" de uma divisão). `cross_val_score(modelo, X, y, cv=...)`.
+```mermaid
+flowchart LR
+  A["Árvore de decisão"] --> B["Problema: sobreajuste e instabilidade"]
+  B --> C["Ensemble: combinar modelos"]
+  C --> D["Bagging: modelos em paralelo, reduz variância"]
+  C --> E["Boosting: modelos em sequência, reduz viés"]
+  D --> F["Random Forest"]
+  E --> G["XGBoost"]
+```
 
-## 3. Viés × variância e a lógica do ensemble
-- **Alto viés = modelo simplista** (previsões consistentes mas "fora do alvo"; subajuste). **Alta variância = modelo flexível demais** (previsões espalhadas; overfitting) — é o caso da **árvore de decisão profunda**. Reduzir um tende a aumentar o outro (**trade-off**); busca-se o equilíbrio.
-- **Ensemble:** treina **vários modelos e combina as predições numa saída única** ("júri": os erros individuais tendem a se cancelar).
+## 1. A árvore de decisão
+
+É um método **supervisionado não paramétrico**: não impõe uma fórmula; a própria árvore constrói sua estrutura fazendo perguntas "verdadeiro ou falso". Ela tem três tipos de nó:
+
+| Nó | Papel |
+|---|---|
+| **Raiz** | ponto de partida: o conjunto de dados completo |
+| **Internos** | perguntas sobre as características |
+| **Folhas** | resultado final |
+
+A mesma árvore serve a dois tipos de problema:
+
+| | **Classificação** | **Regressão** |
+|---|---|---|
+| Y é... | uma categoria (cancela ou não) | um número (preço, tempo de entrega) |
+| A folha devolve | a **classe mais frequente** | a **média** dos valores que caíram nela |
+| Melhor divisão | a que **reduz a impureza** dos grupos | a que **reduz o erro** (critério padrão: squared error) |
+
+> **Exemplo resolvido.** Dez clientes: 5 adimplentes e 5 inadimplentes (grupo misturado, difícil decidir). A pergunta "teve atraso anterior?" gera dois grupos: 4 inadimplentes + 1 adimplente (com atraso) e 4 adimplentes + 1 inadimplente (sem atraso). Os grupos ficaram **mais puros**: foi uma boa divisão.
+
+**Vantagens:** exige pouca preparação (em geral **não precisa normalizar**), aceita variáveis numéricas e categóricas e é **"caixa branca"** (cada previsão é explicável por regras). **Desvantagens:** **sobreajuste**, **instabilidade** (pequenas mudanças nos dados geram árvores muito diferentes), sensibilidade a **classes desbalanceadas** e **dificuldade de extrapolar**. Treina-se tipicamente com **80% dos dados** e testa-se nos **20%** restantes; em classificação use **`stratify=y`**. Os **hiperparâmetros** (definidos antes do treino) controlam a árvore: `max_depth`, `min_samples_split`, `min_samples_leaf` e `criterion`. Atenção ao **vazamento de dados** (*data leakage*) e a **não usar IDs** (CPF, RG) como variáveis.
+
+## 2. Como medir um modelo
+
+### Classificação: a matriz de confusão
+
+| | Previsto positivo | Previsto negativo |
+|---|---|---|
+| **Real positivo** | VP | FN |
+| **Real negativo** | FP | VN |
+
+\[ \text{Acurácia} = \frac{VP + VN}{\text{total}} \quad \text{Precisão} = \frac{VP}{VP + FP} \quad \text{Recall} = \frac{VP}{VP + FN} \quad F_1 = \frac{2\cdot\text{Precisão}\cdot\text{Recall}}{\text{Precisão}+\text{Recall}} \]
+
+| Métrica | Pergunta | Importa quando... |
+|---|---|---|
+| **Acurácia** | quanto acertou no total? | classes equilibradas (enganosa em bases desbalanceadas) |
+| **Precisão** | quando diz "positivo", quanto confio? | o **falso alarme** é caro |
+| **Recall (sensibilidade)** | quantos positivos reais encontrou? | **perder um positivo** é grave (doença, fraude) |
+| **F1** | equilíbrio entre precisão e recall (média **harmônica**) | quer os dois |
+
+A **curva ROC/AUC** mostra a capacidade de distinguir as classes (a diagonal é um classificador aleatório).
+
+### Regressão
+
+| Métrica | Característica |
+|---|---|
+| **MAE** | erro médio absoluto; mesma unidade; **robusto a outliers** |
+| **MSE** | erro quadrático médio; **penaliza erros grandes** |
+| **RMSE** | raiz do MSE; mesma unidade |
+| **R²** | proporção da variância explicada |
+
+> **Exemplo resolvido.** VP = 40, FN = 10, FP = 20, VN = 130. Precisão = 40/60 ≈ 0,67; recall = 40/50 = 0,80; F1 = 2·0,67·0,80/(0,67+0,80) ≈ **0,73**. Se o dano de perder um doente é grande, priorize o **recall**.
+
+A **validação cruzada K-fold** divide os dados em K partes e usa cada uma como teste uma vez; a média dos resultados é uma avaliação **mais robusta** (não depende da "sorte" de uma divisão).
+
+## 3. Viés, variância e por que combinar modelos
+
+Os erros de um modelo vêm de dois lugares. **Viés alto** é um modelo simples demais (**subajuste**): previsões consistentes, mas "fora do alvo". **Variância alta** é um modelo flexível demais (**sobreajuste**): previsões espalhadas, que acompanham o ruído dos dados de treino. Reduzir um tende a aumentar o outro. Uma árvore profunda tem **baixo viés e alta variância**.
+
+![Subajuste, equilíbrio e sobreajuste](img/27_vies_variancia.png)
+
+A ideia do **ensemble** é a do **júri**: um único jurado pode errar, mas a decisão coletiva de vários é mais confiável. Modelos diferentes erram em pontos diferentes e, na média ou na votação, os erros individuais tendem a se cancelar.
+
+## 4. As técnicas de ensemble
 
 | Técnica | Como funciona | Efeito |
 |---|---|---|
-| **Voting / Averaging** | modelos diferentes votam; **hard voting** = classe mais votada; **soft voting** = média das **probabilidades**; regressão = **média** | simples |
-| **Bagging** (Bootstrap Aggregating) | modelos do **mesmo tipo**, **independentes e em paralelo**, cada um em uma amostra **bootstrap** (com reposição); agrega por votação/média | **reduz variância**, mantém o viés |
-| **Boosting** | modelos **sequenciais**; cada novo modelo foca nos **erros (resíduos)** do anterior; previsão final = soma ponderada | **reduz viés** (principalmente); risco de overfitting |
-| **Stacking** | **meta-modelo (nível 1)** aprende a combinar as previsões dos **modelos base (nível 0)**; para evitar **vazamento** usam-se previsões **out-of-fold** | combina modelos diferentes |
+| **Voting / averaging** | modelos diferentes votam: **hard voting** = classe mais votada; **soft voting** = média das **probabilidades**; em regressão, média | simples |
+| **Bagging** | modelos do **mesmo tipo**, **em paralelo**, cada um em uma amostra **bootstrap** (com reposição); agrega por voto ou média | **reduz variância** |
+| **Boosting** | modelos **em sequência**; cada um foca nos **erros (resíduos)** do anterior | **reduz viés** |
+| **Stacking** | um **meta-modelo** aprende a combinar as previsões dos modelos-base (usa previsões *out-of-fold* para evitar vazamento) | combina modelos diferentes |
 
-- **Bootstrap:** amostra do mesmo tamanho dos dados, **com reposição** → ~**63% dos registros únicos**, ~**37% ficam de fora = OOB (out-of-bag)** → servem como **validação "grátis"**.
-- **Boosting em detalhe:** weak learners (árvores rasas); freios: **nº de estimadores**, **learning rate** (tamanho do passo; alto demais oscila, baixo demais é lento), **early stopping**. **Gradient Descent:** gradiente dá a direção, learning rate o tamanho do passo. **Três gerações:** **AdaBoost** (repondera as observações), **Gradient Boosting** (ajusta o resíduo/gradiente da função de perda), **XGBoost** (boosting otimizado: regularização + engenharia de alto desempenho).
+No **bootstrap**, cada amostra tem o tamanho dos dados originais, mas sorteada **com reposição**: cerca de **63%** dos registros são únicos e **37% ficam de fora**, as chamadas amostras **OOB (out-of-bag)**, que servem como validação "de graça". No **boosting**, os "freios" são o número de estimadores, o **learning rate** (tamanho do passo) e o **early stopping**.
 
-## 4. Random Forest
-- **Bagging + aleatoriedade na seleção de variáveis:** (1) **bootstrap das linhas** para cada árvore e (2) **subconjunto aleatório de colunas em cada split** → **árvores descorrelacionadas** → maior redução de variância. Árvores **profundas/completas**, agregação por votação (classificação) ou média (regressão). (Bagging tradicional considera todas as variáveis em cada split → variáveis fortes dominam e as árvores ficam correlacionadas.)
-- **Hiperparâmetros:** `n_estimators` (nº de árvores; padrão 100 — mais árvores = mais estável, mais custo), `max_features` (variáveis candidatas por split), `max_depth` (`None` = cresce livremente), `min_samples_split`, `min_samples_leaf`, `bootstrap`.
-- Exemplo da aula: RF alcançou **recall 83% e acurácia 96%** (comparado à árvore única).
+### Random Forest e XGBoost
 
-## 5. XGBoost (eXtreme Gradient Boosting)
-- Gradient boosting com **árvores como base** + **regularização L1 (`reg_alpha`) e L2 (`reg_lambda`)** + paralelização/cache/sparsity. **Trata valores faltantes nativamente**; aceita categóricas nas features (**não no target** y); escala para grandes volumes (distribuído).
-- **Objetivo = erro nos dados + penalidade pela complexidade.** **L1** pode zerar contribuições (seleção/simplificação); **L2** suaviza os pesos das folhas (mais estável, normalmente não zera).
-- **Hiperparâmetros:** `n_estimators`, **`learning_rate`**, `max_depth`, `min_child_weight` (maior = mais conservador), `colsample_bytree` (fração de variáveis por árvore), `reg_alpha/reg_lambda`. **`objective`** define o problema (ex.: `binary:logistic` → probabilidade 0–1; também multiclasse, regressão, ranking). **`DMatrix`** = estrutura otimizada para validação cruzada nativa (`xgb.cv`); `label` = target. **Early stopping** para quando a validação para de melhorar.
-- Mesma interface `fit/predict` do scikit-learn; mesmas métricas.
+A **Random Forest** é bagging **mais aleatoriedade na escolha das variáveis**: cada árvore treina em um bootstrap das **linhas** e, em **cada divisão**, só considera um subconjunto aleatório das **colunas**. Isso **descorrelaciona** as árvores e aumenta a redução de variância. Hiperparâmetros: `n_estimators` (nº de árvores, padrão 100), `max_features`, `max_depth`, `min_samples_split`, `min_samples_leaf` e `bootstrap`.
 
-## 6. Comparativo
-| | Decision Tree | Random Forest | XGBoost |
+O **XGBoost** é *gradient boosting* com árvores, acrescido de **regularização L1 (`reg_alpha`) e L2 (`reg_lambda`)**, tratamento nativo de **valores faltantes** e paralelização. A regularização penaliza folhas de peso alto: a **L1** pode zerar contribuições (simplifica) e a **L2** as suaviza. Hiperparâmetros: `n_estimators`, `learning_rate`, `max_depth`, `min_child_weight`, `colsample_bytree`. Usa `DMatrix` para validação cruzada e *early stopping* para parar quando a validação deixa de melhorar.
+
+| | **Decision Tree** | **Random Forest** | **XGBoost** |
 |---|---|---|---|
 | Tipo | modelo único | ensemble **bagging** (paralelo) | ensemble **boosting** (sequencial) |
-| Viés/variância | baixo viés, **alta variância** | **reduz variância** | reduz viés; regularização controla variância |
-| Overfitting | alto risco | menor | controlável com regularização/tuning |
-| Interpretabilidade | **alta** | média/baixa (feature importance) | média/baixa (feature importance) |
-| Quando usar | baseline, explicabilidade | robustez sem muito tuning | alta performance (sensível a tuning) |
-**Estratégia:** comece simples (Decision Tree → Random Forest → XGBoost).
+| Viés / variância | baixo viés, **alta variância** | **reduz variância** | reduz viés; a regularização controla a variância |
+| Interpretabilidade | **alta** | média/baixa | média/baixa |
+| Quando usar | baseline, explicabilidade | robustez sem muito ajuste | alta performance (sensível a ajuste) |
 
-## 7. Redes neurais (fechamento da aula III)
-A última parte da aula introduz uma **rede neural (TensorFlow/Keras)** treinada para prever o status do cliente (ativo/inativo): erro cai por rodadas (ex.: 0,10 → 0,05 → … 0,033) e avalia-se em **dados nunca vistos**; **pequena diferença treino × teste = bom sinal; diferença grande = problema (overfitting)**. Aprofundamento em **28 · Deep Learning**.
+A estratégia sugerida é **começar simples**: Decision Tree → Random Forest → XGBoost.
+
+## O que levar daqui
+
+A árvore pergunta sim/não até decidir; folha = classe mais frequente (classificação) ou média (regressão). Avalie com acurácia, precisão, recall, F1 (e MAE, RMSE, R² em regressão) e valide por K-fold. Uma árvore profunda tem alta variância; ensembles combinam modelos: bagging (paralelo, reduz variância; Random Forest), boosting (sequencial, reduz viés; XGBoost), stacking (meta-modelo).
+
+## Erros que todo mundo comete
+
+| Erro | Correção |
+|---|---|
+| "Árvore profunda = modelo melhor" | tende ao **sobreajuste** |
+| "Acurácia basta" | enganosa em bases desbalanceadas; olhe **precisão, recall e F1** |
+| "Bagging e boosting são parecidos" | bagging: **paralelo**, reduz variância; boosting: **sequencial**, reduz viés |
+| "A Random Forest só sorteia as linhas" | sorteia também as **colunas em cada split** |
+| "O XGBoost não aceita faltantes" | **trata** valores faltantes nativamente |
+| "Aumentar o learning rate sempre ajuda" | alto demais **oscila**; baixo demais é lento |
+
+## Teste-se
+
+1. Para que serve o OOB no bagging?
+<details markdown="1"><summary>Ver resposta</summary>As ~37% de observações que ficam fora de cada bootstrap servem como validação embutida, sem separar dados.</details>
+
+2. Quando priorizar recall em vez de precisão?
+<details markdown="1"><summary>Ver resposta</summary>Quando perder um positivo real é grave (doença, fraude) e o falso alarme é aceitável.</details>
+
+3. Qual a diferença entre hard e soft voting?
+<details markdown="1"><summary>Ver resposta</summary>Hard voting usa a classe mais votada; soft voting faz a média das probabilidades de cada modelo.</details>
+
+4. O que a regularização L1 faz no XGBoost?
+<details markdown="1"><summary>Ver resposta</summary>Penaliza a soma dos valores absolutos dos pesos das folhas, podendo zerar contribuições e simplificar o modelo.</details>
 
 ## Pergunta típica
-Estrutura da árvore (raiz, nós, folhas) e por que é "caixa branca" · classificação × regressão (classe mais frequente × média) · overfitting (sinais, causas, hiperparâmetros que controlam) · definições e fórmulas de acurácia/precisão/recall/F1, e qual priorizar em cada caso (FN × FP) · MAE × MSE × RMSE × R² · K-fold · viés × variância · bagging × boosting × stacking × voting (hard/soft) · bootstrap e OOB (63%/37%) · o que a "dupla aleatoriedade" do Random Forest faz · o que o XGBoost acrescenta (regularização L1/L2, faltantes, paralelização) · learning rate e early stopping.
+Estrutura da árvore (raiz, nós, folhas) e por que é "caixa branca" · classificação × regressão (classe mais frequente × média) · overfitting (sinais, causas, hiperparâmetros que controlam) · definições e fórmulas de acurácia/precisão/recall/F1, e qual priorizar (FN × FP) · MAE × MSE × RMSE × R² · K-fold · viés × variância · bagging × boosting × stacking × voting (hard/soft) · bootstrap e OOB (63%/37%) · "dupla aleatoriedade" do Random Forest · o que o XGBoost acrescenta · learning rate e early stopping
