@@ -51,11 +51,61 @@ com o índice aleatório de Saaty \(RI\): 0,58 (n = 3), 0,90 (n = 4), 1,12 (n = 
 4. Julgar as **alternativas em cada critério** (ou normalizar dados quantitativos).
 5. **Agregar:** nota global = soma de (peso do critério × prioridade da alternativa).
 
-> **Exemplo resolvido (3 critérios).** Matriz de julgamentos entre A, B e C: \(\begin{pmatrix}1&3&5\\1/3&1&3\\1/5&1/3&1\end{pmatrix}\).
-> **Soma das colunas:** 1,533 · 4,333 · 9.
-> **Normalizada:** linha A = 0,652 · 0,692 · 0,556; linha B = 0,217 · 0,231 · 0,333; linha C = 0,130 · 0,077 · 0,111.
-> **Pesos (médias das linhas):** A = **0,633**, B = **0,260**, C = **0,106** (somam 1).
-> **Consistência:** multiplicando a matriz pelo vetor de pesos e dividindo cada resultado pelo peso respectivo obtém-se ≈ 3,07; 3,03; 3,01, logo \(\lambda_{max} \approx 3{,}04\). \(CI = (3{,}04-3)/2 \approx 0{,}019\) e \(CR = 0{,}019/0{,}58 \approx 0{,}033\) (3,3%), **abaixo de 10%: consistente**.
+### Exemplo completo (da aula): comprar um smartphone
+
+**A estrutura do problema.** Objetivo: **comprar um smartphone**. **Critérios:** custo, câmera, armazenamento e bateria. **Alternativas:** Xiaomi, Samsung e iPhone. (Essa árvore hierárquica, com o objetivo no topo, os critérios no meio e as alternativas embaixo, é o que se desenha na metodologia de um TCC.)
+
+**Passo 1: avaliar os critérios par a par.** O decisor responde, com a escala de Saaty (1 a 9), "quanto o critério da linha é mais importante que o da coluna". Na aula: o **custo** é **3** vezes mais importante que a câmera, **5** que o armazenamento e **7** que a bateria; a **câmera** é **3** vezes mais importante que o armazenamento e **7** que a bateria; e o **armazenamento** é **3** vezes mais importante que a bateria. Preenche-se só o triângulo superior; o inferior sai pelos **recíprocos** (1/3, 1/5 etc.) e a diagonal vale 1:
+
+| | Custo | Câmera | Armaz. | Bateria |
+|---|---|---|---|---|
+| **Custo** | 1 | 3 | 5 | 7 |
+| **Câmera** | 1/3 | 1 | 3 | 7 |
+| **Armaz.** | 1/5 | 1/3 | 1 | 3 |
+| **Bateria** | 1/7 | 1/7 | 1/3 | 1 |
+| **Soma da coluna** | 1,676 | 4,476 | 9,333 | 18 |
+
+(O número de comparações é \(n(n-1)/2 = 4\cdot 3/2 = 6\).)
+
+**Passo 2: normalizar** (cada elemento ÷ a soma da sua coluna) **e tirar a média de cada linha**, que é o **peso do critério**:
+
+| | Custo | Câmera | Armaz. | Bateria | **Média da linha (peso)** |
+|---|---|---|---|---|---|
+| **Custo** | 0,597 | 0,670 | 0,536 | 0,389 | **0,548** |
+| **Câmera** | 0,199 | 0,223 | 0,321 | 0,389 | **0,283** |
+| **Armaz.** | 0,119 | 0,074 | 0,107 | 0,167 | **0,117** |
+| **Bateria** | 0,085 | 0,032 | 0,036 | 0,056 | **0,052** |
+
+Pesos: **custo 54,8%, câmera 28,3%, armazenamento 11,7% e bateria 5,2%** (somam 100%).
+
+**Passo 3: consistência dos julgamentos.** Multiplica-se a matriz original pelo vetor de pesos e divide-se cada resultado pelo peso correspondente: 4,283; 4,172; 4,082; 4,026. A média é \(\lambda_{max} = 4{,}141\). Então \(CI = \frac{4{,}141 - 4}{4 - 1} = 0{,}047\) e \(CR = \frac{CI}{RI} = \frac{0{,}047}{0{,}90} = 0{,}052\) (5,2%), **abaixo de 10%: os julgamentos são consistentes**.
+
+**Passo 4: as alternativas em cada critério (dados quantitativos).** Como os dados são números, não é preciso comparar par a par: **normaliza-se** cada coluna.
+
+| | Custo | Câmera | Armazenamento | Bateria |
+|---|---|---|---|---|
+| Xiaomi | R$ 1.500 | 12 MP | 64 GB | 24 h |
+| Samsung | R$ 1.800 | 12 MP | 128 GB | 18 h |
+| iPhone | R$ 5.000 | 20 MP | 128 GB | 10 h |
+
+Câmera, armazenamento e bateria são critérios de **lucro** (quanto maior, melhor): divide-se cada valor pela soma da coluna. O **custo** é de **custo** (quanto menor, melhor): usa-se o **inverso** (1/x) e depois divide-se pela soma. Para o custo: \(1/1500 = 0{,}000667\), \(1/1800 = 0{,}000556\), \(1/5000 = 0{,}000200\), soma = 0,001422, resultando em 0,469; 0,391; 0,141. (Sem inverter, o iPhone, o mais caro, ficaria com a **melhor** nota em custo, um erro.)
+
+| Matriz normalizada | Custo | Câmera | Armazenamento | Bateria |
+|---|---|---|---|---|
+| Xiaomi | 0,469 | 0,273 | 0,200 | 0,462 |
+| Samsung | 0,391 | 0,273 | 0,400 | 0,346 |
+| iPhone | 0,141 | 0,455 | 0,400 | 0,192 |
+
+**Passo 5: agregar** (matriz normalizada × vetor de pesos). Para o Xiaomi: \(0{,}469\times 0{,}548 + 0{,}273\times 0{,}283 + 0{,}200\times 0{,}117 + 0{,}462\times 0{,}052 = 0{,}257 + 0{,}077 + 0{,}023 + 0{,}024 = \) **0,381**.
+
+| Alternativa | Preferência global |
+|---|---|
+| **Xiaomi** | **38,1%** |
+| Samsung | 35,6% |
+| iPhone | 26,2% |
+
+**A decisão:** o **Xiaomi** é o escolhido (ranking: Xiaomi, Samsung, iPhone). O resultado é **ditado pelos pesos**: como o custo vale 54,8% da decisão, o iPhone (R$ 5.000, o mais caro) fica em último, apesar de ter a melhor câmera. Se o decisor desse mais peso à câmera, o ranking poderia mudar, e é por isso que os julgamentos precisam ser **consistentes** e justificados.
+
 
 ### Dados quantitativos e critérios de custo
 
