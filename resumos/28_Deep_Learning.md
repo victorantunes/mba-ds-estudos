@@ -60,6 +60,24 @@ Aqui \(x_i\) são as entradas, \(w_i\) os **pesos** (o que a rede aprende), \(w_
 
 O **problema XOR** mostra a necessidade de camada oculta e ativação não linear: nenhuma reta separa as classes do XOR, então um perceptron simples **nunca o resolve** (AND e OR são linearmente separáveis). Esse limite travou o campo por cerca de duas décadas.
 
+### Exemplo completo (da aula): a primeira rede no Keras e a contagem de parâmetros
+
+No notebook da primeira aula, a rede é um **Sequential** com 2 entradas (features), **3 camadas ocultas de 4 neurônios com ReLU** e **1 neurônio de saída com sigmoide**:
+
+\[ \text{Input}(2) \to \text{Dense}(4,\text{ReLU}) \to \text{Dense}(4,\text{ReLU}) \to \text{Dense}(4,\text{ReLU}) \to \text{Dense}(1,\text{sigmoid}) \]
+
+Cada neurônio de uma camada densa tem **um peso por entrada e mais um viés (bias)**. Logo, uma camada tem \((\text{entradas} + 1)\times\text{neurônios}\) parâmetros:
+
+| Camada | Entradas | Neurônios | Parâmetros \((e+1)\times n\) |
+|---|---|---|---|
+| hidden1 | 2 | 4 | (2 + 1) × 4 = **12** |
+| hidden2 | 4 | 4 | (4 + 1) × 4 = **20** |
+| hidden3 | 4 | 4 | (4 + 1) × 4 = **20** |
+| output | 4 | 1 | (4 + 1) × 1 = **5** |
+| **Total** | | | **57** |
+
+É isso que o `model.summary()` mostra. Na versão com a **API Funcional** da mesma aula (3 entradas e 4 camadas ocultas de 4 neurônios), a conta é \((3+1)\cdot4 + 3\cdot(4+1)\cdot4 + (4+1)\cdot1 = 16 + 60 + 5 = \) **81 parâmetros**. Antes do treino, esses pesos são **aleatórios**: a predição do modelo "sem treino" não significa nada. A aula então o compila com `optimizer='SGD'`, `loss='binary_crossentropy'` e `metrics=['accuracy']`.
+
 ## 3. Como a rede aprende
 
 O ciclo é: os dados viram **tensores** → a rede faz o **forward** (\(\hat{y}\)) → a **loss** mede o erro → o **backpropagation** calcula o gradiente da loss em relação aos pesos → os **pesos são atualizados** → repete. O **gradient descent** atualiza assim:
@@ -81,7 +99,14 @@ No **mini-batch SGD**, usam-se subconjuntos dos dados: aproveita a **GPU**, acel
 | **CCE** (categorical) | multiclasse com rótulo em **one-hot** + softmax | \(-\sum y_i\log\hat{y}_i\) |
 | **SCCE** (sparse) | multiclasse com rótulo como **inteiro** | \(-\log\hat{y}_{[y]}\) (mesmo valor da CCE) |
 
-> **Exemplo resolvido (BCE).** \(y = 1\) e \(\hat{y} = 0{,}75\): \(BCE = -\log 0{,}75 \approx 0{,}288\). Uma predição **confiante e errada** é punida de forma explosiva. Trocar a loss sem trocar o formato do rótulo é um dos erros mais comuns.
+> **Exemplo (BCE, a loss do modelo compilado na aula).** Para um exemplo cujo rótulo verdadeiro é \(y = 1\), a loss é \(-\log\hat{y}\), onde \(\hat{y}\) é a probabilidade que a rede deu para a classe 1:
+>
+> | \(\hat{y}\) (confiança da rede na classe certa) | 0,99 | 0,90 | 0,75 | 0,50 | 0,25 | 0,10 | 0,01 |
+> |---|---|---|---|---|---|---|---|
+> | **BCE** \(= -\log\hat{y}\) | 0,010 | 0,105 | 0,288 | 0,693 | 1,386 | 2,303 | **4,605** |
+>
+> Quando a rede acerta com confiança (0,99), a loss é quase zero; quando está **confiante e errada** (0,01 para a classe verdadeira), a loss é cerca de **460 vezes maior**: a punição cresce de forma explosiva. A loss do treino é a **média** dessas perdas sobre o batch. (Trocar a loss sem trocar o formato do rótulo é um dos erros mais comuns: BCE exige 1 neurônio com sigmoid e rótulo 0/1; CCE exige one-hot; SCCE exige rótulo inteiro.)
+
 
 ### Overfitting e regularização
 
@@ -111,6 +136,20 @@ Uma MLP que **achata** a imagem perde a vizinhança entre pixels. A **CNN** pres
 | **MaxPooling2D** | maior valor de cada janela; sem parâmetros treináveis | (4,4,1) com janela 2×2 → (2,2,1) |
 
 Em imagens RGB, o kernel tem **profundidade igual ao nº de canais**.
+
+> **Exemplo didático completo: convolução → ReLU → max pooling.** Os kernels da aula (Prewitt) são matrizes **fixas** só para você **ver** o que o kernel faz; numa CNN real eles são **aprendidos**. Considere uma imagem 6×6 com uma **borda vertical** (esquerda escura = 0, direita clara = 9), e o kernel **Prewitt −X** (3 colunas: −1, 0, +1) aplicado como o Keras faz (sem girar o kernel):
+>
+> | Imagem 6×6 (cada linha igual) | Kernel Prewitt −X (cada linha) |
+> |---|---|
+> | 0 0 0 9 9 9 | −1 0 +1 |
+>
+> **Passo 1: convolução, padding 'valid' (sem preenchimento).** A saída tem tamanho \(6 - 3 + 1 = 4\): **4×4**. Em cada posição multiplicam-se os 9 valores da janela pelo kernel e somam-se. Na posição de coluna 1 (a janela cobre as colunas com valores 0, 0, 9): cada linha dá \((-1)\cdot 0 + 0\cdot 0 + 1\cdot 9 = 9\), e as 3 linhas somam **27**. Nas colunas longe da borda (janela toda em 0 ou toda em 9) a soma é **0**. O resultado, em cada uma das 4 linhas: **0, 27, 27, 0**: o filtro **acendeu exatamente onde está a borda**.
+>
+> **Passo 2: ReLU.** Zera os negativos; aqui não há valores negativos, então nada muda: **0, 27, 27, 0**. (Com o kernel Prewitt **X**, de sinais invertidos, a saída seria −27 na borda e a ReLU a **apagaria**: cada kernel detecta uma **orientação** de borda.)
+>
+> **Passo 3: max pooling 2×2 com passo 2.** Cada janela 2×2 da saída 4×4 vira o seu **maior valor**: a resolução cai pela metade, **4×4 → 2×2**, e o que é forte (27) **permanece**: [[27, 27], [27, 27]].
+>
+> Resumo dos formatos: **6×6 → (conv 3×3 'valid') 4×4 → (pooling 2×2) 2×2**. Com padding **'same'** a convolução manteria 6×6; com **stride 2** ela reduziria a resolução pela metade.
 
 ## 5. Texto: embeddings, atenção e Transformer
 

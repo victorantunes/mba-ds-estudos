@@ -37,12 +37,54 @@ Cada etapa resolve um problema específico. Acompanhe o exemplo "Eu amo DS!":
 | **Remoção de pontuação** (e acentos, se for o caso) | elimina sinais | "eu amo ds" |
 | **Tokenização** | divide em unidades (tokens) | ["eu", "amo", "ds"] |
 | **Stopwords** | remove palavras muito comuns que **não agregam significado** (a, o, de, que) | "eu estou aprendendo processamento de linguagem" → "aprendendo processamento linguagem" |
-| **Stemming** | corta sufixos até o **radical** (rápido, grosseiro; pode não ser palavra real) | aprendendo → "aprend" |
-| **Lematização** | leva ao **lema** (forma do dicionário, usa a classe gramatical) | "amasse" → "amar"; "incríveis" → "incrível" |
+| **Stemming** | corta sufixos até o **radical** (rápido, grosseiro; pode não ser palavra real) | comprei, comprou, compraria → "compr" |
+| **Lematização** | leva ao **lema** (forma do dicionário, usa a classe gramatical) | "chegaram" → "chegar"; "são" → "ser" |
 
 **Stemming × lematização:** o stemming é mais rápido e grosseiro; a **lematização é mais precisa**. As bibliotecas mais usadas são o **NLTK** e o **spaCy**. Depois dessas etapas vem a **vetorização**, que transforma o texto em números: **Bag of Words (CountVectorizer), TF-IDF ou embeddings** (aprofundados no capítulo 28).
 
-> **Exemplo resolvido.** "Os clientes adoraram o atendimento!" → minúsculas: "os clientes adoraram o atendimento!" → sem pontuação → tokens ["os", "clientes", "adoraram", "o", "atendimento"] → sem stopwords ["clientes", "adoraram", "atendimento"] → **lematização:** ["cliente", "adorar", "atendimento"] (um stemming daria algo como "client", "ador", "atend").
+### Exemplo completo (da aula): do texto sujo ao texto limpo
+
+A aula trabalha com um **corpus de 400 documentos**: **250 avaliações de e-commerce** (com nota de 1 a 5) e **150 tweets** que mencionam a loja. Para mostrar cada etapa, o professor acompanha **uma frase "cobaia"**, típica de rede social:
+
+> `ADOREI o fone!!! 😍 Paguei R$ 150 na @LojaTop e chegou rápido: http://loja.top #recomendo`
+
+Cada etapa de limpeza aplica **uma** transformação (com expressões regulares, o `regex`):
+
+| Etapa | O que faz | Como (regex) | Resultado |
+|---|---|---|---|
+| **0. Original** | | | `ADOREI o fone!!! 😍 Paguei R$ 150 na @LojaTop e chegou rápido: http://loja.top #recomendo` |
+| **1. Minúsculas** | "ADOREI", "Adorei" e "adorei" viram a **mesma palavra** | `.lower()` | `adorei o fone!!! 😍 paguei r$ 150 na @lojatop e chegou rápido: http://loja.top #recomendo` |
+| **2. URLs** | a URL inteira some | `http\S+` ("http seguido de tudo que não é espaço") | `... rápido:   #recomendo` |
+| **3. Menções e #** | a menção some; do hashtag sai só o símbolo (a palavra **"recomendo" é informação útil** e fica) | `@\w+` e `#` | `... paguei r$ 150 na   e chegou rápido:    recomendo` |
+| **4. Acentos** | "rápido" vira "rapido" | `unicodedata.normalize("NFKD", ...)` | `... chegou rapido:    recomendo` |
+| **5. Só letras** | pontuação, números e emojis viram espaço | `[^a-z\s]` ("tudo que **não** é letra minúscula nem espaço") | `adorei o fone      paguei r      na   e chegou rapido     recomendo` |
+| **6. Espaços** | junta os "buracos" | `\s+` | `adorei o fone paguei r na e chegou rapido recomendo` |
+| **7. Stopwords** | tira palavras comuns e muito curtas (a lista do NLTK tem **207 stopwords** em português: a, o, na, e...) | lista de stopwords | **`adorei fone paguei chegou rapido recomendo`** |
+
+Sobraram **seis palavras**, todas com informação. Repare no que **valeu a pena guardar**: a opinião (*adorei*, *recomendo*), o produto (*fone*) e a experiência (*chegou rapido*).
+
+**Passo seguinte: tokenização.** O `split()` deixa a pontuação grudada (`'fone!!!'`); o `word_tokenize` a separa (`'fone', '!', '!', '!'`). Já no texto **limpo**, a tokenização é direta: `['adorei', 'fone', 'paguei', 'chegou', 'rapido', 'recomendo']`.
+
+**Stemming (RSLP, o stemmer do NLTK para o português).** Corta sufixos até o radical:
+
+| Palavras | Stem |
+|---|---|
+| comprei, comprou, compraria, compras | **compr** (todas viram o mesmo radical) |
+| recomendo | recom |
+| recomendaria, recomendam | recomend |
+| **A frase-cobaia:** adorei, fone, paguei, chegou, rapido, recomendo | ador, fon, pag, cheg, rap, recom |
+
+Note o **defeito do stemming**: "recomendo" (recom) e "recomendaria" (recomend) deveriam ser a mesma palavra mas ficaram **separadas**, e os radicais (`ador`, `fon`) **não são palavras reais**.
+
+**Lematização (spaCy).** Consulta um dicionário **e a classe gramatical** (usa o contexto). Na frase "os produtos chegaram correndo e são excelentes":
+
+| Palavra | os | produtos | chegaram | correndo | são | excelentes |
+|---|---|---|---|---|---|---|
+| **Stemming (RSLP)** | os | produt | cheg | corr | são | excel |
+| **Lema (spaCy)** | o | produto | chegar | correr | **ser** | excelente |
+
+O lema é uma **palavra real** ("produto", "chegar") e resolve casos que o stemming não resolve (**"são" → "ser"**). O contexto decide a ambiguidade: em "eu gosto do canto do pássaro", o spaCy reconhece **"gosto" como verbo (lema "gostar")** e **"canto" como substantivo (lema "canto")**. O custo é a velocidade: a lematização é mais lenta.
+
 
 ## 3. Análise de sentimento
 
