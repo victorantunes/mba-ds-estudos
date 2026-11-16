@@ -35,7 +35,48 @@ A mesma árvore serve a dois tipos de problema:
 | A folha devolve | a **classe mais frequente** | a **média** dos valores que caíram nela |
 | Melhor divisão | a que **reduz a impureza** dos grupos | a que **reduz o erro** (critério padrão: squared error) |
 
-> **Exemplo resolvido.** Dez clientes: 5 adimplentes e 5 inadimplentes (grupo misturado, difícil decidir). A pergunta "teve atraso anterior?" gera dois grupos: 4 inadimplentes + 1 adimplente (com atraso) e 4 adimplentes + 1 inadimplente (sem atraso). Os grupos ficaram **mais puros**: foi uma boa divisão.
+### Exemplo completo (da aula): árvore para prever doença cardíaca
+
+A aula usa uma base de **270 pacientes** (150 sem doença cardíaca, "Absence", e 120 com doença, "Presence"), com variáveis como idade, sexo, tipo de dor no peito, pressão, colesterol, frequência cardíaca máxima, depressão do segmento ST, nº de vasos coloridos na fluoroscopia e resultado do exame de tálio. As variáveis categóricas (tipo de dor e tálio) são transformadas em dummies, e os dados se dividem em **80% treino (216 pacientes)** e **20% teste (54)**, mantendo a proporção das classes (`stratify`).
+
+**O critério de divisão (Gini).** A impureza Gini de um nó é \(1 - \sum p_i^2\). O nó raiz tem **120 sem doença e 96 com doença**:
+
+\[ G_{raiz} = 1 - \left(\frac{120}{216}\right)^2 - \left(\frac{96}{216}\right)^2 = 1 - 0{,}309 - 0{,}198 = 0{,}494 \]
+
+(o máximo para duas classes é 0,5: grupo completamente misturado). A árvore testa cada variável e escolhe a pergunta que **mais reduz a impureza**. A melhor pergunta é **"o paciente tem dor no peito tipo 4?"** (assintomática):
+
+| Grupo | Sem doença | Com doença | Total | Gini |
+|---|---|---|---|---|
+| **Não** (tipo ≠ 4) | 94 | 26 | 120 | \(1 - 0{,}783^2 - 0{,}217^2 = \) **0,339** |
+| **Sim** (tipo 4) | 26 | 70 | 96 | \(1 - 0{,}271^2 - 0{,}729^2 = \) **0,395** |
+
+A impureza **após** a divisão é a média ponderada: \(\frac{120}{216}(0{,}339) + \frac{96}{216}(0{,}395) = \) **0,364**. O **ganho** é \(0{,}494 - 0{,}364 = \) **0,130**. Os dois grupos ficaram **mais puros** (Gini menor), então foi uma boa divisão, e é isso que a árvore repete, nó após nó, até o critério de parada. (Com o critério **entropia**, a conta é análoga: raiz = 0,991, ganho = 0,198.)
+
+**A árvore completa (sem poda) decora o treino.** Sem limite de profundidade, ela cresce até **profundidade 8 com 33 folhas** e acerta **100% no treino**, mas só **79,6% no teste**: sobreajuste (overfitting). A distância entre os dois números é o sinal.
+
+**A árvore podada (`max_depth=3`).** Fica simples o bastante para ser lida, e **generaliza melhor**: 86,1% no treino e **83,3% no teste**. A árvore completa em texto:
+
+```
+dor_tipo_4 <= 0,5 (NÃO)
+|   tálio_3 <= 0,5
+|   |   vasos <= 0,5      → Sem doença [16 sem, 6 com]
+|   |   vasos >  0,5      → Com doença [2 sem, 11 com]
+|   tálio_3 >  0,5
+|   |   depressão ST <= 2,3 → Sem doença [74 sem, 6 com]
+|   |   depressão ST >  2,3 → Com doença [2 sem, 3 com]
+dor_tipo_4 >  0,5 (SIM)
+|   vasos <= 0,5
+|   |   tálio_3 <= 0,5    → Com doença [6 sem, 15 com]
+|   |   tálio_3 >  0,5    → Sem doença [17 sem, 5 com]
+|   vasos >  0,5
+|   |   sexo <= 0,5       → Com doença [3 sem, 7 com]
+|   |   sexo >  0,5       → Com doença [0 sem, 43 com]
+```
+
+Leia assim: um paciente **com dor tipo 4 e vasos coloridos > 0 e do sexo masculino** cai na folha com **43 doentes e 0 saudáveis** (a regra mais forte). Já alguém **sem dor tipo 4 e com tálio normal (3) e depressão ST pequena** cai na folha com 74 saudáveis e 6 doentes. Por ser uma árvore (modelo "caixa-branca"), cada previsão tem uma **regra explicável**.
+
+**Escolhendo os hiperparâmetros (GridSearchCV).** A aula testa `max_depth` em {3, 5, 7, 10}, `min_samples_leaf` em {1, 5, 10, 20} e `criterion` em {gini, entropy} com **validação cruzada de 5 partições**. A melhor combinação é **entropy, `max_depth=3` e `min_samples_leaf=10`**, com acurácia média de **82,2%**; a árvore ajustada tem 85,6% no treino e **85,2% no teste** (treino e teste **próximos**: boa generalização). Repare no padrão: **a profundidade menor venceu**.
+
 
 **Vantagens:** exige pouca preparação (em geral **não precisa normalizar**), aceita variáveis numéricas e categóricas e é **"caixa branca"** (cada previsão é explicável por regras). **Desvantagens:** **sobreajuste**, **instabilidade** (pequenas mudanças nos dados geram árvores muito diferentes), sensibilidade a **classes desbalanceadas** e **dificuldade de extrapolar**. Treina-se tipicamente com **80% dos dados** e testa-se nos **20%** restantes; em classificação use **`stratify=y`**. Os **hiperparâmetros** (definidos antes do treino) controlam a árvore: `max_depth`, `min_samples_split`, `min_samples_leaf` e `criterion`. Atenção ao **vazamento de dados** (*data leakage*) e a **não usar IDs** (CPF, RG) como variáveis.
 
@@ -68,7 +109,15 @@ A **curva ROC/AUC** mostra a capacidade de distinguir as classes (a diagonal é 
 | **RMSE** | raiz do MSE; mesma unidade |
 | **R²** | proporção da variância explicada |
 
-> **Exemplo resolvido.** VP = 40, FN = 10, FP = 20, VN = 130. Precisão = 40/60 ≈ 0,67; recall = 40/50 = 0,80; F1 = 2·0,67·0,80/(0,67+0,80) ≈ **0,73**. Se o dano de perder um doente é grande, priorize o **recall**.
+> **Exemplo completo (a mesma base de doença cardíaca): a matriz de confusão da árvore sem poda no teste (54 pacientes).** Classe positiva = "com doença" (24 pacientes no teste):
+>
+> | | Previsto: com doença | Previsto: sem doença |
+> |---|---|---|
+> | **Real: com doença** | VP = 20 | FN = 4 |
+> | **Real: sem doença** | FP = 7 | VN = 23 |
+>
+> **Acurácia** = (20 + 23) ÷ 54 = **79,6%**. **Precisão** (dos que o modelo chamou de doentes, quantos eram) = 20 ÷ (20 + 7) = **0,74**. **Recall** (dos doentes de verdade, quantos ele pegou) = 20 ÷ (20 + 4) = **0,83**. **F1** = 2 · 0,74 · 0,83 ÷ (0,74 + 0,83) = **0,78**. Os 4 falsos negativos são **doentes que o modelo mandou para casa**: em medicina esse é o erro mais caro, então se prioriza o **recall**.
+
 
 A **validação cruzada K-fold** divide os dados em K partes e usa cada uma como teste uma vez; a média dos resultados é uma avaliação **mais robusta** (não depende da "sorte" de uma divisão).
 
@@ -105,6 +154,21 @@ O **XGBoost** é *gradient boosting* com árvores, acrescido de **regularizaçã
 | Quando usar | baseline, explicabilidade | robustez sem muito ajuste | alta performance (sensível a ajuste) |
 
 A estratégia sugerida é **começar simples**: Decision Tree → Random Forest → XGBoost.
+
+### Exemplo completo (da aula): Random Forest para prever clientes inativos
+
+A segunda aula usa **10.127 clientes de um banco**, com 20 variáveis (idade, renda, categoria do cartão, limite, transações...). O alvo é se o cliente ficou **Inativo** (churn): **1.627 inativos (16,1%)** e 8.500 ativos (83,9%), uma base **desbalanceada**. As variáveis categóricas viram colunas 0/1 (one-hot), e os dados se dividem em 80% treino (8.101) e 20% teste (2.026), com `stratify`.
+
+| Modelo | Acurácia no treino | Acurácia no teste | Precisão (Inativo) | Recall (Inativo) | F1 (Inativo) |
+|---|---|---|---|---|---|
+| **Árvore de decisão** (sem poda) | 100% | 92,9% | 0,785 | 0,766 | 0,776 |
+| **Random Forest** (100 árvores) | 100% | **95,7%** | **0,954** | 0,769 | **0,852** |
+
+**Como ler.** Os dois modelos têm 100% no treino (decoram os dados), mas **no teste a floresta é melhor**: a acurácia sobe de 92,9% para 95,7%, e a **precisão para a classe Inativo vai de 0,785 para 0,954** (a floresta quase não erra quando diz que alguém vai sair: só 12 falsos alarmes contra 68 da árvore). Isso ilustra o ganho do ensemble: **várias árvores treinadas em amostras diferentes e com variáveis sorteadas, cujas respostas são combinadas por votação, reduzem a variância** e o sobreajuste.
+
+**Um cuidado com o desbalanceamento.** O **recall** de Inativos ficou **parecido (0,77)** nos dois modelos: a floresta ainda deixa passar **75 dos 325 inativos** do teste. A acurácia de 95,7% **esconde** isso. Como o custo de perder um cliente que vai embora é alto, a aula **otimiza o recall** (com busca de hiperparâmetros e `scoring` por recall).
+
+**Quais variáveis importam** (a importância média na floresta): **Valor_Total_Transacoes (18,4%)**, **Quantidade_Total_Transacoes (14,7%)**, **Variacao_Quantidade_Transacoes_T4_T1 (10,5%)**, **Saldo_Rotativo_Total (10,3%)** e **Taxa_Media_Utilizacao_Credito (7,0%)**. O **comportamento recente de uso** (transacionar menos ao longo do ano) é o melhor sinal de que o cliente vai embora.
 
 ## O que levar daqui
 

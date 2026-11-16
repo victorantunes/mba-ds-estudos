@@ -39,7 +39,10 @@ Para uma variável quantitativa a pergunta natural é: *se eu tivesse de descrev
 
 A **média** soma tudo e divide por n; usa toda a informação, mas é puxada por valores extremos. A **mediana** é o valor do meio quando os dados estão ordenados; é **robusta** a extremos. A **moda** é o valor mais frequente.
 
-> **Exemplo resolvido.** Cinco salários, em milhares de reais: 3; 3,2; 3,5; 4 e 30. A média é \(\bar{x} = \frac{43{,}7}{5} = 8{,}74\), um valor que ninguém na amostra ganha: o salário de 30 arrastou a conta. A mediana vale 3,5 e descreve muito melhor o "salário típico".
+> **Exemplo ilustrativo (números inventados, para mostrar o efeito de um valor extremo).** Cinco salários, em milhares de reais: 3; 3,2; 3,5; 4 e 30. A média é \(\bar{x} = \frac{43{,}7}{5} = 8{,}74\), um valor que ninguém na amostra ganha: o salário de 30 arrastou a conta. A mediana vale 3,5 e descreve muito melhor o "salário típico".
+>
+> **Exemplo completo (da aula): preços de 100 produtos.** A planilha de apoio traz 100 preços em dólares. Resumo: **média = 190,77**, **mediana = 189**, **moda = 199**, mínimo 149 e máximo 239, **1º quartil = 179** e **3º quartil = 199**. Aqui média (190,77) e mediana (189) são **muito próximas**: não há valores extremos e a distribuição é quase **simétrica** (assimetria de 0,09). Compare com os salários acima, em que a média era mais que o dobro da mediana.
+
 
 ![Em uma distribuição com cauda à direita, a média fica acima da mediana](img/01_assimetria.png)
 
@@ -53,7 +56,10 @@ Dizer que a média é 100 não informa se os valores ficam entre 99 e 101 ou ent
 
 Divide-se por \(n-1\), e não por \(n\), porque a própria média já foi estimada a partir dos mesmos dados e "consumiu" um grau de liberdade. Como a variância está em unidade ao quadrado (reais², anos²), tira-se a raiz e obtém-se o **desvio padrão** \(s\), na mesma unidade dos dados.
 
-> **Exemplo resolvido.** Dados 2, 4 e 6 (média 4). Desvios: −2, 0 e 2. Quadrados: 4, 0 e 4, soma 8. Variância = 8 ÷ 2 = **4**; desvio padrão = **2**.
+> **Exemplo ilustrativo (números pequenos para fazer à mão).** Dados 2, 4 e 6 (média 4). Desvios: −2, 0 e 2. Quadrados: 4, 0 e 4, soma 8. Variância amostral = 8 ÷ (3 − 1) = **4**; desvio padrão = **2**. (Divide-se por \(n-1\) e não por \(n\) porque, numa amostra, a média já "gastou" um grau de liberdade.)
+>
+> **Exemplo completo (da aula): os mesmos 100 preços.** **Variância amostral = 244,02** e **desvio padrão = 15,62**. O **erro padrão da média** é \(s/\sqrt{n} = 15{,}62/\sqrt{100} = 1{,}56\): mede o quanto a *média amostral* variaria de amostra para amostra (e é ele que entra nos testes e nos intervalos de confiança). O **coeficiente de variação** é \(15{,}62/190{,}77 = 8{,}2\%\): o desvio é 8% da média, uma dispersão baixa.
+
 
 Três medidas derivadas respondem a perguntas diferentes:
 
@@ -82,7 +88,24 @@ Até aqui descrevemos dados que já tínhamos. Para dar o salto à população p
 | **Poisson** | nº de eventos numa **janela** (tempo, área), taxa média \(\lambda\) | \(\frac{e^{-\lambda}\lambda^k}{k!}\) | modelos de **contagem** |
 | **Binomial negativa** | nº de tentativas até k sucessos | — | contagem com superdispersão |
 
-> **Exemplo resolvido.** *Binomial:* lançando uma moeda 3 vezes, a chance de exatamente 2 caras é \(\binom{3}{2}\cdot 0{,}5^2\cdot 0{,}5 = 3 \times 0{,}125 = 0{,}375\). *Poisson:* se chegam em média 2 pacientes por ano (\(\lambda = 2\)), a chance de chegar exatamente 1 é \(e^{-2}\cdot 2 \approx 0{,}27\), isto é, 27%.
+> **Exemplo completo (da aula): Binomial e Poisson.**
+>
+> **Binomial** (conta sucessos em um número *fixo* de tentativas): probabilidade de sucesso \(p = 0{,}065\) em cada uma de \(n = 12\) repetições. A chance de exatamente \(k\) sucessos é \(P(X=k) = \binom{12}{k}\,0{,}065^k\,0{,}935^{12-k}\):
+>
+> | k | 0 | 1 | 2 | 3 | 4 |
+> |---|---|---|---|---|---|
+> | P(X = k) | 0,4464 | 0,3724 | **0,1424** | 0,0330 | **0,0052** |
+>
+> Então **P(k = 2) = 14,2%**, **P(k = 4) = 0,5%** e a chance de **no máximo 2 sucessos** é \(0{,}4464 + 0{,}3724 + 0{,}1424 = \) **96,1%**. (Conferindo um valor: \(P(X=2) = 66\times 0{,}065^2\times 0{,}935^{10} = 66\times 0{,}004225\times 0{,}5106 = 0{,}1424\).)
+>
+> **Poisson** (conta eventos numa janela, sem teto): taxa média \(\lambda = 2\) por período. \(P(X=k) = e^{-2}\,2^k/k!\):
+>
+> | k | 0 | 1 | 2 | 3 | 6 |
+> |---|---|---|---|---|---|
+> | P(X = k) | 0,1353 | **0,2707** | 0,2707 | **0,1804** | **0,0120** |
+>
+> A chance de **exatamente 1 evento** é \(e^{-2}\cdot 2 = 0{,}1353\times 2 = 27{,}1\%\); de **nenhum**, \(e^{-2} = 13{,}5\%\); de **6 ou mais** é pequena (1,2% para exatamente 6).
+
 
 **Como escolher.** Conto sucessos em um número *fixo* de tentativas? Binomial. Conto eventos soltos numa janela, sem teto natural? Poisson.
 
@@ -94,7 +117,17 @@ Para trabalhar com qualquer normal usa-se o **escore Z**, que responde "a quanto
 
 \[ Z = \frac{X - \mu}{\sigma} \]
 
-> **Exemplo resolvido.** Retorno médio de um ativo \(\mu = 2{,}8\%\), desvio \(\sigma = 1{,}2\%\). A chance de o retorno passar de 4% é a de \(Z\) passar de \(\frac{4 - 2{,}8}{1{,}2} = 1\), aproximadamente **16%**.
+> **Exemplo completo (da aula): a normal com média de 2,8% e desvio de 1,2%** (por exemplo, o retorno de um ativo). Para achar probabilidades, **padroniza-se**: \(Z = (X - \mu)/\sigma\) e consulta-se a tabela da normal padrão.
+>
+> | Pergunta | Z | Probabilidade |
+> |---|---|---|
+> | **P(X > 4%)** | \(\frac{4 - 2{,}8}{1{,}2} = 1{,}00\) | \(P(Z > 1) = \) **15,87%** |
+> | **P(X < 3%)** | \(\frac{3 - 2{,}8}{1{,}2} = 0{,}17\) | \(P(Z < 0{,}17) = \) **56,6%** |
+> | **P(X < 0%)** | \(\frac{0 - 2{,}8}{1{,}2} = -2{,}33\) | \(P(Z < -2{,}33) = \) **0,98%** |
+> | **P(1% < X < 5%)** | de \(-1{,}50\) a \(+1{,}83\) | \(0{,}9667 - 0{,}0668 = \) **90,0%** |
+>
+> Em palavras: há 15,9% de chance de o retorno passar de 4%, e apenas 1% de chance de ele ser negativo; em 90% das vezes ele fica entre 1% e 5%.
+
 
 Três outras distribuições entram porque aparecem nos testes que veremos já:
 
@@ -118,11 +151,20 @@ Para medir "improvável" usa-se o **p-valor**: a probabilidade de observar um re
 
 Não rejeitar quer dizer apenas "evidência insuficiente", e não "H0 é verdadeira". Há duas maneiras de errar: o **erro tipo I** é rejeitar H0 sendo ela verdadeira (probabilidade igual a α, o "alarme falso"); o **erro tipo II** é não rejeitar H0 sendo ela falsa (o culpado que passou).
 
-> **Exemplo resolvido (teste t).** A estatística do teste mede a diferença em unidades de erro padrão:
-> \[ t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{104 - 100}{10/\sqrt{25}} = \frac{4}{2} = 2{,}0 \qquad (gl = n - 1 = 24) \]
-> O valor crítico bilateral a 5% é cerca de 2,064. Como 2,0 < 2,064, **não rejeitamos H0**: apesar de 4 g parecer muito, com essa variabilidade e esse tamanho de amostra a diferença poderia ser acaso.
+> **Exemplo completo (da aula): teste Z para a média.** Uma fábrica de caixas de papelão usa historicamente **100 g** de papelão por caixa, com **desvio padrão de 12 g** (conhecido). Na linha de produção, parece que o consumo **aumentou**. Foram medidas **40 caixas** e a média amostral foi **104,075 g**.
+>
+> 1. **Hipóteses:** H0: \(\mu = 100\) (continuamos no padrão); H1: \(\mu > 100\) (o consumo aumentou). É um teste **unilateral à direita**, porque a suspeita é de aumento.
+> 2. **Estatística de teste:** \(Z = \dfrac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} = \dfrac{104{,}075 - 100}{12/\sqrt{40}} = \dfrac{4{,}075}{1{,}897} = \) **2,148**.
+> 3. **Decisão:** com \(\alpha = 5\%\), o valor crítico unilateral é **1,645**. Como 2,148 > 1,645 (e o **p-valor** é **0,0159 < 0,05**), **rejeita-se H0**: há evidência de que o consumo de papelão **aumentou**.
+>
+> **Quando o desvio padrão é desconhecido, usa-se o teste t.** Exemplo (da aula): o tempo médio de processamento de uma tarefa numa máquina era de **18 minutos**. Depois de mudanças no processo, coletou-se uma amostra de **25** execuções, com **média 16,808 min** e **desvio padrão amostral 2,733 min**. H0: \(\mu = 18\); H1: \(\mu < 18\) (o tempo diminuiu).
+>
+> \[ t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{16{,}808 - 18}{2{,}733/\sqrt{25}} = \frac{-1{,}192}{0{,}5466} = -2{,}181 \qquad (gl = n - 1 = 24) \]
+>
+> O **p-valor unicaudal** é **0,0196**. A decisão **depende do α**: com \(\alpha = 5\%\), o crítico é −1,711 e **rejeita-se H0** (p = 0,0196 < 0,05); com \(\alpha = 1\%\) (o nível usado na aula), o crítico é −2,492 e **não se rejeita H0** (p = 0,0196 > 0,01): a evidência de redução **não é forte o bastante** para esse rigor. A conclusão não é "o tempo não mudou", e sim "com um α de 1%, os dados não bastam".
 
-![A estatística t = 2,0 cai antes do valor crítico](img/01_teste_t.png)
+
+![A estatística t = −2,18: rejeita a 5%, mas não a 1%](img/01_teste_t.png)
 
 Repare como a decisão combina três coisas: o **tamanho da diferença**, a **variabilidade** dos dados e o **tamanho da amostra**.
 
@@ -154,7 +196,41 @@ flowchart TD
 | médias de 2 grupos | **t de duas amostras** (após o F) | variância combinada se iguais; Welch se diferentes | — |
 | 1 categórica: observado × esperado | **χ² de aderência** | \(\sum \frac{(O-E)^2}{E}\) | \(k-1\) |
 
-> **Exemplo resolvido (qui-quadrado).** Tabela 2×2 com 100 casos, linhas = sexo, colunas = comprou/não comprou: observados \(\begin{pmatrix}30&20\\10&40\end{pmatrix}\). Totais: linhas 50 e 50; colunas 40 e 60. Os esperados são \(\frac{50\times40}{100}=20\), 30, 20 e 30. Então \(\chi^2 = \frac{10^2}{20}+\frac{10^2}{30}+\frac{10^2}{20}+\frac{10^2}{30} \approx 16{,}7\), com 1 grau de liberdade. O crítico a 5% é 3,84; como 16,7 > 3,84, **rejeita-se H0: há associação**.
+> **Exemplo completo (da aula): qui-quadrado de associação, operadora × satisfação.** 200 clientes classificados pela **operadora de plano de saúde** (Total Health, Viva Vida e Mena Saúde) e pelo **nível de satisfação** (baixo, médio, alto). H0: as variáveis são **independentes**.
+>
+> **Frequências observadas:**
+>
+> | Operadora | Baixo | Médio | Alto | Total |
+> |---|---|---|---|---|
+> | Total Health | 40 | 16 | 12 | 68 |
+> | Viva Vida | 32 | 24 | 16 | 72 |
+> | Mena Saúde | 24 | 32 | 4 | 60 |
+> | **Total** | **96** | **72** | **32** | **200** |
+>
+> **Frequências esperadas** (se fossem independentes): \(E = \frac{\text{total da linha}\times\text{total da coluna}}{N}\). Por exemplo, Total Health × Baixo: \(68\times 96/200 = 32{,}64\).
+>
+> | Operadora | Baixo | Médio | Alto |
+> |---|---|---|---|
+> | Total Health | 32,64 | 24,48 | 10,88 |
+> | Viva Vida | 34,56 | 25,92 | 11,52 |
+> | Mena Saúde | 28,80 | 21,60 | 9,60 |
+>
+> **Estatística:** \(\chi^2 = \sum\frac{(O-E)^2}{E}\) = **15,86**, com \(gl = (3-1)(3-1) = 4\). O crítico a 5% é **9,49**, e o **p-valor é 0,0032**: **rejeita-se H0, há associação** entre operadora e satisfação. Os **resíduos padronizados ajustados** mostram onde: a **Total Health** tem **mais** satisfação baixa que o esperado (+2,20), a **Mena Saúde** tem **mais satisfação média** (+3,34) e **menos alta** (−2,36), a **Total Health** tem também **menos satisfação média** que o esperado (−2,64); os demais cruzamentos ficam dentro do acaso (entre −1,96 e +1,96). A intensidade da associação (V de Cramér) é **0,20**, moderada.
+>
+> **Qui-quadrado de aderência (uma amostra).** Uma loja vendeu **210 unidades** na semana. Se o dia da semana não influenciasse, esperaria **210 ÷ 7 = 30 por dia**. Observado: Dom 35, Seg 24, Ter 27, Qua 32, Qui 25, Sex 36, Sáb 31. \(\chi^2 = \frac{5^2}{30} + \frac{6^2}{30} + \frac{3^2}{30} + \frac{2^2}{30} + \frac{5^2}{30} + \frac{6^2}{30} + \frac{1^2}{30} = \) **4,53**, com \(gl = 7 - 1 = 6\); o crítico a 5% é 12,59 e o **p-valor é 0,605**. **Não se rejeita H0**: a diferença entre os dias pode ser acaso (as vendas parecem uniformes).
+>
+> **Outros testes da planilha de apoio.**
+>
+> | Teste | Dados | Resultado | Decisão (α = 5%) |
+> |---|---|---|---|
+> | **Correlação de Pearson** (H0: ρ = 0) | notas de 30 alunos em Matemática e Física | r = **0,603**, t = 3,99, p = **0,0004** | rejeita H0: há correlação positiva |
+> | Pearson, Matemática × Literatura | as mesmas 30 notas | r = −0,309, t = −1,72, p = 0,097 | **não** rejeita H0 |
+> | **Teste F de variâncias** (H0: variâncias iguais) | duas rotas, 35 medições cada: variâncias 266,4 e 110,2 | F = 266,4/110,2 = **2,42** (gl 34 e 34), p = **0,006** | rejeita H0: a rota B é **mais variável** |
+> | **Teste t de duas amostras independentes** (H0: médias iguais) | temperatura de dois fornos, 15 medições cada: médias 195,05 °C e 190,79 °C, variâncias 9,91 e 6,63 | variância agrupada 8,27 (\(S_p = 2{,}876\)); \(t = \frac{195{,}05 - 190{,}79}{2{,}876\sqrt{1/15 + 1/15}} = 4{,}06\) (gl = 28), crítico 2,048, p = **0,0004** | rejeita H0: o forno A é **mais quente** |
+> | **Intervalo de confiança da média** (95%) | 25 peças: média 47 cm, desvio 1 cm | \(47 \pm 2{,}064\times\frac{1}{\sqrt{25}} = 47 \pm 0{,}413\) | de **46,59 a 47,41 cm** |
+>
+> (Antes do t de duas amostras, o professor faz o **teste F**: como as variâncias dos fornos são parecidas, o F de 1,49 fica abaixo do crítico de 2,48, e então se usa a **variância agrupada**.) Em todos, a decisão é a mesma: **p < α rejeita H0**.
+
 
 Um **intervalo de confiança** diz o mesmo de outra forma: em vez de responder sim/não, entrega a faixa de valores plausíveis para a média, \(\bar{x} \pm t\cdot EP\). Se o valor de H0 estiver fora do intervalo de 95%, o teste a 5% rejeita H0.
 

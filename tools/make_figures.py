@@ -53,19 +53,18 @@ def f01_teste_t():
     df = 24
     x = np.linspace(-4.5, 4.5, 500)
     y = stats.t.pdf(x, df)
-    crit = stats.t.ppf(0.975, df)
-    fig, ax = plt.subplots(figsize=(7, 3.2))
+    c5, c1 = stats.t.ppf(0.05, df), stats.t.ppf(0.01, df)
+    fig, ax = plt.subplots(figsize=(7, 3.4))
     ax.plot(x, y, color="black", lw=1.5)
-    for sgn in (-1, 1):
-        m = (sgn * x) >= crit
-        ax.fill_between(x[m], y[m], color=C2, alpha=.6)
-    ax.axvline(2.0, color=C1, lw=2)
-    ax.text(2.05, 0.30, "t calculado = 2,0", color=C1, ha="left")
-    ax.text(crit + .05, 0.05, "crítico\n±2,064", color=C2, ha="left", fontsize=9)
-    ax.text(0, 0.18, "não rejeita H0", ha="center", color=GR)
-    ax.text(-3.4, 0.03, "rejeita H0\n(2,5%)", ha="center", color=C2, fontsize=9)
+    ax.fill_between(x[x <= c5], y[x <= c5], color="#f4b183", alpha=.7)
+    ax.fill_between(x[x <= c1], y[x <= c1], color=C2, alpha=.8)
+    ax.axvline(-2.181, color=C1, lw=2)
+    ax.text(-2.1, 0.30, "t calculado = −2,181\n(p unicaudal = 0,0196)", color=C1, ha="left", fontsize=9)
+    ax.text(c5 - .05, 0.12, "crítico 5%\n−1,711", color=C2, ha="right", fontsize=8.5)
+    ax.text(c1 - .05, 0.03, "crítico 1%\n−2,492", color=C2, ha="right", fontsize=8.5)
+    ax.text(1.2, 0.18, "não rejeita H0", ha="center", color=GR)
     ax.set_yticks([])
-    ax.set_title("Teste t (24 gl, α = 5%): 2,0 cai na região de não rejeição")
+    ax.set_title("Teste t unicaudal (24 gl): rejeita a 5%, mas não a 1%")
     save(fig, "01_teste_t")
 
 
