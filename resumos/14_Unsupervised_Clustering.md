@@ -54,7 +54,23 @@ O esquema é simples: começa-se com **n clusters** (cada observação sozinha),
 
 **Quantos clusters?** Procure **saltos grandes** de distância no dendrograma: um salto grande significa que você está unindo grupos **muito diferentes**, então corte **antes** dele.
 
-**Quais variáveis formaram os grupos?** Usa-se a **ANOVA (teste F)**: \(F = \frac{\text{variabilidade entre grupos}}{\text{variabilidade dentro dos grupos}}\), com gl = \(K - 1\) e \(n - K\). Se **p < α**, a média da variável difere em ao menos um cluster: ela **contribuiu**. Com n = 30 e K = 3, o F tem gl = 2 e 27.
+**Quais variáveis formaram os grupos?** Depois de formar os clusters, pergunta-se, **variável por variável**: *os grupos realmente se diferenciam nela?* Quem responde é a **ANOVA (teste F)**, que compara dois tipos de variação:
+
+- **entre grupos**: o quanto as **médias dos clusters** se afastam umas das outras;
+- **dentro dos grupos**: o quanto as observações **variam dentro de cada cluster**.
+
+\[ F = \frac{\text{variação entre grupos}}{\text{variação dentro dos grupos}} \]
+
+Se os clusters têm médias bem diferentes e cada um é "apertado" por dentro, o F fica **grande**: a variável **separou** os grupos. Se as médias são parecidas, o F fica **perto de 1**: a variável não ajudou.
+
+> **Exemplo.** 6 clientes em 2 clusters, variável **idade**: cluster A = 20, 22, 24 (média 22); cluster B = 40, 42, 44 (média 42); média geral = 32.
+> - Entre grupos: 3·(22 − 32)² + 3·(42 − 32)² = 300 + 300 = **600**
+> - Dentro dos grupos: (4 + 0 + 4) + (4 + 0 + 4) = **16**
+> - Dividindo cada soma pelos seus graus de liberdade (K − 1 = 1 e n − K = 4): 600 ÷ 1 = 600 e 16 ÷ 4 = 4, então **F = 600 ÷ 4 = 150**.
+>
+> F enorme, p-valor minúsculo: a idade **separou** os grupos. Se fosse a altura, com médias quase iguais nos dois clusters, o F ficaria perto de 1.
+
+**Como decidir.** Se o **p-valor < α** (por exemplo 0,05), a média da variável difere em **ao menos um** cluster: ela **contribuiu** para formar os grupos. Os graus de liberdade (gl) são **K − 1** (entre grupos) e **n − K** (dentro). Com n = 30 e K = 3, o F tem gl = 2 e 27.
 
 ## 3. Método não hierárquico: K-means
 
