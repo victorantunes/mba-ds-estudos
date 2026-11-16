@@ -40,33 +40,7 @@ def f17_regressao():
 # (os gráficos do cap. 18 agora vêm de dados reais: tools/make_figures7.py)
 
 
-def f22_decomposicao():
-    t = np.arange(48)
-    tend = 100 + 1.2 * t
-    saz = 12 * np.sin(2 * np.pi * t / 12)
-    rng = np.random.default_rng(5)
-    ruido = rng.normal(0, 3, size=48)
-    y = tend + saz + ruido
-    fig, ax = plt.subplots(4, 1, figsize=(7, 6), sharex=True)
-    for a, s, t_, c in zip(ax, [y, tend, saz, ruido], ["Série (Y)", "Tendência (T)", "Sazonalidade (S)", "Erro (E)"], [C1, C2, C3, GR]):
-        a.plot(t, s, color=c); a.set_ylabel(t_, fontsize=9)
-    ax[-1].set_xlabel("mês")
-    fig.suptitle("Decomposição aditiva: Y = T + S + E", y=0.995)
-    save(fig, "22_decomposicao")
-
-
-def f22_acf_pacf():
-    lags = np.arange(1, 11)
-    ar_acf = 0.8 ** lags
-    ar_pacf = np.array([0.8] + [0] * 9)
-    ma_acf = np.array([0.6] + [0] * 9)
-    ma_pacf = (-0.6) ** lags * 0.6 ** 0 * 0.55
-    fig, ax = plt.subplots(2, 2, figsize=(8, 5))
-    data = [("AR(1): ACF decai", ar_acf), ("AR(1): PACF corta no lag 1", ar_pacf), ("MA(1): ACF corta no lag 1", ma_acf), ("MA(1): PACF decai", ma_pacf)]
-    for a, (tt, v) in zip(ax.ravel(), data):
-        a.bar(lags, v, color=C1, width=.35); a.axhline(0, color="black", lw=.8)
-        a.set_title(tt, fontsize=10); a.set_ylim(-1, 1)
-    save(fig, "22_acf_pacf")
+# (os gráficos do cap. 22 agora vêm da série e da simulação da aula: tools/make_figures8.py)
 
 
 ALL = {k[1:]: v for k, v in list(globals().items()) if k.startswith("f") and k[1:3].isdigit() and callable(v)}
