@@ -71,6 +71,8 @@ Aqui o **K é definido a priori**. O algoritmo escolhe K centroides iniciais, al
 
 ![Cotovelo e silhueta apontando K = 3](img/14_cotovelo_silhueta.png)
 
+> **Como ler o eixo y.** No cotovelo, o eixo y é a **WCSS** (a mesma soma dos quadrados do exemplo acima). Ela **sempre cai** quando K aumenta, chegando a 0 quando K = número de observações; por isso não se escolhe o K de menor WCSS, e sim o ponto onde a queda **deixa de ser grande**. Os números do gráfico (310, 140, 52…) vêm de um conjunto **ilustrativo, maior** que o exemplo dos 4 pontos, e **não são comparáveis** com o 2,5 dele: a WCSS cresce com o número de observações e com a escala das variáveis, então só faz sentido comparar valores de K **dentro do mesmo conjunto de dados**. Para os 4 pontos, K = 1 daria 32,75; K = 2 daria 2,5; e K = 3, 0,5.
+
 > **Exemplo (silhueta).** Se a = 2 e b = 6, então s = (6 − 2) ÷ 6 ≈ **0,67**: a observação está bem alocada.
 
 **Hierárquico × K-means.** O hierárquico é analítico e mostra o passo a passo, mas é difícil com muitas observações; o **K-means é objetivo e escala melhor**. O hierárquico pode sugerir o K inicial.
