@@ -74,7 +74,7 @@ Segundo David Bohm, o **debate** busca vencer; o **diálogo** é "fluxo de signi
 
 Com pouca diversidade, os consensos são fáceis, mas há risco de polarização e de calar os divergentes. **Colaboração com diversidade** gera mais alternativas e maior chance de acerto.
 
-> **Exemplo resolvido.** Um time de dados está dividido sobre adotar um modelo "caixa-preta". No **debate**, cada lado tenta vencer. No **diálogo**, todos expõem suas razões até construir um entendimento comum (talvez: usar o modelo, com monitoramento e explicabilidade). Na **colaboração**, negócio, dados e compliance desenham juntos o processo.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Um time de dados está dividido sobre adotar um modelo "caixa-preta". No **debate**, cada lado tenta vencer. No **diálogo**, todos expõem suas razões até construir um entendimento comum (talvez: usar o modelo, com monitoramento e explicabilidade). Na **colaboração**, negócio, dados e compliance desenham juntos o processo.
 
 ## O que levar daqui
 

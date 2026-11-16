@@ -56,7 +56,7 @@ Os **direitos do titular** incluem confirmação do tratamento, **acesso**, corr
 
 As **sanções administrativas** vão de advertência a multa simples de **até 2% do faturamento, limitada a R$ 50 milhões por infração**, multa diária, publicização da infração, bloqueio ou eliminação dos dados, suspensão do banco de dados (até 6 meses) ou da atividade de tratamento e proibição de atividades. Há também impacto reputacional.
 
-> **Exemplo resolvido.** Uma loja coleta CPF, endereço e data de nascimento para emitir nota fiscal (**base: obrigação legal**) e, separadamente, pede o e-mail para enviar promoções (**base: consentimento**). Usar o endereço para criar um perfil de crédito sem avisar viola a **finalidade**. Pedir a religião do cliente "por curiosidade" viola a **necessidade** (e é dado sensível).
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Uma loja coleta CPF, endereço e data de nascimento para emitir nota fiscal (**base: obrigação legal**) e, separadamente, pede o e-mail para enviar promoções (**base: consentimento**). Usar o endereço para criar um perfil de crédito sem avisar viola a **finalidade**. Pedir a religião do cliente "por curiosidade" viola a **necessidade** (e é dado sensível).
 
 ## 3. Segurança da informação
 

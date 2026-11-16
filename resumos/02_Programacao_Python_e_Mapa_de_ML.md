@@ -57,7 +57,7 @@ flowchart TD
 
 Além dessas técnicas, há famílias flexíveis que servem a vários casos: **árvores, random forest, boosting, SVM e redes neurais**.
 
-> **Exemplo resolvido.** *Problema A:* prever se um cliente vai cancelar a assinatura (sim/não) a partir de idade e renda. Há um Y (cancelar), logo é supervisionado; Y tem duas categorias, logo **logística binária** (ou uma árvore). *Problema B:* descobrir perfis de clientes, sem nenhum rótulo prévio, usando gasto e frequência de compra. Não há Y, logo é não supervisionado; as variáveis são quantitativas, logo **clustering**.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** *Problema A:* prever se um cliente vai cancelar a assinatura (sim/não) a partir de idade e renda. Há um Y (cancelar), logo é supervisionado; Y tem duas categorias, logo **logística binária** (ou uma árvore). *Problema B:* descobrir perfis de clientes, sem nenhum rótulo prévio, usando gasto e frequência de compra. Não há Y, logo é não supervisionado; as variáveis são quantitativas, logo **clustering**.
 
 ## 4. Python no curso, só o que vale lembrar
 

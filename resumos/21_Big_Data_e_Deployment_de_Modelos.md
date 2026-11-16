@@ -19,7 +19,7 @@ flowchart LR
 
 O modelo passa por seis etapas: (1) coleta e preparação, (2) treinamento e validação, (3) **deploy**, (4) **monitoramento contínuo**, (5) atualização e retreinamento, (6) **aposentadoria** quando fica desatualizado. Os desafios do deploy são o **data drift**, a diferença entre os ambientes de desenvolvimento e produção, o monitoramento pós-deploy e o **versionamento** (um mesmo modelo pode ter dezenas de versões, que devem ser promovidas sem "derrubar e subir" o serviço).
 
-> **Exemplo resolvido (data drift).** Um modelo de crédito é treinado com clientes de 2022. Em 2025 a renda média e o perfil mudaram e a taxa de default subiu: a **acurácia medida no treino não se mantém**. O monitoramento detecta a queda e dispara o retreinamento. **Data drift** é exatamente essa mudança na distribuição dos dados (ou de Y) em produção.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; data drift).** Um modelo de crédito é treinado com clientes de 2022. Em 2025 a renda média e o perfil mudaram e a taxa de default subiu: a **acurácia medida no treino não se mantém**. O monitoramento detecta a queda e dispara o retreinamento. **Data drift** é exatamente essa mudança na distribuição dos dados (ou de Y) em produção.
 
 ## 2. MLOps e MLflow
 
@@ -34,7 +34,7 @@ O modelo passa por seis etapas: (1) coleta e preparação, (2) treinamento e val
 
 O modelo é **servido** por **API REST**, que funciona como uma barreira entre as regras de negócio e o usuário.
 
-> **Exemplo resolvido (fluxo).** Você treina cinco variações; o **Tracking** registra parâmetros e métricas de cada uma; a melhor vai para o **Registry** como versão 4; é promovida a **Production**; o **Model** é servido como endpoint REST, com a **signature** validando a entrada.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; fluxo).** Você treina cinco variações; o **Tracking** registra parâmetros e métricas de cada uma; a melhor vai para o **Registry** como versão 4; é promovida a **Production**; o **Model** é servido como endpoint REST, com a **signature** validando a entrada.
 
 ## 3. Big Data
 
@@ -58,7 +58,7 @@ Para processar tanto dado, usa-se um **cluster**: vários computadores em rede, 
 
 No Spark, uma **DAG** (grafo acíclico dirigido) descreve o plano das operações: *direcionado* (as arestas têm sentido) e *acíclico* (sem ciclos), o que permite otimizar e paralelizar. Os dados vivem em **RDDs**, coleções **distribuídas, resilientes (recuperam por recomputação) e imutáveis**. As **transformações** (`map`, `filter`) são **lazy**: só planejam. As **ações** (`count`, `collect`) é que disparam a execução. Há ainda **DataFrames/Spark SQL** (otimizador **Catalyst**), **MLlib** e **Streaming**.
 
-> **Exemplo resolvido (lazy).** `df.filter(preco > 100).select("id")` **não faz nada** ainda; só ao chamar `df.count()` o Spark monta o DAG e executa tudo de uma vez.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; lazy).** `df.filter(preco > 100).select("id")` **não faz nada** ainda; só ao chamar `df.count()` o Spark monta o DAG e executa tudo de uma vez.
 
 Com muito dado, **amostre** para explorar e use ferramenta **distribuída** quando o pandas não cabe em memória.
 

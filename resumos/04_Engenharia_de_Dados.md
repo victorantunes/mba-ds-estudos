@@ -29,7 +29,7 @@ flowchart LR
 
 Tratar nulos significa decidir entre **remover** a linha ou **preencher** (com média, mediana ou uma regra de negócio).
 
-> **Exemplo resolvido.** Vendas chegam por API (JSON), por planilha (CSV) e do ERP (SQL). O pipeline lê as três fontes, padroniza datas e moedas, remove duplicados e grava tudo em uma única tabela no data warehouse. Os analistas passam a consultar só essa tabela.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Vendas chegam por API (JSON), por planilha (CSV) e do ERP (SQL). O pipeline lê as três fontes, padroniza datas e moedas, remove duplicados e grava tudo em uma única tabela no data warehouse. Os analistas passam a consultar só essa tabela.
 
 **Big Data.** O termo foi usado em 1998 (John Mashey) e, em 2001, surgem os **3 Vs: Volume, Velocidade e Variedade**. A resposta histórica foi dividir os dados em **clusters** com hardware comum, o que originou o Hadoop. Um alerta de maturidade: poucos dados **não precisam** de microsserviços nem de cluster; o engenheiro não deve criar problemas que não existem.
 

@@ -58,7 +58,7 @@ flowchart TD
 | Uso típico | transações, ERP | grande escala, velocidade |
 | Tipos | MySQL, PostgreSQL, RDS | **documentos** (MongoDB), **chave-valor** (Redis), **colunar** (Cassandra), **grafo** (Neo4j) |
 
-> **Exemplo resolvido.** Um app de ingressos: front em PaaS, banco **SQL** gerenciado (transações precisam de ACID), cache em **Redis** (chave-valor) e geração de PDFs por **serverless** disparado a cada compra.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Um app de ingressos: front em PaaS, banco **SQL** gerenciado (transações precisam de ACID), cache em **Redis** (chave-valor) e geração de PDFs por **serverless** disparado a cada compra.
 
 ## 4. Responsabilidades: segurança e custo
 

@@ -32,7 +32,7 @@ D.I.C.E. pontua quatro fatores, e **quanto menor a nota, melhor**:
 | 15 a 17 | **WORRY** | preocupante |
 | 18 a 28 | **WOE** | alto risco |
 
-> **Exemplo resolvido.** D = 2, I = 1, C1 = 2, C2 = 2, E = 1 → \(2 + 2\cdot1 + 2\cdot2 + 2 + 1 = 11\) → **WIN**. Com D = 3, I = 2, C1 = 3, C2 = 2, E = 2 → \(3+4+6+2+2 = 17\) → **WORRY**.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** D = 2, I = 1, C1 = 2, C2 = 2, E = 1 → \(2 + 2\cdot1 + 2\cdot2 + 2 + 1 = 11\) → **WIN**. Com D = 3, I = 2, C1 = 3, C2 = 2, E = 2 → \(3+4+6+2+2 = 17\) → **WORRY**.
 
 ## 3. A natureza do problema define a abordagem
 

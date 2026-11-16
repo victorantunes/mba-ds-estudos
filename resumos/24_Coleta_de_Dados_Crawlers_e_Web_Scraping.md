@@ -35,7 +35,7 @@ Se o site oferece uma **API JSON**, ela é melhor que raspar HTML.
 
 "A web é um quarto bagunçado": páginas são imprevisíveis. Por isso, use **`try/except`**, **timeout**, confira o **`status_code`/`raise_for_status`**, envie um **User-Agent**, faça **pausas (`time.sleep`)** entre requisições e **respeite o `robots.txt`**. Exemplos de código: `requests.get(url, headers=..., timeout=15)`; `BeautifulSoup(res.text, "lxml")`; `soup.find_all("article", class_="product_pod")`; `.get_text(strip=True)`. Os dados extraídos viram dicionários ou DataFrames e entram no ETL.
 
-> **Exemplo resolvido (fluxo).** (1) `requests.get` na página de produtos; (2) confere `status_code == 200`; (3) `BeautifulSoup` encontra cada `article.product_pod`; (4) extrai título e preço; (5) guarda em um DataFrame; (6) `sleep(1)` e repete na próxima página.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; fluxo).** (1) `requests.get` na página de produtos; (2) confere `status_code == 200`; (3) `BeautifulSoup` encontra cada `article.product_pod`; (4) extrai título e preço; (5) guarda em um DataFrame; (6) `sleep(1)` e repete na próxima página.
 
 ## 3. Aspectos legais e éticos
 

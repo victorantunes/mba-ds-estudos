@@ -48,7 +48,7 @@ Antes de desenhar, três perguntas ordenam o trabalho: *o que* quero mostrar, *c
 
 O critério final é a **interpretabilidade**: o melhor gráfico é o que o leitor entende, e não o mais bonito. Erros recorrentes: excesso de dados, visual inadequado, informação repetida, ausência de título e de padrão de cores. Um painel profissional segue uma **hierarquia visual** (tamanhos de fonte, posição, grade) e respeita a identidade visual do cliente. Dois termos aparecem com frequência: **drill down** (detalhar do nível agregado para o granular, como ir de "vendas do país" para "vendas da loja") e **UX** (a experiência do usuário ao interpretar o que vê).
 
-> **Exemplo resolvido.** "Vendas mensais dos últimos 24 meses" pede um gráfico de **linha**. "Participação de cada região nas vendas do ano" pede uma **rosca** se houver quatro ou cinco regiões, e **barras ordenadas** se houver quinze.
+> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** "Vendas mensais dos últimos 24 meses" pede um gráfico de **linha**. "Participação de cada região nas vendas do ano" pede uma **rosca** se houver quatro ou cinco regiões, e **barras ordenadas** se houver quinze.
 
 ## 3. A ferramenta: Power BI
 
