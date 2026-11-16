@@ -41,19 +41,37 @@ A PCA **agrupa variáveis (colunas)** em fatores; o cluster agrupa **observaçõ
 
 ![Gráfico de autovalores com o critério de Kaiser](img/15_autovalores.png)
 
-> **Exemplo resolvido.** Quatro variáveis; autovalores 2,6; 1,1; 0,2 e 0,1 (soma = 4). Variância de cada fator: 65%; 27,5%; 5%; 2,5%. Kaiser mantém os **dois primeiros** (λ > 1), que acumulam **92,5%** da variância.
+> **Exemplo ilustrativo (números inventados só para a conta; o caso real está na seção 3).** Quatro variáveis; autovalores 2,6; 1,1; 0,2 e 0,1 (soma = 4). Variância de cada fator: 65%; 27,5%; 5%; 2,5%. Kaiser mantém os **dois primeiros** (λ > 1), que acumulam **92,5%** da variância.
 
 **Passo 5: as cargas fatoriais (loadings).** São as **correlações** entre cada variável original e cada fator; servem para **interpretar** o fator (se as variáveis de finanças, custos e marketing têm cargas altas no fator 1, ele é um "fator de gestão"). A **rotação** (ex.: varimax) deixa a interpretação mais limpa sem mudar a variância total acumulada.
 
 **Passo 6: a comunalidade.** É a parte da variância de **cada variável original** retida pelos fatores mantidos.
 
-> **Exemplo resolvido.** Uma variável com carga 0,8 no fator 1 e 0,3 no fator 2 tem comunalidade \(0{,}8^2 + 0{,}3^2 = 0{,}64 + 0{,}09 = 0{,}73\): 73% da sua variância é explicada pelos dois fatores.
+> **Exemplo ilustrativo (números inventados só para a conta; o caso real está na seção 3).** Uma variável com carga 0,8 no fator 1 e 0,3 no fator 2 tem comunalidade \(0{,}8^2 + 0{,}3^2 = 0{,}64 + 0{,}09 = 0{,}73\): 73% da sua variância é explicada pelos dois fatores.
 
-**Passo 7: ranking ou índice.** Cada fator é ponderado pelo seu percentual de variância:
+**Passo 7: ranking ou índice (soma ponderada e ordenamento).** Depois da extração, cada observação tem um valor em cada fator (**F₁, F₂, …**). Para resumir tudo em **uma única nota**, somam-se os fatores, mas **não com o mesmo peso**: um fator que explica mais variância carrega mais informação e deve contar mais.
 
-\[ R_i = F_{1i}\cdot(\%\text{var}_1) + F_{2i}\cdot(\%\text{var}_2) + \cdots \]
+**De onde vêm os pesos.** Vêm dos **autovalores** do Passo 3:
 
-> **Exemplo resolvido.** Observação com \(F_1 = 1{,}2\) e \(F_2 = -0{,}4\): \(R = 1{,}2\cdot 0{,}65 + (-0{,}4)\cdot 0{,}275 = 0{,}78 - 0{,}11 = 0{,}67\). Depois ordena-se todas as observações por R.
+1. **Percentual de variância de cada fator** = autovalor ÷ K (K = nº de variáveis, que é também a soma de todos os autovalores).
+2. **Some só os fatores que você manteve** (os de Kaiser).
+3. **Normalize** dividindo cada percentual por essa soma, para os pesos somarem **100%** (a aula recomenda isso). Normalizar não muda a ordem do ranking; só deixa a escala mais clara.
+
+\[ R_i = w_1\,F_{1i} + w_2\,F_{2i} + \cdots, \qquad w_j = \frac{\lambda_j/K}{\sum_{\text{retidos}} \lambda_m/K} \]
+
+Por fim, **ordena-se** todas as observações por R (do maior para o menor).
+
+> **Exemplo resolvido, passo a passo (dados reais do Atlas, seção 3 abaixo).** Com K = 9 variáveis, os dois fatores retidos têm autovalores 4,956 e 1,164.
+>
+> **1. Percentual de variância:** \(4{,}956/9 = 55{,}07\%\) e \(1{,}164/9 = 12{,}94\%\).
+> **2. Soma dos retidos:** \(55{,}07 + 12{,}94 = 68{,}00\%\).
+> **3. Pesos normalizados:** \(w_1 = 55{,}07/68{,}00 = 0{,}8098\) (81%) e \(w_2 = 12{,}94/68{,}00 = 0{,}1902\) (19%). Soma = 100%.
+>
+> **4. A nota de cada distrito.** Jardim Paulista tem \(F_1 = 2{,}467\) e \(F_2 = -0{,}493\): \(R = 2{,}467\cdot 0{,}8098 + (-0{,}493)\cdot 0{,}1902 = 1{,}998 - 0{,}094 = \mathbf{1{,}90}\). Morumbi tem \(F_1 = 1{,}166\) e \(F_2 = -3{,}021\): \(R = 1{,}166\cdot 0{,}8098 + (-3{,}021)\cdot 0{,}1902 = 0{,}944 - 0{,}575 = \mathbf{0{,}37}\).
+>
+> **5. Ordenar.** Jardim Paulista (1,90) fica à frente de Morumbi (0,37). Repare que, **só pelo Fator 1, Morumbi seria o 13º**; com a soma ponderada cai para o **31º**, porque o seu Fator 2 muito negativo (densidade baixa) puxa a nota para baixo. É isso que a ponderação faz: incorpora a informação dos fatores menores, na proporção da variância que eles explicam.
+
+**Cuidado com o sinal.** A soma só faz sentido se **valores altos de todos os fatores significarem "melhor"** (ou "pior") no mesmo sentido. Se um fator representa outra coisa (como o Fator 2 do Atlas, que é basicamente densidade populacional), somá-lo pode misturar conceitos diferentes. Por isso o professor usa, no Atlas, **só o Fator 1** como indicador.
 
 Os fatores são calculados a partir das variáveis **padronizadas** (Z) e têm média zero.
 
@@ -165,7 +183,7 @@ Os **scores** (pesos para montar o fator a partir das variáveis padronizadas) g
 | último | Marsilac | −2,052 |
 | penúltimo | Grajaú | −1,716 |
 
-> **Para comparar com a soma ponderada do passo 7 deste capítulo.** Jardim Paulista tem \(F_1 = 2{,}467\) e \(F_2 = -0{,}493\). Com os pesos 55,07% e 12,94%: \(R = 2{,}467 \cdot 0{,}5507 + (-0{,}493)\cdot 0{,}1294 \approx 1{,}36 - 0{,}06 = 1{,}29\).
+> **E se usássemos a soma ponderada (Passo 7)?** Com pesos de 81% (F₁) e 19% (F₂), os dois primeiros do ranking ficariam: 1º Jardim Paulista (R = 1,90) e 2º Consolação (R = 1,52, que sobe do 5º lugar pelo F₁ para o 2º, porque o seu F₂ = 0,517 é positivo). Moema e Santo Amaro, 2º e 3º pelo F₁, caem para 6º e 7º, pois têm F₂ bem negativo (−1,37 e −1,46). Das 96 posições, 89 mudam de lugar em relação ao ranking só pelo F₁.
 
 Por fim, o Fator 1 foi dividido em **6 faixas** (sextis) e pintado no mapa: o miolo da cidade concentra as faixas mais altas, e as periferias (extremos sul, leste e norte) concentram as mais baixas.
 
