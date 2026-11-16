@@ -57,7 +57,23 @@ flowchart TD
 
 Além dessas técnicas, há famílias flexíveis que servem a vários casos: **árvores, random forest, boosting, SVM e redes neurais**.
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** *Problema A:* prever se um cliente vai cancelar a assinatura (sim/não) a partir de idade e renda. Há um Y (cancelar), logo é supervisionado; Y tem duas categorias, logo **logística binária** (ou uma árvore). *Problema B:* descobrir perfis de clientes, sem nenhum rótulo prévio, usando gasto e frequência de compra. Não há Y, logo é não supervisionado; as variáveis são quantitativas, logo **clustering**.
+### Exemplo completo: o mapa de ML aplicado aos problemas reais do curso
+
+Cada capítulo seguinte resolve um problema real da aula. Usando as duas perguntas ("há um Y a prever?" e "de que tipo é o Y ou são as variáveis?"), o mapa leva à técnica certa:
+
+| Problema da aula | Há Y? | Tipo de Y / variáveis | Técnica | Capítulo |
+|---|---|---|---|---|
+| Agrupar **5 candidatos do vestibular** e **660 clientes de cartão** em perfis | não | variáveis quantitativas (linhas = observações) | **Cluster** | 14 |
+| Resumir 9 indicadores dos **distritos de São Paulo** em um indicador socioeconômico | não | variáveis quantitativas (colunas) | **PCA** | 15 |
+| Associar **perfil de investidor × tipo de aplicação** | não | variáveis **categóricas** | **ANACOR / ACM** | 16 |
+| Prever o **tempo de viagem** pela distância; a **percepção de corrupção** pelo país | **sim** | contínuo | **Regressão linear (OLS)** | 17 |
+| Prever se o estudante **chega atrasado** (sim/não) | **sim** | binário | **Logística binária** | 18 |
+| Prever em qual aula o estudante **se atrasa** (nenhuma, 1ª, 2ª) | **sim** | categórico com 3 níveis | **Logística multinomial** | 18 |
+| Prever o **número de multas** de estacionamento | **sim** | **contagem** (0, 1, 2…, muitos zeros) | **Poisson / binomial negativa / ZINB** | 19 |
+| Prever o **desempenho** de estudantes **dentro de escolas** | **sim** | contínuo, com dados **aninhados** | **Multinível (HLM)** | 20 |
+| Prever **doença cardíaca** e **churn** de clientes | **sim** | categórico, muitas variáveis e interações | **Árvores / Random Forest** | 27 |
+
+Repare como o **tipo do Y** manda: contínuo → OLS; binário → logística; contagem → Poisson e afins; categorias sem Y → correspondência; e, quando os dados têm **níveis** (estudantes em escolas), multinível.
 
 ## 4. Python no curso, só o que vale lembrar
 
@@ -71,6 +87,24 @@ O ambiente é o Spyder, via Anaconda. A estrutura central é o **DataFrame** do 
 | agregar e ordenar | `groupby`, `sort_values`, `reset_index` |
 | olhar a distribuição de uma métrica | histograma |
 | mínimo, quartis, mediana, máximo e outliers | boxplot (outlier pela regra de 1,5 × AIQ) |
+
+### Exemplo completo (da aula): as notas do PISA com o pandas
+
+A aula usa a base de **notas do PISA** (Programa Internacional de Avaliação de Alunos): **96 países** (38 da OCDE e 58 parceiros) e 8 colunas: `country`, `group`, e as notas de matemática, leitura e ciências em **2022** e em **2018**. Veja as operações, na ordem em que aparecem na aula:
+
+| Operação | O que faz neste exemplo | Resultado |
+|---|---|---|
+| `pisa.shape` | linhas e colunas | **(96, 8)** |
+| `pisa.info()` | tipos e nulos | cada nota de 2022 tem **15 valores ausentes** (o arquivo traz "—") |
+| `pisa.iloc[46, 2]` | linha 46, coluna 2 (a contagem começa em **0**) | nota de **matemática 2022 do Brasil: 378,7** |
+| `pisa.iloc[19, ]` | a linha 19 inteira | o **Japão**: OCDE, matemática 2022 = **535,6** |
+| `pisa.iloc[:, [0, 2, 5]]` | só as colunas país, matemática 2022 e 2018 | uma tabela de 3 colunas |
+| `pisa.drop(columns=[...])` | remove as colunas de 2018 | base só com 2022 |
+| `describe()` | estatísticas das 81 notas disponíveis | média de matemática **437,6**, mediana **440,8**, mínimo 336,4 e máximo 574,7 |
+| `pisa.groupby('group')` | resumo por grupo | OCDE: média **472,4** (37 países); parceiros: média **408,4** (44 países) |
+| `sort_values('mathematics_2022', ascending=False)` | ranking | 1º **Singapura (575)**, 2º Macau (552), 3º Taipé (547); último, Camboja (336) |
+
+**Como ler.** O "**50%**" do `describe()` é a **mediana** (440,8). O **Brasil (378,7)** está **abaixo da média dos 81 países (437,6)**: 64 dos 81 países têm nota maior. E o `groupby` mostra a diferença entre os grupos (472 contra 408), que o `describe()` geral esconde. **Cuidado com o erro clássico de índice:** `iloc[46, 2]` é a **47ª linha** (começa em zero) e a **3ª coluna**.
 
 ## O que levar daqui
 

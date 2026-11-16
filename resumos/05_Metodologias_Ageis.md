@@ -32,7 +32,25 @@ D.I.C.E. pontua quatro fatores, e **quanto menor a nota, melhor**:
 | 15 a 17 | **WORRY** | preocupante |
 | 18 a 28 | **WOE** | alto risco |
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** D = 2, I = 1, C1 = 2, C2 = 2, E = 1 → \(2 + 2\cdot1 + 2\cdot2 + 2 + 1 = 11\) → **WIN**. Com D = 3, I = 2, C1 = 3, C2 = 2, E = 2 → \(3+4+6+2+2 = 17\) → **WORRY**.
+### Exemplo completo (da aula): o D.I.C.E. de um projeto de decisão baseada em dados
+
+Na aula, o professor pede para aplicar o D.I.C.E. ao projeto de **implantar uma tomada de decisão baseada em dados na empresa**. Cada fator recebe uma nota de **1 (bom) a 4 (ruim)**:
+
+| Fator | A pergunta | Situação do caso | Nota |
+|---|---|---|---|
+| **D** (duração) | quanto tempo leva? | cerca de **6 meses** (projetos mais longos pontuam mais alto) | **3** |
+| **I** (integridade e desempenho do time) | o time dá conta? | "mais ou menos, fazem, mas não é perfeito" | **2** |
+| **C₁** (compromisso da alta gestão) | a alta gestão está de fato comprometida? | não são relutantes, mas "conseguir um vídeo gravado com a vice-presidente não é uma das coisas mais fáceis": o tema **não está na agenda** deles | **3** |
+| **C₂** (compromisso do time) | o time está animado ou resistente? | "pum na sala": **ninguém quer falar do projeto** | **4** |
+| **E** (esforço extra) | quanto trabalho a mais isso gera por dia? | a turma está meio ociosa, o projeto não soma muito | **2** |
+
+A conta tem **peso dobrado para I e C₁**:
+
+\[ \text{D.I.C.E.} = D + 2I + 2C_1 + C_2 + E = 3 + 2\cdot 2 + 2\cdot 3 + 4 + 2 = 3 + 4 + 6 + 4 + 2 = \mathbf{19} \]
+
+**Leitura.** 19 está na faixa de **18 a 28: zona WOE**, em que os projetos "tendem a dar errado de forma catastrófica". Mas o professor insiste: o número **não serve para cancelar** o projeto, e sim para perguntar **"como reduzir alguma dessas variáveis?"**. As notas mais altas foram do compromisso da alta gestão e do compromisso do time, e é neles que se mexe: **entregas menores** (reduz D), tornar o projeto **prioridade na agenda dos executivos** e **trabalhar o engajamento do time** (por exemplo, mostrando o benefício para o dia a dia deles). Refazendo a nota depois dessas ações, o projeto pode migrar para WORRY (15 a 17) ou WIN (até 14).
+
+A anedota do vídeo é um **termômetro** que o professor usava: pedir para a vice-presidente do projeto gravar **um vídeo de um minuto** sobre a importância do projeto. Se ela não consegue tempo, o projeto não está na agenda dela, "e todo atraso de um ano, em algum momento, foi um atraso de uma semana": a atenção da alta gestão é o que mais mata projetos.
 
 ## 3. A natureza do problema define a abordagem
 

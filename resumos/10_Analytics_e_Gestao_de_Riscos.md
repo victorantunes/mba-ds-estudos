@@ -51,6 +51,12 @@ O retorno de uma carteira é a **média ponderada** dos retornos: \(R_c = W_A R_
 
 Quanto **menor a correlação** \(\rho\), maior a redução de risco; com \(\rho = +1\) não há ganho. Para N ativos usa-se a **matriz de covariância**: risco = \(\sqrt{W'\Sigma W}\).
 
+> **Exemplo (da aula): o erro de achar que o risco da carteira é a média dos riscos.** Dois ativos: **A** (retorno 8%, risco 5%) e **B** (retorno 25%, risco 12%), com **metade do dinheiro em cada** (50/50). O **retorno** da carteira é a média ponderada: \(0{,}5\times 8 + 0{,}5\times 25 = \) **16,5%**. Até 1952 se acreditava que o risco seria igual: \(0{,}5\times 5 + 0{,}5\times 12 = \) **8,5%**. **Markowitz mostrou que não é assim**, porque os ativos se influenciam: o risco usa a **correlação** entre eles,
+>
+> \[ \sigma_p^2 = w_A^2\sigma_A^2 + w_B^2\sigma_B^2 + 2\,w_A w_B\,\rho_{AB}\,\sigma_A\sigma_B \]
+>
+> Com uma correlação **negativa** (por exemplo \(\rho = -0{,}60\), valor escolhido para a conta): \(\sigma_p^2 = 0{,}25(25) + 0{,}25(144) + 2(0{,}25)(-0{,}60)(5)(12) = 6{,}25 + 36 - 18 = 24{,}25\), logo \(\sigma_p = \) **4,9%**, **menor que o risco do ativo A sozinho (5%)**, e não 8,5%. O exemplo que a aula dá de correlação negativa é **Ibovespa × dólar**: quando muitos estrangeiros trazem dólares para comprar ações, o dólar cai e a Bolsa sobe; quando saem, o dólar sobe e a Bolsa cai (no slide, correlação de **−0,627**). Por isso Markowitz ganhou o **Nobel de 1990**, e até hoje o risco de carteira se calcula assim.
+>
 > **Exemplo completo (da aula): risco e retorno dos três ativos.** Com os 83 retornos diários:
 >
 > | | PETR4 | VALE3 | EMBR3 |
@@ -95,7 +101,7 @@ A perda esperada é construída por três direcionadores: a **PD** (probabilidad
 
 \[ \text{Perda esperada} = PD \times EC \times LGD \]
 
-> **Exemplo ilustrativo (números ilustrativos, escolhidos só para a conta).** Carteira de R$ 100 mil: A (R$ 10 mil, PD 2%), B (R$ 20 mil, 5%), C (R$ 70 mil, 10%), recuperação 0 (LGD = 1). Perdas esperadas: 0,2 + 1 + 7 = **R$ 8,2 mil**. É o valor **provisionado**; a **perda excepcional** vem da cauda da distribuição de perdas.
+> **Exemplo (dos slides da aula).** Carteira de R$ 100 mil: A (R$ 10 mil, PD 2%), B (R$ 20 mil, 5%), C (R$ 70 mil, 10%), recuperação 0 (LGD = 1). Perdas esperadas: 0,2 + 1 + 7 = **R$ 8,2 mil**. É o valor **provisionado**; a **perda excepcional** vem da cauda da distribuição de perdas.
 
 | Tipo de perda | Tratamento |
 |---|---|
@@ -113,7 +119,7 @@ A regra central é:
 
 Cada ativo é ponderado pelo risco: **0%** (países e bancos centrais), **20%** (bancos), **50%** (financiamento imobiliário), **100%** (empresas e demais).
 
-> **Exemplo ilustrativo (números ilustrativos, escolhidos só para a conta).** Ativos: 1.000 (0%), 50.000 (20%), 200.000 (50%), 300.000 (100%). APR = 0 + 10.000 + 100.000 + 300.000 = **410.000**. PR = Nível 1 (40.000) + Nível 2 (30.000) = 70.000. Índice = 70.000 ÷ 410.000 = **17,1% ≥ 8%** → instituição adequada.
+> **Exemplo (dos slides da aula).** Ativos: 1.000 (0%), 50.000 (20%), 200.000 (50%), 300.000 (100%). APR = 0 + 10.000 + 100.000 + 300.000 = **410.000**. PR = Nível 1 (40.000) + Nível 2 (30.000) = 70.000. Índice = 70.000 ÷ 410.000 = **17,1% ≥ 8%** → instituição adequada.
 
 ## 5. Risco operacional
 

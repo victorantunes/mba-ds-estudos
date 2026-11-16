@@ -108,6 +108,38 @@ No **chunking**, pedaços **grandes demais diluem a busca** e **pequenos demais 
 
 A API também funciona como **hub de analytics**: pipelines ETL/ELT, dashboards de BI e sistemas corporativos (CRM, ERP, RH) a consomem via HTTP. A arquitetura do laboratório usou **FastAPI** (rotas), **Pydantic** (contrato JSON), **Gemini API** (embeddings e geração) e **ChromaDB** (banco vetorial local).
 
+### Exemplo completo (da aula): uma API de RAG corporativo
+
+A aula constrói uma **API em FastAPI** que responde perguntas sobre os **manuais de uma empresa** (RH e TI, Financeiro e Compras), sem retreinar nenhum modelo. Os documentos são PDFs, e a pilha usa o **Gemini** (embeddings e geração), o **ChromaDB** (banco vetorial) e o **Pydantic** (contratos).
+
+**As rotas (o contrato da API):**
+
+| Método e rota | Para quê | Resposta |
+|---|---|---|
+| `GET /health` | verificar se o serviço está vivo (monitoramento) | 200 |
+| `POST /ingest` | indexar um **texto** (JSON com `documento_id` e `conteudo`) | **201 Created** com `chunks_salvos`; **400** se não gerou nenhum chunk (erro do cliente); **500** se falhou por dentro |
+| `POST /ingest/arquivo` | enviar um **PDF ou TXT** (upload) | 201 (mesmo contrato do `/ingest`) |
+| `POST /query` | **perguntar** (JSON com `pergunta` e `top_k`, padrão 3) | a **resposta**, os trechos usados e a **telemetria** (tempos e tokens) |
+
+Os esquemas (`IngestaoRequest`, `RespostaIngestao`, `PerguntaRequest`, `RespostaRAG`) são classes **Pydantic**: a API **valida os tipos** antes de processar qualquer dado.
+
+**O pipeline de ingestão (um manual vira vetores).**
+
+1. **Extrair o texto** do PDF.
+2. **Chunking com janela deslizante:** blocos de **1.000 caracteres** com **sobreposição (overlap) de 100**, ou seja, cada bloco começa 900 caracteres depois do anterior (`inicio += 1000 - 100`). O overlap evita que uma frase importante seja **cortada ao meio** entre dois blocos. Por exemplo, o *Manual Corporativo de RH e TI* (cerca de **4.500 caracteres**, 2 páginas) vira **6 chunks**; o *Manual de Financeiro e Compras* (cerca de 3.200 caracteres, 1 página) vira **4**; o guia de RAG (cerca de 5.400, 3 páginas) vira **7**.
+3. **Embeddings:** cada chunk vira um **vetor** (modelo `gemini-embedding-2`), em lotes, com **pausas e novas tentativas** para respeitar o **rate limit** da API gratuita.
+4. **Persistir no ChromaDB** com um **ID por chunk** (`documento_chunk_0`, `documento_chunk_1`...) e metadados (origem, número do chunk): permite **reescrever só um pedaço**.
+
+**O pipeline de consulta (uma pergunta vira resposta).** Pergunta: *"Quanto a empresa subsidia do plano de saúde?"*
+
+1. A pergunta vira **um embedding** (o mesmo modelo).
+2. O ChromaDB devolve os **`top_k = 3`** chunks **semanticamente mais próximos**. Aqui, o trecho do manual de RH: "a empresa subsidia **80%** do plano de saúde executivo e **100%** do plano odontológico básico".
+3. Monta-se um **prompt com grounding**: "Você é um assistente corporativo. Responda **estritamente** com as informações do contexto. **Se a resposta não estiver no contexto, diga que a informação não consta nos documentos**", seguido do `CONTEXTO` (os 3 trechos) e da `PERGUNTA`.
+4. O LLM gera a resposta com **temperatura 0,1** (baixa: mais aderência factual), algo como **"A empresa subsidia 80% do plano de saúde"** (a pergunta e a resposta são um exemplo meu, montado com as regras do manual).
+5. A API devolve a resposta **e a telemetria**: tempo de embedding, tempo do LLM, tempo total e **tokens** de entrada e saída (a base de **FinOps**: custo por consulta).
+
+**Outras perguntas que o mesmo sistema responde** (regras dos manuais): home office às **segundas e sextas**, com presença obrigatória de terça a quinta; reembolso de internet e energia de até **R$ 120/mês** para o híbrido; limite diário de alimentação em viagem de **R$ 90**; **4 sessões de psicologia gratuitas por mês**; troca de senha a cada **90 dias**; compras até **R$ 2.000** só com o gestor, entre R$ 2.001 e R$ 15.000 com **3 orçamentos** e acima de R$ 15.000 com parecer de **Suprimentos** e aprovação da **Diretoria Financeira**. **E uma pergunta fora dos manuais** (por exemplo, "qual a capital da França?") deve, pelo prompt, receber **"a informação não consta nos documentos"**: é o **grounding** funcionando, em vez de uma resposta inventada (alucinação).
+
 ## O que levar daqui
 
 A IA vira produto quando exposta por uma API com contrato claro (HTTP stateless, JSON, status 2xx/4xx/5xx). Temperatura baixa para extração; chaves em `.env`; respeite rate limits e use backoff. Embeddings habilitam a busca semântica; o RAG combina recuperação e geração com grounding para reduzir alucinações. RAG serve a fatos; fine-tuning serve a estilo.

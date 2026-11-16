@@ -48,7 +48,43 @@ Antes de desenhar, três perguntas ordenam o trabalho: *o que* quero mostrar, *c
 
 O critério final é a **interpretabilidade**: o melhor gráfico é o que o leitor entende, e não o mais bonito. Erros recorrentes: excesso de dados, visual inadequado, informação repetida, ausência de título e de padrão de cores. Um painel profissional segue uma **hierarquia visual** (tamanhos de fonte, posição, grade) e respeita a identidade visual do cliente. Dois termos aparecem com frequência: **drill down** (detalhar do nível agregado para o granular, como ir de "vendas do país" para "vendas da loja") e **UX** (a experiência do usuário ao interpretar o que vê).
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** "Vendas mensais dos últimos 24 meses" pede um gráfico de **linha**. "Participação de cada região nas vendas do ano" pede uma **rosca** se houver quatro ou cinco regiões, e **barras ordenadas** se houver quinze.
+### Exemplo completo (da aula): o painel de glicose e o modelo de dados dos colaboradores
+
+**Caso 1: a pergunta que a tabela não responde.** A aula parte de uma base de **442 pacientes** (fictícia, sem ninguém exposto) com idade (`age`), sexo (`sex`), IMC (`bmi`), pressão (`bp`), seis índices de exames (`s1` a `s6`) e o **nível de glicose** (`y`). A pergunta de negócio: *"qual a faixa etária do pessoal com glicose aumentada?"*. Olhando a tabela crua, **não dá para responder rápido**: é preciso preparar e visualizar. O fluxo no Power BI:
+
+1. **Obter dados** (aqui, de uma página da web) e abrir o **Power Query** para tratar.
+2. **Tratar:** remover as colunas `s1` a `s6`, que não serão usadas, e **renomear** a tabela para `glicose`. Cada clique gera código em **linguagem M** (a engrenagem em "Etapas aplicadas" mostra e permite editar).
+3. **Escolher o gráfico pela pergunta:** como se quer ver o **IMC e a glicose ao longo da idade** (uma variável numérica contínua no eixo X), usa-se o **gráfico de linhas**: **idade no eixo X** (de 20 a 80 anos) e o **IMC (e depois a glicose) no eixo Y**.
+
+A escolha do gráfico segue a regra da tabela acima: **tendência ao longo de uma variável ordenada → linha**; *comparar categorias* → barras ou colunas; *partes de um todo (poucas)* → pizza ou rosca.
+
+**Caso 2: o RH e o modelo de dados (turnover e headcount).** A aula usa a base de **colaboradores** de uma empresa para mostrar por que **a modelagem importa mais que o gráfico**. O arquivo Excel tem **5 abas relacionadas**:
+
+| Tabela | Linhas | Chave | Conteúdo |
+|---|---|---|---|
+| **Colaboradores** (fato) | 96 | MATRÍCULA (**chave primária**) | nome, data de início, salário e **chaves estrangeiras**: ID_LOCALIDADE, ID_DEPTO, ID_CARGO |
+| **Área** | 11 | ID_DEPTO | RH, Administrativo, Financeiro, Informática etc. |
+| **Cargo** | 20 | Código | Diretor, Vice-Diretor, Gerente Sênior, Pleno, Júnior... |
+| **Local** | 11 | ID_LOCALIDADE | cidade e UF (São Paulo, Campinas, Osasco...) |
+| **Dependente** | 27 | ID_DEP (com ID_MATRICULA) | os dependentes de cada colaborador |
+
+Cada **relacionamento** liga a **chave estrangeira** da tabela de colaboradores à **chave primária** da tabela de apoio (por exemplo, `ID_DEPTO` de Colaboradores com `ID_DEPTO` de Área): é isso que permite mostrar "o **departamento**" (um nome) em vez de um código. Com o modelo montado, uma pergunta de RH vira um gráfico de barras em segundos:
+
+| Departamento | Colaboradores | Salário médio (R$) |
+|---|---|---|
+| Administrativo | 23 | 2.156 |
+| Financeiro | 17 | 2.244 |
+| Informática | 10 | 3.018 |
+| Marketing | 9 | 1.928 |
+| Controladoria | 8 | 1.889 |
+| RH | 8 | 2.751 |
+| Ouvidoria | 7 | 2.736 |
+| Cobrança | 5 | 2.664 |
+| Jurídico | 4 | **3.754** |
+| SAC | 4 | 2.787 |
+| Qualidade | 1 | 2.360 |
+
+Leitura: o **Administrativo** concentra 23 dos 96 colaboradores (24%), e o **Jurídico**, com só 4 pessoas, tem o **maior salário médio** (R$ 3.754); a média geral é R$ 2.431. Por **cidade**, **São Paulo** tem 39 dos 96. (Por que o RH quer isso? A aula dá o exemplo do **turnover**: quando muita gente sai de uma área operacional e não se sabe o motivo, o produto "fica parado na fábrica" e ainda se gasta tempo para contratar e treinar: sem o dado organizado, não se enxerga a causa.)
 
 ## 3. A ferramenta: Power BI
 

@@ -29,7 +29,38 @@ flowchart LR
 
 Tratar nulos significa decidir entre **remover** a linha ou **preencher** (com média, mediana ou uma regra de negócio).
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Vendas chegam por API (JSON), por planilha (CSV) e do ERP (SQL). O pipeline lê as três fontes, padroniza datas e moedas, remove duplicados e grava tudo em uma única tabela no data warehouse. Os analistas passam a consultar só essa tabela.
+### Exemplo completo (da aula): do arquivo CSV ao banco relacional da livraria
+
+A aula transforma um **arquivo plano** (`livros.csv`, **174 livros** em uma única tabela, com as colunas título, autor, idioma, ano de publicação, vendas em milhões e gênero) em um **banco relacional**. Isso é o trabalho típico do engenheiro de dados: **extrair, organizar e carregar** de forma que os analistas consultem sem retrabalho.
+
+**O problema do arquivo plano.** O autor "J. K. Rowling" aparece repetido em 7 linhas, e o gênero também se repete. Qualquer correção (um nome escrito diferente) precisa ser feita em várias linhas. A solução é **normalizar**: separar em tabelas e ligá-las por **chaves**.
+
+**O modelo (3 tabelas principais).**
+
+| Tabela | Chave primária | Colunas | Linhas |
+|---|---|---|---|
+| `autores` | `id` | `nome` | 157 |
+| `generos` | `id` | `nome` | 81 |
+| `livros` | `id` | `nome`, `idioma`, `ano_publicacao`, `vendas`, **`autor_id`**, **`genero_id`** | 174 |
+
+Em `livros`, **`autor_id` e `genero_id` são chaves estrangeiras** (`FOREIGN KEY ... REFERENCES autores(id)`): cada livro aponta para **um** autor e **um** gênero (relacionamento **1 para N**: um autor tem muitos livros). Livros sem gênero no arquivo (56 linhas) viram o gênero **'desconhecido'**.
+
+**As consultas da aula e o que cada uma devolve:**
+
+| Pergunta | SQL | Resultado |
+|---|---|---|
+| Livros publicados **depois de 2010** | `SELECT nome FROM livros WHERE ano_publicacao > 2010;` | **10 livros** |
+| Livros com **vendas acima de 100** (milhões) | `SELECT nome, vendas FROM livros WHERE vendas > 100;` | 3: *A Tale of Two Cities* (200), *O Pequeno Príncipe* (200) e *Harry Potter e a Pedra Filosofal* (120) |
+| **Resumo estatístico** | `SELECT MIN(vendas), MAX(vendas), AVG(vendas) FROM livros WHERE vendas IS NOT NULL;` | mínimo **10**, máximo **200**, média **30,1** |
+| **Livros com o nome do autor** (junta duas tabelas) | `SELECT l.nome AS livro, a.nome AS autor FROM livros l JOIN autores a ON l.autor_id = a.id;` | uma linha por livro, com o **nome** do autor em vez do código |
+| **Quantos livros cada autor publicou** | `SELECT autor_id, COUNT(*) FROM livros GROUP BY autor_id;` | J. K. Rowling lidera, com **7** |
+| **Vendas por autor** (junta e agrega) | `SELECT a.nome, SUM(l.vendas), COUNT(l.id) FROM livros l JOIN autores a ON l.autor_id = a.id GROUP BY a.nome ORDER BY 2 DESC;` | 1º **J. K. Rowling: 522 milhões (7 livros)**; 2º Charles Dickens (200); 3º Saint-Exupéry (200) |
+| **Top 5 gêneros por faturamento** | `... JOIN generos ... GROUP BY g.nome ORDER BY faturamento DESC LIMIT 5;` | 1º **Fantasy (737)**, 2º "desconhecido" (662,6), 3º Historical fiction (295), 4º Novel (259,5), 5º Self-help (210) |
+| Livros de gênero **'desconhecido'** | `... JOIN generos g ... WHERE g.nome = 'desconhecido';` | os 56 sem gênero (**sempre** confira o que virou "desconhecido": é um problema de **qualidade de dados**) |
+
+(Os números acima vêm de carregar o `livros.csv` do jeito da aula, com um autor por linha; podem variar um pouco se os autores forem separados de outra forma.)
+
+**O que levar:** a ordem de leitura de uma consulta é `FROM` (onde) → `JOIN` (ligar tabelas) → `WHERE` (filtrar linhas) → `GROUP BY` (agrupar) → `SELECT` com agregações (`SUM`, `COUNT`, `AVG`) → `ORDER BY` → `LIMIT`. O `JOIN` é o ponto central do modelo relacional: guardar cada fato **uma vez** e **juntar** só na hora de consultar. E quando a mesma consulta se repete (como "livros por idioma"), cria-se uma **view**.
 
 **Big Data.** O termo foi usado em 1998 (John Mashey) e, em 2001, surgem os **3 Vs: Volume, Velocidade e Variedade**. A resposta histórica foi dividir os dados em **clusters** com hardware comum, o que originou o Hadoop. Um alerta de maturidade: poucos dados **não precisam** de microsserviços nem de cluster; o engenheiro não deve criar problemas que não existem.
 

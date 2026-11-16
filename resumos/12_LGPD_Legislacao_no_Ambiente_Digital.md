@@ -56,7 +56,28 @@ Os **direitos do titular** incluem confirmação do tratamento, **acesso**, corr
 
 As **sanções administrativas** vão de advertência a multa simples de **até 2% do faturamento, limitada a R$ 50 milhões por infração**, multa diária, publicização da infração, bloqueio ou eliminação dos dados, suspensão do banco de dados (até 6 meses) ou da atividade de tratamento e proibição de atividades. Há também impacto reputacional.
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Uma loja coleta CPF, endereço e data de nascimento para emitir nota fiscal (**base: obrigação legal**) e, separadamente, pede o e-mail para enviar promoções (**base: consentimento**). Usar o endereço para criar um perfil de crédito sem avisar viola a **finalidade**. Pedir a religião do cliente "por curiosidade" viola a **necessidade** (e é dado sensível).
+### Casos reais contados na aula
+
+A aula traz casos concretos (nacionais e estrangeiros) para mostrar que "a LGPD não pegou" é um mito. Cada caso ilustra um ponto da lei:
+
+| Caso | O que aconteceu | Ponto da LGPD que ilustra |
+|---|---|---|
+| **A empresa que vendia bases de WhatsApp a políticos** (Brasil) | O Ministério Público acionou a ANPD e a empresa foi **multada** por vender a base de dados **sem base legal** (sem legítimo interesse). É a **única empresa multada** pela ANPD até a época da aula, e era pequena. | **Todo tratamento, inclusive a venda de bases, precisa de base legal.** Vender dados não é proibido por si só, mas a venda indiscriminada tem risco |
+| **Marriott** (Reino Unido) | A rede **comprou outra rede de hotéis** que mantinha **servidores com cadastros antigos de clientes** (formulários de hospedagem). Os dados vazaram e a multa foi de cerca de **£ 90 milhões**, depois **reduzida a cerca de £ 30 milhões**, por **bases antigas que a empresa nem usava mais**. | **Due diligence de dados** em fusões e aquisições (e não só a tributária, trabalhista e judicial), e **descartar dados antigos** (princípio da necessidade) |
+| **Equifax** (EUA) | Pagou cerca de **US$ 700 milhões** por vazamento de dados pessoais. | O **custo financeiro** do descumprimento (no Brasil, a multa simples é de até 2% do faturamento, limitada a R$ 50 mi por infração) |
+| **Cambridge Analytica e Facebook** | Uso indevido de dados de **87 milhões de usuários** do Facebook. | **Compliance de dados** importa fora do Brasil também; **reputação** |
+| **Clearview AI** | Software de reconhecimento facial usado por autoridades policiais: em vários países europeus entendeu-se que a **forma de obtenção dos dados violava as leis de privacidade** e a empresa foi **multada**. | **Dados biométricos** (sensíveis) e **finalidade** |
+| **Meta e a IA** (Brasil) | A empresa baixou um regulamento para **usar IA com dados da plataforma**; a ANPD **suspendeu**, sem aplicar sanção, e exigiu um **plano de adequação** (transparência, clareza e tipos de uso). | Atuação **concreta** da ANPD: **transparência** e finalidade |
+| **Enel e o STJ**; **justa causa** | O **STJ responsabilizou a Enel** por um vazamento; na Justiça do Trabalho, **empregado punido com justa causa** por **acesso indevido** a conta bancária de figuras públicas. | A LGPD já **é realidade no Judiciário**, e **o empregado também responde** |
+
+**Quatro pontos de atenção que a professora destaca, com exemplos práticos:**
+
+1. **Dado público ("estava na internet").** A lei tem um artigo sobre isso: estar público **não autoriza** fazer qualquer coisa; é preciso **finalidade adequada e necessidade**.
+2. **Dados sensíveis e segmentação.** Pode-se segmentar uma campanha (por exemplo, produtos para cabelo crespo), mas **sem propósito discriminatório**.
+3. **Dados antigos.** Bases desatualizadas e inseguras são um risco (caso Marriott).
+4. **Segregação** de dados sensíveis e confidenciais: os "**jardins murados**" (*guardrails*), com acesso restrito.
+
+**Controlador × operador, na prática.** A empresa de **software de folha de pagamento**: os dados dos funcionários dos clientes **não são dela**, então ela é **operadora**; mas é **controladora** dos dados dos **seus próprios** funcionários. A classificação vale **por fluxo de dados**, não pela empresa inteira.
 
 ## 3. Segurança da informação
 

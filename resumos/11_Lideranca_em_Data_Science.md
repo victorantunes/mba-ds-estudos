@@ -74,7 +74,21 @@ Segundo David Bohm, o **debate** busca vencer; o **diálogo** é "fluxo de signi
 
 Com pouca diversidade, os consensos são fáceis, mas há risco de polarização e de calar os divergentes. **Colaboração com diversidade** gera mais alternativas e maior chance de acerto.
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula).** Um time de dados está dividido sobre adotar um modelo "caixa-preta". No **debate**, cada lado tenta vencer. No **diálogo**, todos expõem suas razões até construir um entendimento comum (talvez: usar o modelo, com monitoramento e explicabilidade). Na **colaboração**, negócio, dados e compliance desenham juntos o processo.
+### Casos e ideias da aula: diálogo, escuta e o liderado que ninguém ouvia
+
+**Caso 1: o liderado expatriado.** A professora conta uma queixa que ouviu de um liderado em outro país: ele estava **se separando** (foi expatriado, a esposa não gostou do país e deu um ultimato, "ou a gente volta ou eu volto"), e **o líder nunca perguntava como ele estava**. A produtividade dele **caiu**. A lição: em tempos de trabalho remoto, desaparecem os momentos informais (o cafezinho, o almoço junto) em que as pessoas falavam de si, então é preciso **criar espaços de diálogo**, com cuidado para não expor conversas íntimas e, às vezes, **abrindo a conversa individualmente**. Sem um interlocutor, a pessoa "acaba saindo da empresa ou sendo desligada". "**Não deixamos de ser humanos**" só porque as relações foram digitalizadas.
+
+**Caso 2: debate × diálogo.** Pela **etimologia**, *debate* remete a **derrota** (a mesma raiz de "percussão" e "concussão": quebrar coisas): no debate **um ganha e o outro perde, e termina com ressentidos**. O debate pode servir para discutir uma questão de justiça, mas "**não tem nada a ver com criatividade**": quando se **geram ideias** ou se resolve um problema, o debate não cabe. Só que muitas reuniões nas empresas são debates, "onde cada um luta para que a sua ideia vença". Já o **diálogo** significa **fluxo, vaivém, fluência**: permite conciliar ideias diferentes **sem combatê-las** e sem virar caos. Vivemos uma formação no pensamento crítico, e por isso temos "paixão por debater e pouca familiaridade com dialogar".
+
+**Conselhos para o diálogo (da aula):**
+
+| Prática | Em que consiste |
+|---|---|
+| **Ouvir até o fim** | não "ouvir retrucando": enquanto o outro fala, já se prepara a resposta. Ouvir **sem concordar nem discordar**: "isso é empatia também" |
+| **Evitar o reducionismo** | pegar o que o outro disse e **reduzi-lo ao meu sistema de crenças**, eliminando o que não combina ("fazer o redondo caber no quadrado"): quem faz isso **deixa de aprender** |
+| **Empatia como comportamento** | esforçar-se para **compreender razões, emoções e intenções** do outro, sem precisar sentir o mesmo; "empatia é um comportamento, não um sentimento", e **pode ser desenvolvida** |
+
+**Caso 3: os dois modelos mentais.** Citando o psicólogo **William James** (*Pragmatismo*), a professora descreve dois modelos mentais que costumam estar em oposição: um **prático e racional** (trabalha com o concreto e o tangível) e outro **criativo e sensível** (trabalha com o imaginativo e o subjetivo). A proposta é **integrar os dois**, na própria mente ou **dentro da equipe**, "dando espaço" para os dois, porque são **complementares, não divergentes**. É o que ela chama de **ambidestria mental**: pedir só objetividade ("seja objetivo!") não dá conta da governança, que também tem uma parte **sensível e subjetiva**.
 
 ## O que levar daqui
 

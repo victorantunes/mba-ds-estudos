@@ -34,7 +34,28 @@ O modelo passa por seis etapas: (1) coleta e preparação, (2) treinamento e val
 
 O modelo é **servido** por **API REST**, que funciona como uma barreira entre as regras de negócio e o usuário.
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; fluxo).** Você treina cinco variações; o **Tracking** registra parâmetros e métricas de cada uma; a melhor vai para o **Registry** como versão 4; é promovida a **Production**; o **Model** é servido como endpoint REST, com a **signature** validando a entrada.
+### Exemplo completo (da aula): o ciclo MLflow com o modelo tempo × distância
+
+A aula retoma o modelo do capítulo 17 (tempo de viagem × distância, **10 trajetos**) e o leva do notebook até a produção, no Databricks:
+
+**1. Baseline sem MLflow.** Treina-se o **modelo nulo** (`tempo ~ 1`, só o intercepto): ele prevê **a média (30 min)** para qualquer distância; R² = 0, AIC = 83,4 e erro padrão residual de 14,9 min.
+
+**2. Tracking (experimento).** Cria-se um **experimento** e registra-se cada tentativa como um **run**, com **parâmetros** (a fórmula), **métricas** e o **modelo**:
+
+| Run | Fórmula | R² | AIC | Erro padrão residual |
+|---|---|---|---|---|
+| **Modelo nulo** | `tempo ~ 1` | 0,000 | 83,4 | 14,9 min |
+| **Modelo final** | `tempo ~ distancia` | **0,819** | **68,2** | **6,7 min** |
+
+Em vez de procurar a melhor tentativa clicando na tela, o `mlflow.search_runs` busca **por código** o run com a **melhor métrica** (aqui, o modelo final, que tem o maior R² e o menor AIC).
+
+**3. Model Registry (versões e estágios).** O modelo registrado `tempo-distancia` tem **duas versões**: v1 = modelo nulo e v2 = modelo final. Promove-se a **v2 para `staging`** (adaptação/teste): quem carrega `models:/tempo-distancia@staging` recebe o modelo final, **sem mudar o código do consumidor**. Depois de validado, promove-se a v2 para **`production`**, e a v1 sai da fase (ciclo **Staging → Production → Archived**). O uso de **aliases** (`@staging`, `@production`) separa o **código** do **número da versão**.
+
+**4. Previsão e API.** O modelo carregado prevê, para **20 km**, \(5{,}878 + 1{,}4189\times 20 = \) **34,26 minutos**. Em produção, o modelo é **servido por API REST** (`mlflow models serve -m models:/tempo-distancia@production`): o cliente envia um **JSON** com a distância (o *payload*) por **POST** e recebe `{"predictions": [34.26...]}`. Os métodos HTTP: **GET** recupera dados, **POST** envia dados para processamento.
+
+**5. O mesmo caminho para um modelo multinível.** Com a base de **358 estudantes em 10 escolas** (capítulo 20), o **autolog** registra sozinho parâmetros, métricas e artefatos de **5 modelos**: OLS nulo, HLM2 nulo, HLM2 com interceptos aleatórios, com interceptos e inclinações aleatórios e o **modelo final** (`horas + texp + horas:texp`). Em produção, a previsão para o **estudante da escola 1** (11 horas, texp = 3,6) devolve a **parte fixa (21,89)**; os **efeitos aleatórios** da escola 1 (−0,21 e +0,44) são somados à parte, chegando a **26,50**. Um ponto de atenção do deploy: o `predict` do modelo misto retorna **só o componente fixo**.
+
+**6. Observabilidade (MLflow Tracing).** O decorador `@mlflow.trace` envolve as funções do pipeline para **medir o tempo de cada etapa** e achar gargalos, o que é muito usado em pipelines complexos e em IA generativa.
 
 ## 3. Big Data
 
@@ -58,7 +79,40 @@ Para processar tanto dado, usa-se um **cluster**: vários computadores em rede, 
 
 No Spark, uma **DAG** (grafo acíclico dirigido) descreve o plano das operações: *direcionado* (as arestas têm sentido) e *acíclico* (sem ciclos), o que permite otimizar e paralelizar. Os dados vivem em **RDDs**, coleções **distribuídas, resilientes (recuperam por recomputação) e imutáveis**. As **transformações** (`map`, `filter`) são **lazy**: só planejam. As **ações** (`count`, `collect`) é que disparam a execução. Há ainda **DataFrames/Spark SQL** (otimizador **Catalyst**), **MLlib** e **Streaming**.
 
-> **Exemplo ilustrativo (cenário criado para esta revisão; não é um caso da aula; lazy).** `df.filter(preco > 100).select("id")` **não faz nada** ainda; só ao chamar `df.count()` o Spark monta o DAG e executa tudo de uma vez.
+### Exemplo completo (da aula): 5,6 milhões de voos com Spark
+
+A segunda aula usa a base de **voos nos EUA em 2016**: **5.617.658 linhas** (um voo por linha, com dezenas de colunas) e a tabela `transportadoras` (26 companhias aéreas). Um arquivo desse tamanho (cerca de 700 MB em CSV) já é "grande" para o pandas, e o **Spark** trabalha **distribuído**.
+
+**Exploração.** As colunas são traduzidas para o português e `select` escolhe `DISTANCIA`, `TEMPO_DE_VOO_REAL` e `ATRASO_CHEGADA`: o voo médio tem **850 milhas** e **140 minutos**, e o atraso médio na chegada é de **3,5 minutos** (mínimo de −152, voo adiantado; máximo de 2.142). Há **79.513 voos sem tempo de voo** (cancelados ou desviados), e o código de cancelamento só existe nos **65.861 voos cancelados** (1,17%).
+
+**Estimar o tamanho sem contar tudo.** Para um volume enorme, a aula usa a **extrapolação por amostra**: `df.sample(fraction=0.01)` pega **1%** das linhas, conta e divide por 0,01 para estimar o total (um valor perto dos 5,6 milhões, com uma pequena variação). Barato, e suficiente para dimensionar.
+
+**Preparar e juntar.** `withColumn` cria `ano`, `mes` e `dia` a partir da data; `drop` remove a coluna vazia; um **`join` do tipo `left`** com a tabela de transportadoras troca o código (como `WN`) pelo nome da companhia.
+
+**Agregar: `groupby` → `agg`.** O atraso médio por mês:
+
+| Mês | Atraso médio (min) | % de cancelados |
+|---|---|---|
+| Jan | 1,5 | **2,62%** |
+| Fev | 0,7 | 1,61% |
+| Mar | 3,2 | 0,99% |
+| Abr | 0,7 | 0,89% |
+| Mai | 2,3 | 0,52% |
+| Jun | 7,2 | 1,02% |
+| **Jul** | **10,4** | 1,85% |
+| Ago | 8,0 | 1,38% |
+| Set | 0,5 | 0,33% |
+| Out | −0,2 | 0,96% |
+| Nov | −1,9 | **0,29%** |
+| Dez | 8,7 | 1,62% |
+
+Os piores atrasos ficam no **verão (julho) e em dezembro**; a maior taxa de cancelamento, em **janeiro** (inverno). Por **motivo de cancelamento**: **B (clima): 34.465**, **A (transportadora): 20.279**, **C (sistema nacional de transporte aéreo): 11.091** e **D (segurança): 26**: o clima responde por mais da metade. Por **companhia**: as de maior atraso médio foram **Spirit (9,3 min)**, **JetBlue (8,1)** e **Frontier (7,8)**; as de menor, **Alaska (−2,2)**, **Delta (−0,6)** e **Hawaiian (−0,1)**. A Southwest (WN) é a que mais voou (**1,30 milhão de voos**).
+
+**Do Spark para o pandas.** Os resultados agregados são **pequenos**, então se usa `toPandas()` (o DataFrame passa do cluster para a memória do driver) e se faz o gráfico com seaborn: o Spark faz o trabalho pesado, o pandas só desenha.
+
+**Parquet e partições.** Ao salvar em **Parquet** (formato **colunar e comprimido**), usa-se `partitionBy("ano", "mes")`, que cria uma **pasta por ano e por mês**. Depois, ler `ano=2016/mes=12` carrega **só as 460.949 linhas de dezembro** em vez de ler as 5,6 milhões: o Spark **pula as partições que não interessam** (*partition pruning*). Os modos de gravação são `append`, `overwrite`, `ignore` e `error`.
+
+> **Exemplo ilustrativo (avaliação preguiçosa; não é um caso da aula).** `df.filter(preco > 100).select("id")` **não faz nada** ainda; só ao chamar `df.count()` o Spark monta o DAG e executa tudo de uma vez.
 
 Com muito dado, **amostre** para explorar e use ferramenta **distribuída** quando o pandas não cabe em memória.
 
