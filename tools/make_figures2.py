@@ -37,28 +37,7 @@ def f17_regressao():
     save(fig, "17_regressao")
 
 
-def f18_sigmoide():
-    z = np.linspace(-7, 7, 300)
-    p = 1 / (1 + np.exp(-z))
-    fig, ax = plt.subplots(figsize=(6, 3.4))
-    ax.plot(z, p, color=C1, lw=2)
-    ax.axhline(0.5, color=GR, ls="--", lw=1); ax.axvline(0, color=GR, ls="--", lw=1)
-    ax.scatter([1], [1 / (1 + np.exp(-1))], color=C2, zorder=3)
-    ax.annotate("Z = 1 → p = 0,73", (1, 0.731), xytext=(2.2, 0.55), color=C2, arrowprops=dict(arrowstyle="-", color=C2))
-    ax.set_xlabel("logito Z"); ax.set_ylabel("probabilidade p")
-    ax.set_title("Função logística: transforma o logito em probabilidade (0 a 1)")
-    save(fig, "18_sigmoide")
-
-
-def f18_roc():
-    fpr = np.array([0, .05, .12, .25, .45, .7, 1]); tpr = np.array([0, .45, .68, .84, .93, .98, 1])
-    fig, ax = plt.subplots(figsize=(4.6, 4.2))
-    ax.plot(fpr, tpr, "-o", color=C1, label="modelo (AUC ≈ 0,87)")
-    ax.plot([0, 1], [0, 1], color=GR, ls="--", label="aleatório (AUC = 0,5)")
-    ax.set_xlabel("1 − especificidade"); ax.set_ylabel("sensibilidade")
-    ax.legend(frameon=False, loc="lower right")
-    ax.set_title("Curva ROC")
-    save(fig, "18_roc")
+# (os gráficos do cap. 18 agora vêm de dados reais: tools/make_figures7.py)
 
 
 def f22_decomposicao():

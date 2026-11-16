@@ -34,7 +34,29 @@ Exemplos: consultas por ano, IPOs por ano, infrações por mês, falhas de fabri
 
 O \(\lambda\) é a **taxa média** na exposição, e é o **único parâmetro**. O modelo usa ligação logarítmica: \(\ln(\lambda) = \alpha + \beta_1 X_1 + \cdots + \beta_k X_k\), estimado por máxima verossimilhança (`smf.poisson`). (†) \(e^{\beta}\) é a razão entre taxas esperadas por unidade de X.
 
-> **Exemplo resolvido.** \(\lambda = 3\) consultas/ano. \(P(0) = e^{-3} \approx 0{,}050\); \(P(2) = \frac{e^{-3}\cdot 3^2}{2} \approx 0{,}224\) (22,4%). Se a exposição passa de 1 ano para 6 meses, \(\lambda\) cai para cerca de 1,5: por isso a exposição precisa estar definida.
+### Exemplo completo (da aula): multas de estacionamento de diplomatas em Nova York
+
+Dados reais (Fisman e Miguel) de **298 observações** (país × período): a variável dependente **violations** é a **contagem de multas de estacionamento** dos diplomatas de cada país. As explicativas são **staff** (nº de funcionários da missão diplomática, média de 11,8), **post** (se a observação é **depois** de uma mudança na fiscalização: "yes" ou "no") e **corruption** (índice de corrupção do país, padronizado, média 0 e desvio 1).
+
+**Olhando a variável dependente.** Ela é de contagem (0, 1, 2, ... até 167), com **156 zeros (52,3%)**, média **6,50** e variância **331,6**. Repare que a variância é **51 vezes** a média: o Poisson pressupõe média = variância, então já dá para desconfiar de superdispersão.
+
+**Modelo Poisson** (\(\ln\lambda = \alpha + \beta_1\,\text{staff} + \beta_2\,\text{post} + \beta_3\,\text{corruption}\)):
+
+| Termo | Coeficiente | z | p-valor | e^β |
+|---|---|---|---|---|
+| Intercepto | 2,2127 | 71,1 | < 0,001 | 9,14 |
+| staff | 0,0219 | 17,8 | < 0,001 | 1,022 |
+| post (yes) | −4,2968 | −21,8 | < 0,001 | **0,0136** |
+| corruption | 0,3418 | 12,4 | < 0,001 | 1,407 |
+
+**Como ler.** O \(e^\beta\) é o **fator multiplicativo** da contagem esperada: cada funcionário a mais multiplica as multas por 1,022 (+2,2%); cada desvio-padrão a mais de corrupção multiplica por 1,41 (+41%); e **depois da mudança na fiscalização, as multas caem 98,6%** (fator 0,0136).
+
+**Previsão.** Uma missão com **10 funcionários** e corrupção **0,5**:
+
+\[ \ln\hat\lambda_{antes} = 2{,}2127 + 0{,}0219\times 10 + 0{,}3418\times 0{,}5 = 2{,}60 \;\Rightarrow\; \hat\lambda = e^{2{,}60} = 13{,}5 \text{ multas} \]
+
+\[ \ln\hat\lambda_{depois} = 2{,}60 - 4{,}2968 = -1{,}69 \;\Rightarrow\; \hat\lambda = e^{-1{,}69} = 0{,}18 \text{ multas} \]
+
 
 ## 3. Superdispersão e o teste de Cameron e Trivedi
 
@@ -53,7 +75,24 @@ Quando há superdispersão, usa-se o **binomial negativo**, que tem **dois parâ
 
 O \(\varphi\) é o **"alfa"** do statsmodels. **Para decidir:** se o **alfa for significante (p < 0,05)**, há superdispersão e o binomial negativo é melhor; se não for, a saída é idêntica à da Poisson (o binomial negativo nunca é pior). O **teste de razão de verossimilhança (LR)** entre os dois também ajuda, e o modelo prevê melhor valores altos.
 
-> **Exemplo resolvido.** Média = 2 e variância = 10. Na Poisson a variância seria 2. No binomial negativo, \(10 = 2 + \varphi\cdot 2^2\), logo \(\varphi = 2\): o modelo reproduz a cauda longa que a Poisson não captura.
+### Testando a superdispersão e corrigindo com o binomial negativo (mesmos dados)
+
+**Teste de Cameron e Trivedi.** Estima-se uma regressão auxiliar **sem intercepto** que relaciona a variância ao quadrado da média prevista. Se o coeficiente for **estatisticamente significante**, há superdispersão. Resultado: **coeficiente = 2,65, t = 2,75, p = 0,0063 < 0,05**, então **há superdispersão**: o Poisson não é o modelo adequado.
+
+**Modelo binomial negativo** (o mesmo preditor, mas com um parâmetro extra de dispersão \(\varphi\) = alpha):
+
+| Termo | Poisson | Binomial negativo | p-valor (BN) |
+|---|---|---|---|
+| Intercepto | 2,2127 | 1,9469 | < 0,001 |
+| staff | 0,0219 (z = 17,8) | 0,0400 (z = 2,9) | 0,003 |
+| post (yes) | −4,2968 | −4,2746 | < 0,001 |
+| corruption | 0,3418 (z = 12,4) | 0,4527 (z = 3,4) | 0,001 |
+| **alpha (φ)** | (não tem) | **2,096** | < 0,001 |
+| Log-verossimilhança | −2.071,8 | **−567,4** | |
+| AIC | 4.151,6 | **1.144,8** | |
+
+**O que mudou.** (1) O **alpha = 2,10** é significante: confirma a superdispersão. A variância do modelo é \(\mu + \varphi\mu^2\) (na Poisson seria só \(\mu\)). (2) Os **z despencaram**: o de staff foi de 17,8 para 2,9 e o de corruption de 12,4 para 3,4. Isso mostra que o Poisson **subestimava os erros-padrão** e dava um falso ar de precisão. (3) O ajuste melhorou muito: a LL sobe de −2.071,8 para −567,4. O **teste de razão de verossimilhança** entre os dois modelos tem \(\chi^2 = 2\,(-567{,}4 + 2071{,}8) = 3008{,}8\), com p ≈ 0: o binomial negativo é o modelo preferível. Os coeficientes dão fatores parecidos: depois da fiscalização as multas caem 98,6% e cada desvio-padrão de corrupção multiplica a contagem por 1,57.
+
 
 ## 5. Excesso de zeros: ZIP e ZINB
 
@@ -68,7 +107,21 @@ Quando o evento é **raro** (ex.: 5.000 residências e só 4 com violência dom�
 
 O **teste de Vuong (1989)** diz se **há inflação de zeros**: se for significante, use o modelo inflacionado.
 
-> **Exemplo resolvido.** \(p_{logit} = 0{,}7\) e \(P_{Poisson}(0) = 0{,}2\) → \(P(Y=0) = 0{,}7 + 0{,}3\times 0{,}2 = 0{,}76\); \(P(Y=1) = 0{,}3\times P_{Poisson}(1)\).
+### Excesso de zeros: ZIP e ZINB (mesmos dados)
+
+Mais da metade (**52,3%**) das observações é zero. Dois tipos de zero convivem: os **estruturais** (observações em que o evento **nunca** ocorreria) e os **amostrais** (zeros que poderiam ter ocorrido por acaso numa contagem). Os modelos **inflacionados de zeros** têm duas partes: um **componente logit**, que estima a probabilidade de um zero ser estrutural, e um componente de contagem (Poisson no **ZIP**, binomial negativo no **ZINB**).
+
+No **ZIP** do exemplo, o componente logit usa a **corrupção** como explicativa: **coeficiente = −0,95** (z = −4,9; p < 0,001). O sinal negativo significa que **países mais corruptos têm menor probabilidade de ter um zero estrutural** (ou seja, de ser uma observação em que nenhuma multa ocorreria). Para a corrupção média (0), a probabilidade de zero estrutural é \(1/(1+e^{1{,}61}) = 16{,}6\%\).
+
+**Qual modelo usar?** Compara-se o inflacionado com o convencional pelo **teste de Vuong** (a H0 é que os dois modelos são equivalentes; **z > 1,96 favorece o inflacionado**):
+
+| Comparação | z de Vuong | Decisão | AIC |
+|---|---|---|---|
+| **ZIP × Poisson** | **2,99** (p ≈ 0,001) | ZIP é melhor | 3.574,6 contra 4.151,6 |
+| **ZINB × binomial negativo** | 1,94 (p ≈ 0,05, no limite) | ZINB marginalmente melhor | 1.128,5 contra 1.144,8 |
+
+O ZINB (LL = −557,3) tem o **menor AIC** de todos, e é o melhor modelo da família quando se leva em conta superdispersão **e** excesso de zeros. Como o z do Vuong do ZINB fica no limite de 1,96, a escolha entre ele e o binomial negativo simples é uma **decisão de julgamento**, apoiada no AIC e em saber se a ideia de zeros estruturais faz sentido para o problema.
+
 
 ## O que levar daqui
 

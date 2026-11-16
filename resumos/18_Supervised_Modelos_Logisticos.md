@@ -30,7 +30,30 @@ A **chance (odds)** compara o evento com o não evento: \(\text{chance} = \frac{
 
 (†) **Razão de chances:** \(e^{\beta}\) mostra quanto a **chance** do evento é multiplicada quando X sobe uma unidade. \(\beta > 0\) aumenta a probabilidade; \(\beta < 0\) diminui.
 
-> **Exemplo resolvido.** \(Z = -2 + 0{,}5X\), com \(X = 6\): \(Z = 1\) e \(p = \frac{1}{1 + e^{-1}} = 0{,}73\). Já \(e^{0{,}5} \approx 1{,}65\): cada unidade a mais de X multiplica a chance por 1,65 (aumento de cerca de 65%).
+### Exemplo completo (da aula): quem chega atrasado?
+
+Dados de 100 estudantes: a variável dependente **atrasado** (1 = chegou atrasado à aula, 0 = não: 59 atrasados e 41 pontuais) e duas explicativas, a **distância** até a escola (km, média de 14,1) e a **quantidade de semáforos** no caminho (média de 10,2). Por exemplo, a Gabriela percorreu 12,5 km, passou por 7 semáforos e não se atrasou.
+
+**Modelo estimado (máxima verossimilhança):**
+
+| Termo | Coeficiente | Erro-padrão | z | p-valor | e^β (razão de chances) |
+|---|---|---|---|---|---|
+| Intercepto | −26,1665 | 8,442 | −3,10 | 0,002 | ≈ 0 |
+| **dist** | **0,1904** | 0,076 | 2,49 | 0,013 | **1,21** |
+| **sem** | **2,3629** | 0,795 | 2,97 | 0,003 | **10,62** |
+
+O logito estimado é \(Z = -26{,}1665 + 0{,}1904\,\text{dist} + 2{,}3629\,\text{sem}\).
+
+**Como ler os coeficientes.** Os betas positivos mostram que **mais distância e mais semáforos aumentam a chance de atraso**. A razão de chances \(e^\beta\) diz quanto a **chance** (odds) é multiplicada: cada **km a mais** multiplica a chance de atraso por **1,21** (+21%), e cada **semáforo a mais** por **10,62** (a chance mais que decuplica).
+
+**Calculando a probabilidade de um estudante.** Um estudante que mora a **20 km** e passa por **10 semáforos**:
+
+\[ Z = -26{,}1665 + 0{,}1904\times 20 + 2{,}3629\times 10 = -26{,}1665 + 3{,}808 + 23{,}629 = 1{,}27 \]
+
+\[ p = \frac{1}{1 + e^{-1{,}27}} = \frac{1}{1 + 0{,}281} = 0{,}78 \]
+
+**78% de probabilidade de chegar atrasado.** Se o mesmo estudante passasse por **5 semáforos**, o logito cairia para \(-10{,}5\) e a probabilidade para **0,003%**: a curva sigmoide é muito inclinada nessa região.
+
 
 ## 3. Estimação: máxima verossimilhança
 
@@ -42,7 +65,8 @@ Y segue uma **Bernoulli**, e a **função objetivo é maximizar o log da verossi
 | **Teste z de Wald** | cada parâmetro (equivale ao t) |
 | **Pseudo-R² de McFadden** | \(1 - LL/LL_0\); **não** é variância explicada |
 
-> **Exemplo.** LL do modelo = −60; LL do nulo = −100 → McFadden = \(1 - \frac{-60}{-100} = 0{,}40\).
+> **Exemplo completo (os mesmos 100 estudantes).** O modelo tem log-verossimilhança **LL = −50,466**; o modelo nulo (só intercepto) tem **LL₀ = −67,686**. O **teste de razão de verossimilhança** é \(\chi^2 = -2\,(LL_0 - LL) = -2(-67{,}686 + 50{,}466) = 34{,}44\), com 2 graus de liberdade (as duas explicativas) e **p ≈ 3 × 10⁻⁸**: o modelo como um todo é significante. O **pseudo-R² de McFadden** é \(1 - \frac{-50{,}466}{-67{,}686} = \mathbf{0{,}254}\). Os testes de cada beta são do tipo **z (Wald)**, como na tabela acima.
+
 
 ## 4. Eficiência: cutoff, matriz de confusão e ROC
 
@@ -59,7 +83,18 @@ A **curva ROC** coloca a **sensibilidade** contra **(1 − especificidade)** par
 
 ![Curva ROC: quanto mais acima da diagonal, melhor](img/18_roc.png)
 
-> **Exemplo resolvido.** 200 casos: VP = 40, FN = 10, FP = 20, VN = 130. Acurácia = 170 ÷ 200 = **85%**; sensibilidade = 40 ÷ 50 = **80%**; especificidade = 130 ÷ 150 ≈ **86,7%**.
+> **Exemplo completo (os mesmos 100 estudantes).** Com cada probabilidade estimada, classifica-se como "atrasado" quem tem \(p \geq\) **cutoff**. Três cutoffs (59 atrasados e 41 pontuais de verdade):
+>
+> | Cutoff | VP | FN | FP | VN | Acurácia | Sensibilidade | Especificidade |
+> |---|---|---|---|---|---|---|---|
+> | 0,3 | 59 | 0 | 33 | 8 | 67% | **100%** | 19,5% |
+> | **0,5** | 46 | 13 | 16 | 25 | **71%** | 78,0% | 61,0% |
+> | 0,7 | 29 | 30 | 3 | 38 | 67% | 49,2% | **92,7%** |
+>
+> Para o cutoff de 0,5: acurácia = \((46 + 25)/100 = 71\%\); sensibilidade = \(46/(46 + 13) = 78{,}0\%\) (dos 59 atrasados, o modelo pegou 46); especificidade = \(25/(25 + 16) = 61{,}0\%\) (dos 41 pontuais, acertou 25).
+>
+> **O que o cutoff faz.** **Baixar** o cutoff (0,3) faz o modelo "chamar de atrasado" quase todo mundo: sensibilidade sobe a 100%, mas a especificidade cai a 19,5%. **Subir** o cutoff (0,7) faz o oposto. Não existe cutoff "certo": depende do custo de cada erro. A **curva ROC** resume todos os cutoffs de uma vez: a **área sob a curva (AUC) deste modelo é 0,80**.
+
 
 ## 5. Logística multinomial
 
@@ -69,7 +104,32 @@ Quando Y tem **M categorias**, o modelo usa **M − 1 logitos**, cada um compara
 
 O denominador é o mesmo e as probabilidades **somam 100%**. A observação é classificada na categoria de **maior probabilidade**; por isso **não há cutoff** no multinomial.
 
-> **Exemplo resolvido.** \(Z_1 = 0{,}5\) e \(Z_2 = -0{,}2\): \(e^{0{,}5} = 1{,}649\), \(e^{-0{,}2} = 0{,}819\), denominador = 3,467. **\(P_0 = 0{,}288\); \(P_1 = 0{,}476\); \(P_2 = 0{,}236\)** (soma = 1). Classificada na categoria 1.
+### Exemplo completo (da aula): atraso com três categorias
+
+Agora a variável dependente tem **3 categorias**: **não chegou atrasado** (49 estudantes, a **referência**), **chegou atrasado à primeira aula** (16) e **chegou atrasado à segunda aula** (35). Com M = 3 categorias, estimam-se **M − 1 = 2 logitos**, ambos contra a referência:
+
+| | Logito 1: primeira aula vs. referência | Logito 2: segunda aula vs. referência |
+|---|---|---|
+| Intercepto | −33,1352 | −62,2922 |
+| **dist** | **0,5588** (p = 0,022) | **1,0784** (p < 0,001) |
+| **sem** | **1,6699** (p = 0,004) | **2,8949** (p < 0,001) |
+
+O modelo geral tem \(\chi^2 = 153{,}0\) (4 graus de liberdade) e pseudo-R² de McFadden de **0,757**.
+
+**Da soma de logitos às probabilidades.** Um estudante que percorre **20 km** e passa por **16 semáforos**:
+
+\[ Z_1 = -33{,}1352 + 0{,}5588\times 20 + 1{,}6699\times 16 = 4{,}76 \qquad Z_2 = -62{,}2922 + 1{,}0784\times 20 + 2{,}8949\times 16 = 5{,}59 \]
+
+A categoria de referência tem \(Z_0 = 0\), logo \(e^{Z_0} = 1\). As três "chances relativas" são \(1\); \(e^{4{,}76} = 116{,}7\); \(e^{5{,}59} = 268{,}5\), e o denominador é \(1 + 116{,}7 + 268{,}5 = 386{,}2\):
+
+| Categoria | Cálculo | Probabilidade |
+|---|---|---|
+| Não chegou atrasado | 1 / 386,2 | **0,3%** |
+| Atrasado na 1ª aula | 116,7 / 386,2 | **30,2%** |
+| Atrasado na 2ª aula | 268,5 / 386,2 | **69,5%** |
+
+A soma é 100%. **Não há cutoff na multinomial**: classifica-se o estudante na categoria de **maior probabilidade** (aqui, "atrasado na 2ª aula"). Aplicando esse critério aos 100 estudantes, o modelo **acerta 89** (47 de 49, 12 de 16 e 30 de 35).
+
 
 ## O que levar daqui
 

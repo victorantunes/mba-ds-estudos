@@ -49,12 +49,56 @@ Note o termo \(\gamma_{11}\,texp\cdot horas\): uma **interação entre níveis**
 
 O ICC é a **fração da variância total atribuível ao contexto** (a escola); o restante é o efeito do indivíduo. Quanto maior o ICC, mais importante o contexto.
 
-> **Exemplo resolvido (ICC).** Variância entre escolas = 20; variância residual = 80. \(ICC = \frac{20}{100} = 0{,}20\): 20% da variação no desempenho é "efeito escola" e **80% é "efeito estudante"**.
+### Exemplo completo (da aula): desempenho de 358 estudantes em 10 escolas
 
-> **Exemplo resolvido (previsão).** Dados: \(\gamma_{00} = 50\), \(\gamma_{10} = 2\), \(\gamma_{01} = 1{,}5\), \(\gamma_{11} = 0{,}3\). A escola 1 tem \(\nu_0 = 3\) e \(\nu_1 = 0{,}5\); o aluno estuda **11 horas** e a escola tem **texp = 3,6**.
-> **Parte fixa:** \(50 + 2\cdot 11 + 1{,}5\cdot 3{,}6 + 0{,}3\cdot 3{,}6\cdot 11 = 50 + 22 + 5{,}4 + 11{,}88 = 89{,}28\).
-> **Parte aleatória da escola 1:** \(3 + 0{,}5\cdot 11 = 8{,}5\).
-> **Previsto = 89,28 + 8,5 = 97,78.** (O `fittedvalues` do statsmodels já inclui os efeitos aleatórios.)
+Dados reais: cada linha é um **estudante** (nível 1) que pertence a uma de **10 escolas** (nível 2, de 20 a 48 estudantes cada). A variável dependente é o **desempenho** (média 41,6; de 6,5 a 100). As explicativas são as **horas de estudo por semana** (nível 1, média de 19) e o **tempo médio de experiência dos professores da escola**, **texp** (nível 2, em anos, de 1,9 a 13).
+
+**O desempenho muda muito de escola para escola.** As médias por escola vão de **18,6** (escola 9) a **75,4** (escola 8):
+
+| Escola | 9 | 5 | 2 | 6 | 1 | 10 | 4 | 7 | 3 | 8 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Desempenho médio | 18,6 | 19,3 | 21,4 | 34,0 | 36,8 | 38,6 | 55,3 | 57,5 | 67,1 | 75,4 |
+
+**Passo 1: o modelo nulo** (só intercepto, mas **aleatório por escola**). Ele separa a variação em duas partes:
+
+| Componente | Estimativa |
+|---|---|
+| Intercepto geral \(\gamma_{00}\) (efeito fixo) | **42,39** |
+| Variância **entre escolas** (efeito aleatório do intercepto, \(\tau_{00}\)) | **414,07** |
+| Variância **residual** (entre estudantes da mesma escola, \(\sigma^2\)) | **142,92** |
+
+**Passo 2: o ICC** (correlação intraclasse): a fração da variância total que está **entre escolas**.
+
+\[ ICC = \frac{\tau_{00}}{\tau_{00} + \sigma^2} = \frac{414{,}07}{414{,}07 + 142{,}92} = \frac{414{,}07}{556{,}99} = \mathbf{0{,}743} \]
+
+**74,3% da variação no desempenho é "efeito escola"** e só 25,7% é "efeito estudante" dentro da escola. É um ICC enorme: ignorar a estrutura hierárquica seria um erro grave. O **teste de razão de verossimilhança** (como feito na aula) confirma: a LL do modelo nulo multinível (−1.416,0) é bem maior que a do OLS sem estrutura (−1.633,5), com \(\chi^2 = 2(−1.416{,}0 + 1.633{,}5) = 435\): **os efeitos aleatórios de escola são necessários**.
+
+
+### Exemplo completo (continuação): o modelo final e a previsão
+
+O modelo final tem **interceptos e inclinações aleatórios** por escola, com as horas de estudo (nível 1), o texp (nível 2) e a **interação** entre os dois:
+
+\[ \widehat{\text{desemp}}_{ij} = \underbrace{\gamma_{00} + \gamma_{10}\,\text{horas}_{ij} + \gamma_{01}\,\text{texp}_j + \gamma_{11}\,\text{horas}_{ij}\,\text{texp}_j}_{\text{efeitos fixos}} + \underbrace{\nu_{0j} + \nu_{1j}\,\text{horas}_{ij}}_{\text{efeitos aleatórios da escola }j} \]
+
+**Efeitos fixos estimados:**
+
+| Termo | Coeficiente | p-valor | Leitura |
+|---|---|---|---|
+| \(\gamma_{00}\) Intercepto | −0,850 | 0,777 | não significante |
+| \(\gamma_{10}\) horas | **0,713** | 0,026 | cada hora de estudo a mais eleva o desempenho em 0,71 ponto (quando texp = 0) |
+| \(\gamma_{01}\) texp | **1,585** | 0,001 | cada ano a mais de experiência dos professores eleva o desempenho em 1,59 ponto |
+| \(\gamma_{11}\) horas × texp | **0,232** | < 0,001 | **interação:** o efeito das horas de estudo **cresce** em escolas com professores mais experientes |
+
+**Efeitos aleatórios (variâncias):** do intercepto, \(\tau_{00} = 24{,}3\); da inclinação das horas, \(\tau_{11} = 0{,}31\); e a residual \(\sigma^2 = 7{,}04\). Para ter uma ideia: no modelo nulo a variância entre escolas era **414**; no modelo final, com as horas e o texp, a variância do intercepto é **24**. Os modelos não são idênticos (o final tem inclinação aleatória), mas a queda sugere que o tempo de experiência dos professores explica boa parte do "efeito escola".
+
+**Previsão passo a passo.** Qual o desempenho previsto do **estudante 1**, da **escola 1**, que estuda **11 horas** por semana, numa escola com **texp = 3,6**?
+
+1. **Parte fixa:** \(-0{,}850 + 0{,}713\times 11 + 1{,}585\times 3{,}6 + 0{,}232\times 11\times 3{,}6 = -0{,}850 + 7{,}843 + 5{,}706 + 9{,}187 = \mathbf{21{,}89}\).
+2. **Efeitos aleatórios da escola 1** (estimados pelo modelo): \(\nu_{01} = -0{,}211\) (intercepto) e \(\nu_{11} = +0{,}439\) (inclinação).
+3. **Previsão completa:** \(21{,}89 + (-0{,}211) + 0{,}439\times 11 = 21{,}89 - 0{,}21 + 4{,}83 = \mathbf{26{,}50}\).
+
+O desempenho observado desse estudante foi **25,0**. A previsão só com a parte fixa (21,89) ficaria mais longe; **somar os efeitos aleatórios da escola** aproxima a previsão da realidade (26,50), porque ela reconhece que a escola 1 tem uma inclinação das horas um pouco acima da média das escolas.
+
 
 ## 4. Três níveis e medidas repetidas (growth model)
 
