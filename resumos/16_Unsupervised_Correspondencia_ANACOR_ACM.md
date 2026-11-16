@@ -33,11 +33,58 @@ A **H0** é que as variáveis são **independentes** (associação aleatória). 
 
 O **resíduo padronizado ajustado**, quando **maior que 1,96** (nível de 5%), indica **associação significativa entre aquelas duas categorias** (um excesso de ocorrências no cruzamento). O **mapa perceptual** é construído a partir dos **autovalores** (inércias principais parciais): o número de dimensões é \(m = \min(I-1, J-1)\); a **inércia total** é a soma dos autovalores, igual a \(\chi^2 / N\); e o **percentual de inércia por dimensão** é \(\lambda / \text{inércia total}\). Quanto maior a inércia, mais forte a associação. As **massas** indicam o peso (representatividade) de cada categoria. **Leitura do mapa: categorias próximas = associadas.**
 
-> **Exemplo resolvido.** Escola (pública/privada) × aprovação (sim/não), N = 200. Observados: pública 30 sim e 70 não; privada 60 sim e 40 não. Totais: linhas 100/100; colunas 90 (sim) e 110 (não).
-> **Esperados:** 45; 55; 45; 55. **Resíduos:** −15; +15; +15; −15.
-> \(\chi^2 = \frac{225}{45} + \frac{225}{55} + \frac{225}{45} + \frac{225}{55} \approx 5 + 4{,}09 + 5 + 4{,}09 = 18{,}2\), com gl = 1: **rejeita H0, há associação**.
-> O resíduo padronizado ajustado da célula (pública, sim) é ≈ −15 ÷ 3,52 ≈ **−4,3**: pública está **menos** associada a "sim" e privada, **mais**.
-> Dimensões = mín(1, 1) = **1**; inércia total = 18,2 ÷ 200 ≈ **0,09**.
+### Exemplo completo (da aula): perfil de investidor × tipo de aplicação
+
+100 estudantes responderam a duas perguntas: seu **perfil de investidor** (Agressivo, Conservador ou Moderado) e o **tipo de aplicação** que escolheram (Ações, CDB ou Poupança). A pergunta é: *o perfil se associa ao tipo de aplicação? E quais categorias se associam?*
+
+**Passo 1: tabela de contingência (frequências observadas).**
+
+| Perfil \ Aplicação | Ações | CDB | Poupança | Total |
+|---|---|---|---|---|
+| **Agressivo** | 36 | 20 | 2 | **58** |
+| **Conservador** | 5 | 4 | 8 | **17** |
+| **Moderado** | 4 | 16 | 5 | **25** |
+| **Total** | **45** | **40** | **15** | **100** |
+
+**Passo 2: frequências esperadas** (se perfil e aplicação fossem independentes): \(E = \frac{\text{total da linha}\times\text{total da coluna}}{N}\). Por exemplo, Agressivo × Ações: \(58 \times 45 / 100 = 26{,}10\).
+
+| Perfil \ Aplicação | Ações | CDB | Poupança |
+|---|---|---|---|
+| Agressivo | 26,10 | 23,20 | 8,70 |
+| Conservador | 7,65 | 6,80 | 2,55 |
+| Moderado | 11,25 | 10,00 | 3,75 |
+
+Já dá para ver as diferenças: agressivos **observados 36** em ações, contra **26,1 esperados**; conservadores **observados 8** em poupança, contra **2,55 esperados**.
+
+**Passo 3: qui-quadrado.** Cada célula contribui com \((O-E)^2/E\). Para Agressivo × Ações: \((36-26{,}10)^2/26{,}10 = 98{,}01/26{,}10 = 3{,}76\). Somando as 9 células: **χ² = 31,76**, com \(gl = (3-1)(3-1) = 4\) e **p ≈ 0,000002**. Como p < 0,05, **rejeita-se H0 (independência)**: **há associação** entre perfil e aplicação, e vale seguir para a etapa 2.
+
+**Passo 4: resíduos padronizados ajustados** (a etapa 2). Para Agressivo × Ações:
+
+\[ \text{res.} = \frac{O - E}{\sqrt{E\,(1 - \text{prop. linha})(1 - \text{prop. coluna})}} = \frac{36 - 26{,}10}{\sqrt{26{,}10 \times 0{,}42 \times 0{,}55}} = \frac{9{,}90}{2{,}455} = 4{,}03 \]
+
+| Perfil \ Aplicação | Ações | CDB | Poupança |
+|---|---|---|---|
+| Agressivo | **4,03** | −1,32 | **−3,80** |
+| Conservador | −1,42 | −1,52 | **4,06** |
+| Moderado | **−3,37** | **2,83** | 0,81 |
+
+Valores acima de **+1,96** ou abaixo de **−1,96** (em negrito) são significativos. Leitura: **agressivos** se associam a **ações** (e evitam poupança); **conservadores** se associam a **poupança**; **moderados** se associam a **CDB** (e evitam ações). Os demais cruzamentos (por exemplo, Conservador × Ações) **não** são significativos.
+
+**Passo 5: dimensões e inércia.** O nº de dimensões é \(\min(I-1, J-1) = \min(2, 2) = \mathbf{2}\). A **inércia total** é \(\chi^2/N = 31{,}76/100 = \mathbf{0{,}3176}\) (quanto maior, mais forte a associação). Ela se divide entre as dimensões:
+
+| Dimensão | Inércia principal (autovalor) | % da inércia |
+|---|---|---|
+| 1 | 0,2332 | **73,4%** |
+| 2 | 0,0844 | 26,6% |
+| **Total** | **0,3176** | 100% |
+
+As **massas** (representatividade de cada categoria) são as proporções marginais: perfis 58% / 17% / 25% e aplicações 45% / 40% / 15%.
+
+**Passo 6: o mapa perceptual.**
+
+![Mapa perceptual da ANACOR: perfil × tipo de aplicação](img/16_anacor_mapa.png)
+
+Categorias **próximas** estão associadas: **Agressivo** perto de **Ações**, **Conservador** perto de **Poupança** e **Moderado** perto de **CDB**, confirmando o que os resíduos já tinham mostrado. A primeira dimensão (73,4%) separa, basicamente, o lado "arrojado" (Agressivo, Ações) do lado "seguro" (Poupança, Conservador).
 
 ## 3. ACM (múltipla)
 
@@ -48,7 +95,40 @@ O **primeiro passo** é fazer o χ² **para cada par** de variáveis: **só entr
 | **Matriz binária (indicadora) Z** | 0/1 para presença de cada categoria em cada observação | \(J - Q\) (J = total de categorias; Q = nº de variáveis); inércia total = \((J-Q)/Q\) |
 | **Matriz de Burt** \(B = Z'Z\) | cruza todos os pares de variáveis numa única tabela e aplica a ANACOR | as mesmas |
 
-> **Exemplo.** Três variáveis com 3, 2 e 4 categorias → \(J = 9\), \(Q = 3\) → **6 dimensões**; inércia total = \((9 - 3)/3 = 2\).
+### Exemplo completo (da aula): perfil × aplicação × estado civil
+
+Os mesmos 100 estudantes ganham uma terceira variável: o **estado civil** (Casado: 43, Solteiro: 57). Agora são **três** variáveis categóricas, então o caso é de ACM.
+
+**Passo 1: qui-quadrado para cada par de variáveis.** Só entram na ACM as variáveis associadas a pelo menos uma outra.
+
+| Par de variáveis | χ² | gl | p-valor | Associação? |
+|---|---|---|---|---|
+| perfil × aplicação | 31,76 | 4 | 0,000002 | sim |
+| perfil × estado civil | 11,44 | 2 | 0,0033 | sim |
+| aplicação × estado civil | 17,86 | 2 | 0,00013 | sim |
+
+Todos os pares têm p < 0,05, então **as três variáveis ficam na análise** (nenhuma é excluída).
+
+**Passo 2: quantas dimensões.** O nº de categorias é J = 3 + 3 + 2 = **8** e o nº de variáveis é Q = **3**, então são \(J - Q = 8 - 3 = \mathbf{5}\) dimensões, e a inércia total é \((J-Q)/Q = 5/3 = \mathbf{1{,}667}\).
+
+**Passo 3: inércias principais.**
+
+| Dimensão | Inércia (autovalor) | % da inércia | Acima da média (0,333)? |
+|---|---|---|---|
+| **1** | **0,602** | 36,1% | sim |
+| **2** | **0,436** | 26,2% | sim |
+| 3 | 0,276 | 16,6% | não |
+| 4 | 0,180 | 10,8% | não |
+| 5 | 0,172 | 10,3% | não |
+| **Total** | **1,667** | 100% | |
+
+A **média** das inércias é \(1{,}667/5 = 0{,}333\). Mantêm-se as dimensões **acima da média**: duas, que juntas explicam **62,3%** da inércia.
+
+**Passo 4: o mapa.**
+
+![Inércias e mapa perceptual da ACM](img/16_acm_mapa.png)
+
+Categorias próximas se associam. **Agressivo, Solteiro e Ações** ficam no mesmo lado (à direita); **Conservador e Poupança** formam outro grupo (embaixo, à esquerda); **Moderado e CDB** formam o terceiro (em cima). O estado **Casado** fica do lado dos perfis mais prudentes. (Os valores exatos das coordenadas e da inércia podem variar um pouco conforme a normalização do pacote; aqui foram calculados pela matriz indicadora, que é o método descrito acima.)
 
 Em Python usa-se `prince.MCA`; plotam-se as dimensões de autovalor acima da média.
 

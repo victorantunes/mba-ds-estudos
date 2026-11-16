@@ -7,32 +7,7 @@ import make_figures as mf
 from make_figures import save, C1, C2, C3, GR
 
 
-def f14_dendrograma():
-    pts = np.array([[1], [2], [6], [8]], dtype=float)
-    Z = sch.linkage(pts, method="single")
-    fig, ax = plt.subplots(figsize=(6, 3.4))
-    sch.dendrogram(Z, labels=["A=1", "B=2", "C=6", "D=8"], ax=ax, color_threshold=3, above_threshold_color=GR)
-    ax.set_ylabel("distância")
-    ax.set_title("Dendrograma (single linkage): corte antes do grande salto")
-    ax.axhline(3, color=C2, ls="--", lw=1)
-    ax.text(3.05, 3.1, "corte → 2 clusters", color=C2, ha="right", fontsize=9, transform=ax.get_yaxis_transform())
-    save(fig, "14_dendrograma")
-
-
-def f14_cotovelo():
-    rng = np.random.default_rng(1)
-    k = np.arange(1, 9)
-    wcss = np.array([310, 140, 52, 40, 33, 28, 25, 23], float)
-    sil = np.array([np.nan, .52, .71, .60, .52, .47, .43, .40])
-    fig, ax = plt.subplots(1, 2, figsize=(8, 3.2))
-    ax[0].plot(k, wcss, "-o", color=C1)
-    ax[0].axvline(3, color=C2, ls="--")
-    ax[0].set_title("Cotovelo (WCSS)"); ax[0].set_xlabel("K"); ax[0].set_ylabel("WCSS (soma dos quadrados das distâncias)")
-    ax[1].set_ylabel("silhueta média")
-    ax[1].plot(k, sil, "-o", color=C3)
-    ax[1].axvline(3, color=C2, ls="--")
-    ax[1].set_title("Silhueta média"); ax[1].set_xlabel("K")
-    save(fig, "14_cotovelo_silhueta")
+# (os gráficos do cap. 14 agora vêm de dados reais: tools/make_figures5.py)
 
 
 def f15_scree():

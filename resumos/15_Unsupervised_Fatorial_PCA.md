@@ -101,7 +101,20 @@ Há dois blocos claros. De um lado, **renda, cota, escolaridade e idade** se cor
 
 ### Passo 2: Bartlett
 
-H0: a matriz de correlações é a identidade. Resultado: **χ² = 748,16** (36 graus de liberdade, \(9\cdot 8/2\)) e **p ≈ 0** (da ordem de 10⁻¹³⁴). Como p < 0,05, **rejeita-se H0**: existe correlação suficiente, e a PCA é adequada.
+H0: a matriz de correlações é a identidade (as variáveis não se correlacionam). O teste compara o **determinante** da matriz de correlações com 1, que é o valor que ele teria se H0 fosse verdadeira (matriz identidade). Quanto **mais correlacionadas** as variáveis, **mais perto de zero** fica o determinante.
+
+\[ \chi^2 = -\Big[(n-1) - \tfrac{2p+5}{6}\Big]\,\ln|R| \qquad gl = \frac{p(p-1)}{2} \]
+
+em que \(n\) = nº de observações, \(p\) = nº de variáveis e \(|R|\) = determinante da matriz de correlações. **Conferindo o resultado com os números do Atlas** (\(n = 96\), \(p = 9\)):
+
+1. **Determinante** da matriz de correlações 9×9: \(|R| = 0{,}000273\) (quase zero, porque há correlações fortes). Ele é também o **produto dos 9 autovalores** do Passo 3 (4,956 × 1,164 × 0,996 × … × 0,037).
+2. **Logaritmo:** \(\ln(0{,}000273) = -8{,}2065\).
+3. **Fator de correção:** \((96 - 1) - \frac{2\cdot 9 + 5}{6} = 95 - 3{,}8333 = 91{,}1667\).
+4. **Estatística:** \(\chi^2 = -91{,}1667 \times (-8{,}2065) = \mathbf{748{,}16}\). Bate com o resultado do `calculate_bartlett_sphericity`.
+5. **Graus de liberdade:** \(gl = 9\cdot 8/2 = \mathbf{36}\) (o nº de correlações distintas fora da diagonal).
+6. **Decisão:** o valor crítico do χ² com 36 gl a 5% é **50,998**. Como 748,16 é **muito maior**, rejeita-se H0. O p-valor é **≈ 5,6 × 10⁻¹³⁴** (praticamente zero).
+
+Conclusão: **existe correlação suficiente entre as variáveis, e a PCA é adequada.**
 
 ### Passo 3: autovalores e critério de Kaiser
 
