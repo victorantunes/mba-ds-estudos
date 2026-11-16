@@ -45,7 +45,33 @@ Modelar é traduzir o problema em três elementos:
 
 As restrições podem ser **fortes** (inegociáveis) ou **fracas** (desejáveis; só tratáveis em meta-heurísticas). O primeiro passo prático é **ouvir quem vive o problema**.
 
-> **Exemplo resolvido (mochila).** Escolher itens para **maximizar o valor** carregado, com limite de peso de 5 kg. A variável de cada item é binária (1 = leva, 0 = deixa). A função objetivo soma os valores dos itens levados e a restrição limita a soma dos pesos a 5. O ótimo da aula foi Z = 41.
+### Exemplo completo (da aula): a mochila de montanhismo
+
+Um montanhista pode levar **até 5.000 g** na mochila e dá **pontos de utilidade** a cada item. O objetivo é **maximizar os pontos** sem estourar o peso:
+
+| # | Item | Pontos | Peso (g) |
+|---|---|---|---|
+| 1 | barra de cereal | 6 | 200 |
+| 2 | casaco | 7 | 400 |
+| 3 | tênis | 3 | 400 |
+| 4 | celular | 2 | 100 |
+| 5 | água | 9 | 1.000 |
+| 6 | protetor solar | 5 | 200 |
+| 7 | protetor labial | 2 | 30 |
+| 8 | garrafas de oxigênio | 10 | 3.000 |
+| 9 | máquina fotográfica | 6 | 500 |
+
+**O modelo.** Variáveis de decisão: \(x_i \in \{0, 1\}\) (1 = leva o item \(i\), 0 = deixa). **Função objetivo:** maximizar \(Z = \sum p_i x_i\). **Restrição:** \(\sum w_i x_i \leq 5000\).
+
+**O tamanho do espaço de busca.** Com 9 itens há \(2^9 = 512\) combinações possíveis, das quais **459 respeitam o limite de peso**. Levar tudo daria 50 pontos, mas pesaria **5.830 g** (inviável). Aqui dá para testar todas, mas com 50 itens seriam \(2^{50} \approx 10^{15}\) combinações: por isso se usam **meta-heurísticas** como o algoritmo genético.
+
+**O ótimo.** O melhor valor possível é **Z = 41** pontos, e existem **duas soluções com 41 pontos**:
+
+- **Solução 1** (gene = 1 1 1 1 0 1 1 1 1): leva tudo **menos a água**, com peso de **4.830 g**.
+- **Solução 2** (1 1 0 1 1 1 1 1 0): leva tudo **menos o tênis e a máquina fotográfica**, com peso de **4.930 g**.
+
+O algoritmo genético manual da aula (10 indivíduos, 50 gerações, torneio, cruzamento de um ponto e mutação de 10%) encontra um desses ótimos: em três rodadas de teste, o melhor fitness da 1ª geração foi de **32 a 40** e **chegou a 41** em todas antes do fim das 50 gerações.
+
 
 ## 3. O algoritmo genético: o vocabulário
 
@@ -73,7 +99,30 @@ Os operadores que fazem a população evoluir:
 
 **Parâmetros típicos:** população de 50 a 200 (regra: ~10 vezes o nº de variáveis); 100 a 1000 gerações; **cruzamento 70–90%**; **mutação 1–5% por gene**. População pequena converge cedo para um **ótimo local**. Escolher os parâmetros é, ele mesmo, um problema de otimização (ajustável por DoE). Restrições violadas são **penalizadas** ou descartadas. **Critérios de parada:** nº máximo de gerações, convergência ou ausência de melhora em N gerações. **Métricas de acompanhamento:** melhor fitness, fitness médio, taxa de convergência e **desvio padrão do fitness** (alto no início, baixo no fim: mede a diversidade).
 
-> **Exemplo resolvido (uma rodada na mochila).** O cromossomo 1 0 1 1 0 significa levar os itens 1, 3 e 4. Seu fitness é a soma dos valores (com penalidade se passar de 5 kg). A seleção por torneio escolhe dois pais; o cruzamento troca a "cauda" entre eles; a mutação inverte um bit com probabilidade pequena; o melhor da geração passa direto para a seguinte (elitismo).
+> **Exemplo completo: uma rodada do algoritmo genético na mochila.** Cada **cromossomo** tem 9 genes (um por item). O **fitness** é a soma dos pontos dos itens levados, **zerada se o peso passar de 5.000 g** (a penalidade). Uma **população inicial** sorteada de 10 indivíduos:
+>
+> | # | Cromossomo | Pontos | Peso (g) | Fitness |
+> |---|---|---|---|---|
+> | 0 | 1 0 1 0 0 0 1 0 0 | 11 | 630 | 11 |
+> | 1 | 0 0 1 1 0 0 0 1 0 | 15 | 3.500 | 15 |
+> | 2 | 0 0 0 1 0 0 0 0 1 | 8 | 600 | 8 |
+> | 3 | 1 0 0 1 0 0 0 1 0 | 18 | 3.300 | 18 |
+> | **4** | **0 0 0 1 1 1 1 1 1** | 34 | 4.830 | **34** |
+> | **5** | **1 0 0 0 0 1 1 1 1** | 29 | 3.930 | **29** |
+> | 6 | 1 0 0 1 0 1 0 1 1 | 29 | 4.000 | 29 |
+> | 7 | 0 0 1 1 1 1 1 0 0 | 21 | 1.730 | 21 |
+> | **8** | 1 1 0 0 1 1 1 1 1 | **45** | **5.330** | **0** |
+> | 9 | 0 1 1 0 0 1 0 0 1 | 21 | 1.500 | 21 |
+>
+> O indivíduo **8** tem 45 pontos (o maior), mas pesa **5.330 g, acima do limite**: seu fitness é **0** (inviável). Esse é o papel da **restrição como penalidade**.
+>
+> 1. **Seleção por torneio:** sorteiam-se 3 indivíduos e vence o de maior fitness. Suponha que os pais escolhidos sejam o **4** (fitness 34) e o **5** (fitness 29).
+> 2. **Cruzamento de um ponto** (corte depois do 4º gene): o filho herda os 4 primeiros genes do pai 4 (`0 0 0 1`) e os 5 últimos do pai 5 (`0 1 1 1 1`) e fica `0 0 0 1 0 1 1 1 1`: **25 pontos, 3.830 g, fitness 25**.
+> 3. **Mutação:** cada gene tem uma pequena chance de inverter. Se o 1º gene muda de 0 para 1 (leva a barra de cereal), o filho vira `1 0 0 1 0 1 1 1 1`: **31 pontos, 4.030 g, fitness 31** (melhorou).
+> 4. **Elitismo:** o **melhor indivíduo da geração (o 4, com 34)** passa **direto** para a próxima geração, sem ser alterado, para nunca se perder o melhor encontrado.
+>
+> Repetindo seleção, cruzamento e mutação até a nova população ter 10 indivíduos, e depois repetindo para as 50 gerações, o fitness do melhor indivíduo **só cresce ou se mantém** (por causa do elitismo) até chegar perto do ótimo (41).
+
 
 ## 4. Aplicações e extensões
 
