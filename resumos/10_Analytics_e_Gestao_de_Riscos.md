@@ -25,7 +25,21 @@ O **retorno** de um período pode ser **discreto** ou **contínuo** (logarítmic
 
 O primeiro período não tem retorno, pois falta o preço anterior. O **risco** é a **volatilidade**, medida pelo **desvio padrão dos retornos** (e não dos preços). O **coeficiente de variação** (desvio ÷ média) expressa o risco por unidade de retorno.
 
-> **Exemplo resolvido.** PETR4 vai de R$ 36,77 para R$ 37,50. Discreto: \(37{,}50/36{,}77 - 1 = 1{,}99\%\). Contínuo: \(\ln(1{,}0199) = 1{,}97\%\).
+### Exemplo completo (da aula): PETR4, VALE3 e EMBR3
+
+A aula usa as **cotações de fechamento** de **PETR4, VALE3 e EMBR3** (84 pregões, de 26/05/2025 a 19/09/2025, arquivo `COTACOES.xlsx`). As primeiras duas linhas são:
+
+| Data | PETR4 | VALE3 | EMBR3 |
+|---|---|---|---|
+| 26/05/2025 | 29,710381 | 52,179024 | 67,000000 |
+| 27/05/2025 | 29,928699 | 52,014786 | 68,400002 |
+
+**Retorno de um dia (PETR4).** De 29,710381 para 29,928699:
+
+\[ \text{discreto} = \frac{29{,}928699}{29{,}710381} - 1 = 0{,}007348 = 0{,}735\% \qquad \text{contínuo} = \ln\frac{29{,}928699}{29{,}710381} = 0{,}007321 = 0{,}732\% \]
+
+Para retornos pequenos os dois são quase iguais (0,735% × 0,732%). O retorno **contínuo (log)** tem a vantagem de ser **aditivo no tempo**: o retorno de uma semana é a soma dos retornos diários. A aula usa o retorno discreto (`pct_change`), obtendo **83 retornos diários** por ativo.
+
 
 Há dois tipos de risco: o **diversificável** (específico do ativo) e o **sistemático** (político, guerra, clima, mercado), que **não some** com diversificação. "O risco pode ser mitigado, nunca eliminado."
 
@@ -37,7 +51,41 @@ O retorno de uma carteira é a **média ponderada** dos retornos: \(R_c = W_A R_
 
 Quanto **menor a correlação** \(\rho\), maior a redução de risco; com \(\rho = +1\) não há ganho. Para N ativos usa-se a **matriz de covariância**: risco = \(\sqrt{W'\Sigma W}\).
 
-> **Exemplo resolvido.** Ativo A (retorno 8%, risco 5%) e B (25%, 12%), 50/50, \(\rho = -0{,}60\). Retorno = \(0{,}5\cdot 8 + 0{,}5\cdot 25 = 16{,}5\%\). \(\text{cov} = -0{,}6\cdot5\cdot12 = -36\). Variância = \(0{,}25\cdot25 + 0{,}25\cdot144 + 2\cdot0{,}25\cdot(-36) = 6{,}25 + 36 - 18 = 24{,}25\) → risco ≈ **4,9%**. A carteira tem risco **menor que o de A** e retorno muito maior, porque a correlação negativa faz as oscilações se compensarem.
+> **Exemplo completo (da aula): risco e retorno dos três ativos.** Com os 83 retornos diários:
+>
+> | | PETR4 | VALE3 | EMBR3 |
+> |---|---|---|---|
+> | Retorno médio **diário** | 0,063% | 0,134% | 0,196% |
+> | Desvio padrão **diário** (risco) | 1,36% | 1,31% | 2,56% |
+> | Retorno esperado **anual** (× 252 pregões) | 15,8% | 33,9% | 49,3% |
+> | Volatilidade **anual** (× √252) | 21,6% | 20,9% | 40,6% |
+> | Retorno ÷ risco (sem descontar a taxa livre de risco) | 0,73 | 1,62 | 1,21 |
+>
+> A EMBR3 deu o **maior retorno** no período, mas com o **maior risco** (quase o dobro das outras). **A anualização:** a média diária é multiplicada por 252 (dias úteis do ano) e o desvio padrão por \(\sqrt{252}\) (a variância cresce linearmente com o tempo).
+>
+> **Correlações entre os retornos diários:** PETR4 × VALE3 = **−0,10**; PETR4 × EMBR3 = **−0,05**; VALE3 × EMBR3 = **0,00**. Correlações perto de zero (ou negativas) significam **bom potencial de diversificação**.
+
+
+> **Exemplo completo (da aula): a carteira de duas ações e o efeito da diversificação.** Carteira **50% PETR4 e 50% VALE3**. O **retorno** é a média ponderada: \(0{,}5\times 15{,}8\% + 0{,}5\times 33{,}9\% = \) **24,8% ao ano**. O **risco não é a média ponderada dos riscos**: é preciso incluir a covariância (anualizada: \(\text{cov} = -0{,}0045\)):
+>
+> \[ \sigma_p^2 = w_1^2\sigma_1^2 + w_2^2\sigma_2^2 + 2w_1w_2\,\text{cov}_{12} = 0{,}25(0{,}0465) + 0{,}25(0{,}0435) + 2(0{,}25)(-0{,}0045) = 0{,}0203 \]
+>
+> \[ \sigma_p = \sqrt{0{,}0203} = \mathbf{14{,}2\%} \]
+>
+> A média ponderada dos riscos seria \(0{,}5\times 21{,}6\% + 0{,}5\times 20{,}9\% = 21{,}2\%\), mas a carteira tem risco de só **14,2%**, **menor que o de qualquer um dos dois ativos**. Essa é a **diversificação**: a correlação é negativa (−0,10), então as oscilações **se compensam**. Quanto menor a correlação, maior o ganho.
+>
+> **Fronteira de Markowitz com os 3 ativos** (pesos entre 0 e 100%, sem vender a descoberto; taxa livre de risco de 14,5% ao ano):
+>
+> | Carteira | PETR4 | VALE3 | EMBR3 | Retorno anual | Risco anual | Sharpe |
+> |---|---|---|---|---|---|---|
+> | **Pesos iguais** | 33,3% | 33,3% | 33,3% | 33,0% | 16,3% | 1,14 |
+> | **Mínimo risco** | 43,3% | 45,0% | 11,7% | 27,9% | **13,3%** | 1,01 |
+> | **Tangente (máx. Sharpe)** | 11,9% | 60,0% | 28,1% | 36,1% | 16,9% | **1,28** |
+>
+> O **Sharpe** = \((\text{retorno} - \text{taxa livre de risco})/\text{risco}\) mede o **retorno extra por unidade de risco**. A carteira de **mínimo risco** tem o menor desvio padrão possível (13,3%, menor que o de qualquer ativo sozinho); a **tangente** tem o **melhor Sharpe** (1,28, contra 0,06 da PETR4, 0,93 da VALE3 e 0,86 da EMBR3 sozinhas, já descontada a taxa livre de risco). Na aula, a nuvem de milhares de carteiras aleatórias (**Monte Carlo**) mostra que as melhores ficam na borda superior: a **fronteira eficiente**.
+>
+> **VaR (valor em risco) histórico.** Para a carteira de pesos iguais, o 5º percentil dos 83 retornos diários é −1,46%: com **95% de confiança**, a perda em **1 dia** não deve passar de **1,46%** (da PETR4 sozinha, 1,67%). Pela distribuição normal, o VaR paramétrico dá 1,55%.
+
 
 ## 3. Risco de crédito
 
@@ -47,7 +95,7 @@ A perda esperada é construída por três direcionadores: a **PD** (probabilidad
 
 \[ \text{Perda esperada} = PD \times EC \times LGD \]
 
-> **Exemplo resolvido.** Carteira de R$ 100 mil: A (R$ 10 mil, PD 2%), B (R$ 20 mil, 5%), C (R$ 70 mil, 10%), recuperação 0 (LGD = 1). Perdas esperadas: 0,2 + 1 + 7 = **R$ 8,2 mil**. É o valor **provisionado**; a **perda excepcional** vem da cauda da distribuição de perdas.
+> **Exemplo ilustrativo (números ilustrativos, escolhidos só para a conta).** Carteira de R$ 100 mil: A (R$ 10 mil, PD 2%), B (R$ 20 mil, 5%), C (R$ 70 mil, 10%), recuperação 0 (LGD = 1). Perdas esperadas: 0,2 + 1 + 7 = **R$ 8,2 mil**. É o valor **provisionado**; a **perda excepcional** vem da cauda da distribuição de perdas.
 
 | Tipo de perda | Tratamento |
 |---|---|
@@ -65,7 +113,7 @@ A regra central é:
 
 Cada ativo é ponderado pelo risco: **0%** (países e bancos centrais), **20%** (bancos), **50%** (financiamento imobiliário), **100%** (empresas e demais).
 
-> **Exemplo resolvido.** Ativos: 1.000 (0%), 50.000 (20%), 200.000 (50%), 300.000 (100%). APR = 0 + 10.000 + 100.000 + 300.000 = **410.000**. PR = Nível 1 (40.000) + Nível 2 (30.000) = 70.000. Índice = 70.000 ÷ 410.000 = **17,1% ≥ 8%** → instituição adequada.
+> **Exemplo ilustrativo (números ilustrativos, escolhidos só para a conta).** Ativos: 1.000 (0%), 50.000 (20%), 200.000 (50%), 300.000 (100%). APR = 0 + 10.000 + 100.000 + 300.000 = **410.000**. PR = Nível 1 (40.000) + Nível 2 (30.000) = 70.000. Índice = 70.000 ÷ 410.000 = **17,1% ≥ 8%** → instituição adequada.
 
 ## 5. Risco operacional
 
@@ -82,12 +130,69 @@ O fluxo de caixa operacional parte da receita e vai descontando:
 | − imposto de renda | **NOPAT** |
 | **+ depreciação** (despesa que não sai do caixa) | **entrada de caixa operacional** |
 
-Um projeto com **VPL positivo** é viável (no exemplo da aula, investimento de R$ 200 mil à taxa de 14% a.a. deu VPL ≈ R$ 62,9 mil). Para medir o risco usam-se duas técnicas:
+Um projeto com **VPL positivo** é viável (no exemplo da aula, mais abaixo, o VPL foi de R$ 13,9 mil). Para medir o risco usam-se duas técnicas:
 
 | Técnica | Como funciona |
 |---|---|
 | **Análise de sensibilidade** | varia **um parâmetro por vez** e mede o impacto no VPL; se muda muito, o projeto é muito sensível àquele parâmetro |
 | **Simulação de Monte Carlo** | sorteia **todas** as variáveis segundo suas **distribuições** (Normal, Triangular, PERT) muitas vezes e obtém a **distribuição do VPL** |
+
+### Exemplo completo (da aula): o VPL de um projeto, da planilha à simulação
+
+O script da aula analisa um projeto de **4 anos**, com **imposto de renda de 40%** e **depreciação linear** do investimento. As premissas estão em três valores (**pessimista, mais provável e otimista**):
+
+| Variável | Pessimista | **Mais provável** | Otimista |
+|---|---|---|---|
+| Preço de venda (R$/unid) | 49 | **51** | 55 |
+| Quantidade (unid/ano) | 990 | **1.100** | 1.200 |
+| Custo unitário (R$/unid) | 32 | **29,5** | 28 |
+| Despesa operacional (R$/ano) | 6.500 | **6.000** | 5.000 |
+| Investimento no ano 0 (R$) | 20.800 | **20.000** | 19.000 |
+| Taxa de desconto (a.a.) | 19% | **18%** | 17% |
+
+**Passo 1: o fluxo de caixa com os valores mais prováveis.**
+
+| Linha | Cálculo | R$/ano |
+|---|---|---|
+| Receita | 51 × 1.100 | 56.100 |
+| − Custos | 29,5 × 1.100 | −32.450 |
+| − Despesas operacionais | | −6.000 |
+| **EBITDA** | | **17.650** |
+| − Depreciação | 20.000 ÷ 4 | −5.000 |
+| **EBIT** | | **12.650** |
+| − Imposto de renda (40%) | 0,40 × 12.650 | −5.060 |
+| **NOPAT** | | **7.590** |
+| **+ Depreciação** (não sai do caixa) | | +5.000 |
+| **Fluxo de caixa operacional (FCO)** | | **12.590** |
+
+**Passo 2: o VPL.** \(VPL = -\text{Investimento} + \sum_{t=1}^{4}\frac{FCO}{(1+r)^t} = -20.000 + 12.590\times 2{,}690 = \) **R$ 13.867,88** (o fator 2,690 é a soma dos fatores de desconto a 18% em 4 anos). VPL positivo: o projeto **é viável** nas condições mais prováveis. Mas esse número supõe que **todas** as variáveis serão exatamente as mais prováveis.
+
+**Passo 3: análise de sensibilidade.** Varia-se **uma variável por vez** entre o pessimista e o otimista, mantendo as outras no mais provável:
+
+| Variável | VPL (pessimista) | VPL (otimista) | Amplitude |
+|---|---|---|---|
+| **Preço de venda** | 10.317 | 20.970 | **10.653** |
+| Quantidade | 10.051 | 17.338 | 7.287 |
+| Custo unitário | 9.429 | 16.531 | 7.102 |
+| Despesa operacional | 13.061 | 15.482 | 2.421 |
+| Taxa de desconto | 13.220 | 14.537 | 1.318 |
+| Investimento | 13.283 | 14.599 | 1.316 |
+
+O projeto é **mais sensível ao preço de venda**, depois à quantidade e ao custo unitário; a taxa de desconto e o investimento pouco mexem no resultado. Isso diz **onde** concentrar a atenção (por exemplo, garantir o preço).
+
+**Passo 4: simulação de Monte Carlo.** Sorteia-se **todas as variáveis ao mesmo tempo**, 10.000 vezes, com distribuição **triangular** (pessimista, mais provável e otimista), e calcula-se o VPL de cada sorteio. O resultado é uma **distribuição** de VPL:
+
+| Estatística do VPL (10.000 simulações) | Valor |
+|---|---|
+| Média | R$ 14.645 |
+| Mediana | R$ 14.584 |
+| Desvio padrão | R$ 3.134 |
+| **P5** (pior 5%) | R$ 9.653 |
+| **P95** (melhor 5%) | R$ 19.939 |
+| Mínimo e máximo | R$ 4.815 e R$ 25.511 |
+| **Probabilidade de VPL > 0** | **100%** |
+
+**Leitura.** Em **90% dos cenários** o VPL fica entre R$ 9,7 mil e R$ 19,9 mil, e **em nenhum dos 10.000** ele é negativo (o pior é +R$ 4,8 mil): o projeto é **robusto** às incertezas consideradas. A sensibilidade mostrou *qual* variável pesa mais; o Monte Carlo mostra *o risco do conjunto*, em forma de probabilidades.
 
 ## O que levar daqui
 
