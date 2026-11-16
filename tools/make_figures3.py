@@ -6,22 +6,25 @@ from make_figures import save, C1, C2, C3, GR
 
 
 def f26_regiao():
-    fig, ax = plt.subplots(figsize=(6, 4.4))
+    fig, ax = plt.subplots(figsize=(6.2, 4.6))
     L = np.linspace(0, 12, 200)
     ax.plot(L, 10 - L, color=C1, label="L + M ≤ 10")
     ax.plot(L, (40 - 6 * L) / 2, color=C3, label="6L + 2M ≥ 40")
-    poly = np.array([[40 / 6, 0], [10, 0], [5, 5]])
+    ax.axhline(3, color=GR, ls="--", lw=1, label="M ≥ 3")
+    ax.axhline(7, color=GR, ls=":", lw=1, label="M ≤ 7")
+    poly = np.array([[17 / 3, 3], [7, 3], [5, 5]])
     ax.fill(poly[:, 0], poly[:, 1], color="#9db4ff", alpha=.6, label="região factível")
-    for q, ls in [(40, ":"), (60, ":"), (65, "-")]:
+    for q, ls in [(55, ":"), (63, ":"), (65, "-")]:
         ax.plot(L, (q - 6 * L) / 7, color=C2, ls=ls, lw=1.4 if q < 65 else 2, alpha=.9)
-    ax.annotate("ótimo (5, 5)\nQ = 65", (5, 5), xytext=(6.2, 6.8), color=C2, arrowprops=dict(arrowstyle="->", color=C2))
-    ax.scatter([5], [5], color=C2, zorder=3)
-    ax.set_xlim(0, 12); ax.set_ylim(0, 12)
+    ax.scatter(poly[:, 0], poly[:, 1], color=C2, zorder=3, s=26)
+    ax.annotate("ótimo (5; 5)\nQ = 65", (5, 5), xytext=(1.0, 8.2), color=C2, arrowprops=dict(arrowstyle="->", color=C2))
+    ax.annotate("(7; 3)\nQ = 63", (7, 3), xytext=(8.6, 1.4), color=C2, fontsize=9, arrowprops=dict(arrowstyle="->", color=C2))
+    ax.annotate("(5,67; 3)\nQ = 55", (17 / 3, 3), xytext=(2.2, 1.0), color=C2, fontsize=9, arrowprops=dict(arrowstyle="->", color=C2))
+    ax.set_xlim(0, 12); ax.set_ylim(0, 10)
     ax.set_xlabel("L (caixas leves)"); ax.set_ylabel("M (caixas mistas)")
-    ax.legend(frameon=False, loc="upper right", fontsize=9)
+    ax.legend(frameon=False, loc="upper right", fontsize=8)
     ax.set_title("Região factível e retas de Q = 6L + 7M (laranja)")
     save(fig, "26_regiao_factivel")
-
 
 def f27_vies_variancia():
     rng = np.random.default_rng(2)

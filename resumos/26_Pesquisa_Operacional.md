@@ -35,9 +35,40 @@ Quando todas as equações são **lineares** (soma de termos "constante × vari�
 
 Com duas variáveis, o problema se desenha. A **região factível** é o conjunto de pontos que satisfazem **todas** as restrições ao mesmo tempo. A função objetivo vira uma família de **retas paralelas** (todas com o mesmo valor de \(Q\)): desliza-se a reta na direção em que \(Q\) cresce, até o **último ponto de contato** com a região, e esse ponto é um **vértice**.
 
-![Região factível do exemplo e retas de Q = 6L + 7M](img/26_regiao_factivel.png)
+### Exemplo completo (da aula): as caixas de livros
 
-> **Exemplo resolvido (livros).** Vértices da região: (6,67; 0), (10; 0) e (5; 5). Valores de \(Q = 6L + 7M\): 40, 60 e **65**. O máximo está em **\((L, M) = (5, 5)\) com \(Q = 65\)**.
+**O enunciado.** Uma livraria vai vender um livro novo, em duas versões: **capa mole** (estoque inicial de **40** cópias) e **capa dura** (estoque de **65**). Ela precisa de **pelo menos 80 cópias de cada versão** para atender pedidos já feitos e, se possível, de cópias adicionais. Um centro de distribuição planeja as entregas e pode enviar **até 10 caixas**: a caixa **leve** tem **6 livros de capa mole**; a caixa **mista** tem **5 de capa dura e 2 de capa mole**, e há **7 caixas mistas** disponíveis.
+
+**Passo 1: entender o enfoque.** Quem toma a decisão é o **centro de distribuição**, e a meta é entregar "da melhor forma possível", isto é, **o máximo de livros**.
+
+**Passo 2: variáveis de decisão.** \(L\) = nº de caixas **leves** enviadas e \(M\) = nº de caixas **mistas** enviadas (não são "livros vendidos", são caixas).
+
+**Passo 3: função objetivo.** Cada caixa leve tem 6 livros e cada mista tem 5 + 2 = 7. **Maximizar** o total de livros entregues: \(Q = 6L + 7M\). (A composição entre capa mole e dura entra nas restrições, não na função objetivo.)
+
+**Passo 4: restrições.**
+
+| Restrição | Como sai do enunciado | Equação |
+|---|---|---|
+| Total de caixas | no máximo 10 caixas | \(L + M \leq 10\) |
+| Caixas mistas | só há 7 | \(M \leq 7\) |
+| Capa mole | estoque 40 + 6 por leve + 2 por mista, e o mínimo é 80: \(40 + 6L + 2M \geq 80\) | \(6L + 2M \geq 40\) |
+| Capa dura | estoque 65 + 5 por mista, mínimo 80: \(65 + 5M \geq 80\) | \(M \geq 3\) |
+| Domínio | não existe caixa negativa | \(L, M \geq 0\) |
+
+**Passo 5: a região factível e os vértices.** Os pontos que respeitam **todas** as restrições formam o triângulo azul da figura. Em PL, o ótimo está sempre em um **vértice**, então basta testar os vértices (cada um é o encontro de duas retas de restrição):
+
+![Região factível e retas de Q = 6L + 7M](img/26_regiao_factivel.png)
+
+| Vértice | Encontro de | \(Q = 6L + 7M\) |
+|---|---|---|
+| \((5{,}67;\ 3)\) | \(M = 3\) com \(6L + 2M = 40\) | \(34 + 21 = 55\) |
+| \((7;\ 3)\) | \(M = 3\) com \(L + M = 10\) | \(42 + 21 = 63\) |
+| **\((5;\ 5)\)** | \(L + M = 10\) com \(6L + 2M = 40\) | \(30 + 35 = \mathbf{65}\) |
+
+(O ponto \((3; 7)\), que o Solver chegou a mostrar na aula no meio da construção do modelo, **viola** \(6L + 2M \geq 40\), pois \(6\cdot 3 + 2\cdot 7 = 32\).)
+
+**Passo 6: a resposta.** O máximo está em **\((L, M) = (5, 5)\)**: enviar **5 caixas leves e 5 mistas**, totalizando **65 livros**. Conferindo o enunciado: capa mole = 40 + 6·5 + 2·5 = **80** (exatamente o mínimo) e capa dura = 65 + 5·5 = **90** (acima do mínimo). Como L e M já saíram **inteiros**, não é preciso nenhum método para variáveis inteiras.
+
 
 Em problemas reais há muitas variáveis e não dá para desenhar nem visitar todos os vértices. O **Simplex** caminha de vértice em vértice na direção de maior crescimento da função objetivo e, em cada vértice, testa se algum movimento ainda melhora; quando nenhum melhora, **garante o ótimo**. As ferramentas são o **Solver do Excel** e a biblioteca **PuLP** do Python, com a mesma lógica: *variáveis → objetivo → restrições → resolver*.
 
@@ -49,9 +80,21 @@ Não existe "meia caixa". Quando as variáveis precisam ser inteiras, o Simplex 
 2. **Ramificação (branching):** se \(L = 5{,}7\), criam-se dois subproblemas, \(L \leq 5\) e \(L \geq 6\), e resolve-se cada um.
 3. **Limitação (bounding):** toda solução **inteira** encontrada é **candidata**; ramos que não podem superar a melhor candidata são **podados**.
 
-> **Exemplo resolvido.** No exemplo dos livros a solução relaxada já é (5, 5), **inteira**: não é preciso ramificar. Em outro caso hipotético, o subproblema \(L \leq 5\) dá (5, 5) com \(Q = 65\) e o \(L \geq 6\) dá (6, 4) com \(Q = 64\); a melhor candidata, 65, vence.
+> **Exemplo (da aula): o caso dos livros.** A solução relaxada (tratando L e M como contínuos) já foi **(5, 5)**, **inteira**: **não é preciso ramificar**. É isso que acontece quando as restrições "encaixam" nos números inteiros.
+>
+> **Exemplo didático completo (não é da aula; criado para mostrar o Branch-and-Bound).** Maximizar \(Z = 5x + 4y\) com \(6x + 4y \leq 24\), \(x + 2y \leq 6\), \(x, y\) inteiros e \(\geq 0\).
+>
+> 1. **Relaxação** (sem exigir inteiros): ótimo em \((x, y) = (3; 1{,}5)\), com \(Z = 21\). Como \(y = 1{,}5\) não é inteiro, é preciso ramificar. **O 21 é um limite superior** para qualquer solução inteira.
+> 2. **Ramificar em \(y\):** subproblema **A** (\(y \leq 1\)) e subproblema **B** (\(y \geq 2\)).
+>    - **B** dá \((2; 2)\), inteira, \(Z = 18\): é a **primeira candidata** (18).
+>    - **A** dá \((3{,}33; 1)\), \(Z = 20{,}67\): **fracionária** (x), mas o 20,67 **supera 18**, então continua a investigar.
+> 3. **Ramificar A em \(x\):** \(x \leq 3\) dá \((3; 1)\), \(Z = 19\) (inteira, **nova melhor candidata**, 19); \(x \geq 4\) dá \((4; 0)\), \(Z = 20\) (inteira, **melhor ainda**).
+> 4. **Poda:** nenhum ramo restante pode superar 20, então a solução ótima inteira é **\((x, y) = (4; 0)\) com \(Z = 20\)**. Note que ela **não** é o arredondamento da relaxada \((3; 1{,}5)\): arredondar poderia dar \((3; 1)\) (Z = 19) ou \((3; 2)\) (inviável).
+
 
 Outro exemplo é a **nova ala hospitalar**: variáveis \(q_1, q_2, q_3\) (quartos de 1, 2 e 3 leitos); maximizar a receita \(R = 7500q_1 + 6000q_2 + 4500q_3\) com restrições de **área** (\(10q_1 + 15q_2 + 18q_3 \leq 1200\)), de **capacidade** (\(q_1 + q_2 + q_3 \leq 70\)), de **limite de individuais** (\(q_1 \leq 30\)), de **mínimo de leitos** (\(q_1 + 2q_2 + 3q_3 \geq 120\)) e de **domínio** (inteiros ≥ 0).
+
+**Resultado do exemplo da ala hospitalar (resolvido).** Resolvendo a relaxação (variáveis contínuas), a solução é \((q_1, q_2, q_3) = (30,\ 30,\ 10)\), com **receita mensal de R$ 450.000**: 30 quartos individuais (o limite), 30 duplos e 10 triplos. Conferindo as restrições: área = \(10\cdot 30 + 15\cdot 30 + 18\cdot 10 = 930 \leq 1200\); total de quartos = 30 + 30 + 10 = **70** (no limite); leitos = 30 + 60 + 30 = **120** (exatamente o mínimo). Como a solução já saiu **inteira**, o Branch-and-Bound não precisa ramificar. Existe ainda **outra solução ótima** com a mesma receita, \((20,\ 50,\ 0)\) (20 individuais e 50 duplos): é o caso de **múltiplas soluções ótimas**, em que o modelo é indiferente entre elas.
 
 ## 4. Modelos mistos e os padrões de modelagem
 
