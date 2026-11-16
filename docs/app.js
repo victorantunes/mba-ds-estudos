@@ -21,7 +21,7 @@ function enhance(root){
 }
 
 function buildNav(cur){
-  let h='<div class="nav-top"><a class="nav-a'+(cur==='home'?' on':'')+'" href="#/">Início</a><a class="nav-a'+(cur==='plano'?' on':'')+'" href="#/plano">Plano</a><a class="nav-a'+(cur==='cards'?' on':'')+'" href="#/cards">Flashcards</a><a class="nav-a'+(cur==='quiz'?' on':'')+'" href="#/quiz">Autoteste</a></div>';
+  let h='<div class="nav-top"><a class="nav-a'+(cur==='home'?' on':'')+'" href="#/">Início</a><a class="nav-a'+(cur==='plano'?' on':'')+'" href="#/plano">Plano</a><a class="nav-a'+(cur==='cards'?' on':'')+'" href="#/cards">Flashcards</a><a class="nav-a'+(cur==='quiz'?' on':'')+'" href="#/quiz">Autoteste</a><a class="nav-a" href="simulados.html">Simulados</a></div>';
   D.groups.forEach(g=>{h+='<div class="nav-h">'+esc(g.name)+'</div>';
     g.ids.forEach(id=>{const d=byId[id];if(!d)return;
       h+='<a class="nav-a'+(cur==='d'+id?' on':'')+'" href="#/d/'+id+'"><span class="n">'+pad(id)+'</span><span title="'+esc(d.title)+'">'+esc(d.short)+'</span>'+(done[id]?'<span class="dn">✓</span>':'')+'</a>'});});
