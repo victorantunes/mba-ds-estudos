@@ -89,36 +89,23 @@ Valores acima de **+1,96** ou abaixo de **−1,96** (em negrito) são significat
 
 As **massas** (representatividade de cada categoria) são as proporções marginais: perfis 58% / 17% / 25% e aplicações 45% / 40% / 15%.
 
-**De onde vêm os autovalores (0,2332 e 0,0844)?** Saem de uma matriz construída com a própria tabela, em 4 passos:
+**O que significam esses números (sem conta difícil).**
 
-1. **Proporções e massas.** Divide-se cada célula por N = 100. As massas são os totais de linha e de coluna em proporção: perfis Agressivo 0,58, Conservador 0,17, Moderado 0,25; aplicações Ações 0,45, CDB 0,40, Poupança 0,15.
-2. **A matriz S (resíduos padronizados).** Para cada célula, \(s_{ij} = \dfrac{p_{ij} - r_i\,c_j}{\sqrt{r_i\,c_j}}\), em que \(p_{ij}\) é a proporção observada e \(r_i\,c_j\) é a esperada pela independência. Para Agressivo × Ações: \(p = 0{,}36\), \(r\,c = 0{,}58\times 0{,}45 = 0{,}261\), então \(s = (0{,}36 - 0{,}261)/\sqrt{0{,}261} = 0{,}1938\).
+- **Inércia total = 0,3176** é uma **nota única** para "o quanto a tabela se afasta da independência". Se perfil e aplicação não tivessem relação nenhuma, a inércia seria **0**. Quanto maior, mais forte a relação. Ela vem direto do qui-quadrado: \(31{,}76 \div 100 = 0{,}3176\) (divide-se por N para a nota não depender do tamanho da amostra).
+- **Essa "distância da independência" tem dois padrões diferentes**, que o mapa mostra como os dois eixos:
+  - **Dimensão 1 (73,4%):** o eixo **arrojado × seguro**: Agressivo e Ações de um lado, Conservador e Poupança do outro. É o padrão principal.
+  - **Dimensão 2 (26,6%):** o que sobra depois do primeiro padrão: o **meio-termo**, em que Moderado e CDB se separam dos dois extremos.
+- **O autovalor de cada dimensão é a parte da inércia total que ela explica.** É como uma pizza: a **pizza inteira é 0,3176** e cada dimensão é uma **fatia**: a dimensão 1 pega **0,2332** e a dimensão 2 pega **0,0844**. As fatias sempre somam a pizza: 0,2332 + 0,0844 = **0,3176**.
+- **Por que só 2 dimensões?** Uma tabela de 3 linhas por 3 colunas só tem \(\min(3-1,\ 3-1) = 2\) padrões independentes.
 
-| | Ações | CDB | Poupança |
-|---|---|---|---|
-| Agressivo | 0,1938 | −0,0664 | −0,2272 |
-| Conservador | −0,0958 | −0,1074 | 0,3413 |
-| Moderado | −0,2162 | 0,1897 | 0,0645 |
+**Como se calcula.** A divisão da pizza em fatias é feita pelo **software** (uma decomposição de matrizes, que ninguém faz à mão): ele procura primeiro o padrão que explica **mais** da inércia, depois o segundo, e assim por diante. O que você precisa saber fazer à mão é só:
 
-   **Conferência:** a soma dos quadrados das 9 células é **0,3176**, a inércia total (χ² ÷ N).
-
-3. **Os autovalores** são os autovalores da matriz \(S^\top S\) (3×3):
-
-| | | |
+| O que | Conta | No exemplo |
 |---|---|---|
-| 0,0935 | −0,0436 | −0,0907 |
-| −0,0436 | 0,0519 | −0,0093 |
-| −0,0907 | −0,0093 | 0,1722 |
-
-   Um autovalor é **sempre zero** (a matriz tem posto 2, porque os totais de linha e de coluna já foram "usados"). Os outros dois saem de uma equação do 2º grau: \(\lambda^2 - (\text{soma da diagonal})\,\lambda + (\text{soma dos menores } 2\times 2) = 0\). A soma da diagonal é 0,0935 + 0,0519 + 0,1722 = **0,3176**, e a soma dos três menores 2×2 é 0,00295 + 0,00788 + 0,00885 = **0,01968**:
-
-\[ \lambda^2 - 0{,}3176\,\lambda + 0{,}01968 = 0 \;\Rightarrow\; \lambda = \frac{0{,}3176 \pm \sqrt{0{,}3176^2 - 4(0{,}01968)}}{2} = \frac{0{,}3176 \pm 0{,}1488}{2} \]
-
-   \(\lambda_1 = 0{,}4664/2 = \) **0,2332** e \(\lambda_2 = 0{,}1688/2 = \) **0,0844**.
-
-4. **O percentual de cada dimensão** é o autovalor dividido pela inércia total: \(0{,}2332/0{,}3176 = 73{,}4\%\) e \(0{,}0844/0{,}3176 = 26{,}6\%\).
-
-Em tabelas maiores ninguém faz isso à mão: o software faz a mesma decomposição (SVD). O que vale lembrar: os autovalores **somam a inércia total** (0,3176 = χ² ÷ N), o primeiro é a dimensão que mais explica a associação, e o mapa perceptual usa as duas dimensões com esses autovalores.
+| Inércia total | \(\chi^2 \div N\) | \(31{,}76 \div 100 = 0{,}3176\) |
+| Nº de dimensões | \(\min(I-1,\ J-1)\) | 2 |
+| % de cada dimensão | autovalor ÷ inércia total | \(0{,}2332 \div 0{,}3176 = 73{,}4\%\) |
+| Conferência | a soma dos autovalores é a inércia total | \(0{,}2332 + 0{,}0844 = 0{,}3176\) |
 
 **Passo 6: o mapa perceptual.**
 
