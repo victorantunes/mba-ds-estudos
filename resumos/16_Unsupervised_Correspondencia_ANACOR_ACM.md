@@ -89,6 +89,37 @@ Valores acima de **+1,96** ou abaixo de **−1,96** (em negrito) são significat
 
 As **massas** (representatividade de cada categoria) são as proporções marginais: perfis 58% / 17% / 25% e aplicações 45% / 40% / 15%.
 
+**De onde vêm os autovalores (0,2332 e 0,0844)?** Saem de uma matriz construída com a própria tabela, em 4 passos:
+
+1. **Proporções e massas.** Divide-se cada célula por N = 100. As massas são os totais de linha e de coluna em proporção: perfis Agressivo 0,58, Conservador 0,17, Moderado 0,25; aplicações Ações 0,45, CDB 0,40, Poupança 0,15.
+2. **A matriz S (resíduos padronizados).** Para cada célula, \(s_{ij} = \dfrac{p_{ij} - r_i\,c_j}{\sqrt{r_i\,c_j}}\), em que \(p_{ij}\) é a proporção observada e \(r_i\,c_j\) é a esperada pela independência. Para Agressivo × Ações: \(p = 0{,}36\), \(r\,c = 0{,}58\times 0{,}45 = 0{,}261\), então \(s = (0{,}36 - 0{,}261)/\sqrt{0{,}261} = 0{,}1938\).
+
+| | Ações | CDB | Poupança |
+|---|---|---|---|
+| Agressivo | 0,1938 | −0,0664 | −0,2272 |
+| Conservador | −0,0958 | −0,1074 | 0,3413 |
+| Moderado | −0,2162 | 0,1897 | 0,0645 |
+
+   **Conferência:** a soma dos quadrados das 9 células é **0,3176**, a inércia total (χ² ÷ N).
+
+3. **Os autovalores** são os autovalores da matriz \(S^\top S\) (3×3):
+
+| | | |
+|---|---|---|
+| 0,0935 | −0,0436 | −0,0907 |
+| −0,0436 | 0,0519 | −0,0093 |
+| −0,0907 | −0,0093 | 0,1722 |
+
+   Um autovalor é **sempre zero** (a matriz tem posto 2, porque os totais de linha e de coluna já foram "usados"). Os outros dois saem de uma equação do 2º grau: \(\lambda^2 - (\text{soma da diagonal})\,\lambda + (\text{soma dos menores } 2\times 2) = 0\). A soma da diagonal é 0,0935 + 0,0519 + 0,1722 = **0,3176**, e a soma dos três menores 2×2 é 0,00295 + 0,00788 + 0,00885 = **0,01968**:
+
+\[ \lambda^2 - 0{,}3176\,\lambda + 0{,}01968 = 0 \;\Rightarrow\; \lambda = \frac{0{,}3176 \pm \sqrt{0{,}3176^2 - 4(0{,}01968)}}{2} = \frac{0{,}3176 \pm 0{,}1488}{2} \]
+
+   \(\lambda_1 = 0{,}4664/2 = \) **0,2332** e \(\lambda_2 = 0{,}1688/2 = \) **0,0844**.
+
+4. **O percentual de cada dimensão** é o autovalor dividido pela inércia total: \(0{,}2332/0{,}3176 = 73{,}4\%\) e \(0{,}0844/0{,}3176 = 26{,}6\%\).
+
+Em tabelas maiores ninguém faz isso à mão: o software faz a mesma decomposição (SVD). O que vale lembrar: os autovalores **somam a inércia total** (0,3176 = χ² ÷ N), o primeiro é a dimensão que mais explica a associação, e o mapa perceptual usa as duas dimensões com esses autovalores.
+
 **Passo 6: o mapa perceptual.**
 
 ![Mapa perceptual da ANACOR: perfil × tipo de aplicação](img/16_anacor_mapa.png)
