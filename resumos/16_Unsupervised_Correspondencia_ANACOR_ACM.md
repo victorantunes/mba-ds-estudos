@@ -58,6 +58,15 @@ Já dá para ver as diferenças: agressivos **observados 36** em ações, contra
 
 **Passo 3: qui-quadrado.** Cada célula contribui com \((O-E)^2/E\). Para Agressivo × Ações: \((36-26{,}10)^2/26{,}10 = 98{,}01/26{,}10 = 3{,}76\). Somando as 9 células: **χ² = 31,76**, com \(gl = (3-1)(3-1) = 4\) e **p ≈ 0,000002**. Como p < 0,05, **rejeita-se H0 (independência)**: **há associação** entre perfil e aplicação, e vale seguir para a etapa 2.
 
+**De onde vem o p-valor?** O p-valor é a **probabilidade, se H0 fosse verdadeira (variáveis independentes), de obter um χ² tão grande quanto o observado ou maior**. Ele é a **área da cauda direita** da distribuição qui-quadrado com 4 graus de liberdade, à direita de 31,76. Quanto maior o χ² (mais distante o observado do esperado), menor essa área. Como calcular:
+
+- **No Excel:** `=DIST.QUI.QUAD.CD(31,76; 4)` (ou `=1 - DIST.QUI.QUAD(31,76; 4; VERDADEIRO)`) → 0,0000021.
+- **No Python:** `from scipy.stats import chi2; chi2.sf(31.76, 4)` → 2,1 × 10⁻⁶ (a função `sf` é a "survival function", 1 − CDF; é a cauda direita).
+- **À mão, só para 4 graus de liberdade** (existe fórmula fechada): \(p = e^{-\chi^2/2}\left(1 + \frac{\chi^2}{2}\right) = e^{-15{,}88}\times(1 + 15{,}88) = 1{,}27\times 10^{-7}\times 16{,}88 = 2{,}1\times 10^{-6}\).
+- **Pela tabela:** o valor crítico da qui-quadrado com 4 gl a 5% é **9,49**. Como 31,76 está **muito além** de 9,49 (a área à direita de 9,49 já é de apenas 5%), o p-valor é muito menor que 5%. A tabela dá só a faixa; o Excel e o Python dão o número exato.
+
+Ou seja, só haveria 2 chances em um milhão de ver uma discrepância dessas por puro acaso se perfil e aplicação fossem independentes. Por isso se rejeita H0.
+
 **Passo 4: resíduos padronizados ajustados** (a etapa 2). Para Agressivo × Ações:
 
 \[ \text{res.} = \frac{O - E}{\sqrt{E\,(1 - \text{prop. linha})(1 - \text{prop. coluna})}} = \frac{36 - 26{,}10}{\sqrt{26{,}10 \times 0{,}42 \times 0{,}55}} = \frac{9{,}90}{2{,}455} = 4{,}03 \]
