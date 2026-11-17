@@ -95,9 +95,42 @@ O **R²** é a fração do erro que a reta eliminou:
 
 **Leitura:** usar a distância fez o erro cair de **2.000** para **361**, ou seja, a reta **eliminou 82%** do erro. Por isso se diz que "a distância explica 82% da variação do tempo". Os 18% restantes (361 ÷ 2.000) são o que a distância não explica (trânsito, semáforos, saída tarde...). Um R² de 0 significaria que a reta não ajuda em nada (erro igual ao de chutar a média), e um R² de 1 que ela acerta todos os trajetos.
 
-**Passo 6: os testes.** O **t** do beta: erro-padrão = 0,2355, então \(t = 1{,}4189/0{,}2355 = 6{,}03\) (**p = 0,0003**): a distância é significante, e o intervalo de confiança de 95% para β vai de **0,88 a 1,96**. O **F** do modelo: \(F = \dfrac{SQR/k}{SQE/(n-k-1)} = \dfrac{1638{,}85/1}{361{,}15/8} = 36{,}30\) (**p = 0,0003**). Repare que, **na regressão simples, \(F = t^2\)**: \(6{,}03^2 = 36{,}3\).
+**Passo 6: a reta é de verdade ou foi sorte da amostra?** Temos só 10 trajetos. Com outros 10 trajetos, o β daria um pouco diferente. A pergunta é: **será que, na vida real, a distância não tem efeito nenhum sobre o tempo (β = 0), e o 1,42 que encontramos foi sorte?** Isso é o que o teste responde. H0: **β = 0** (a distância não afeta o tempo).
 
-**Passo 7: previsão.** Para um trajeto de **25 km**: \(\hat{Y} = 5{,}878 + 1{,}4189\times 25 = 41{,}35\) min. Prever fora da faixa observada (5 a 32 km) seria **extrapolação**.
+**6.1 O erro-padrão: o quanto o β "balança".** Mede o quanto o β mudaria de uma amostra de 10 trajetos para outra. Calcula-se com o que já temos:
+
+- **Erro típico da reta (ao quadrado):** SQE ÷ (n − 2) = 361,15 ÷ 8 = **45,14** (o "n − 2" é porque a reta usou 2 números, α e β, e sobram 8 trajetos de "liberdade"). Tirando a raiz, o erro típico é **6,7 minutos**.
+- **Erro-padrão do β:** \(EP = \sqrt{\dfrac{45{,}14}{814}} = \sqrt{0{,}0555} = \) **0,2355** (o 814 é a soma dos quadrados das distâncias em relação à média, do Passo 2).
+
+Em palavras: erros maiores em volta da reta aumentam o balanço do β; distâncias mais variadas (X espalhado) diminuem.
+
+**6.2 O teste t: a que distância de zero está o β?**
+
+\[ t = \frac{\beta}{EP} = \frac{1{,}4189}{0{,}2355} = \mathbf{6{,}03} \]
+
+O β está a **6 erros-padrão de distância do zero**. Como regra: **mais de uns 2 erros-padrão já é raro demais para ser sorte**.
+
+**6.3 A decisão.** O t tem **n − 2 = 8** graus de liberdade. O **valor crítico** a 5% (na tabela t, 8 gl) é **2,306**:
+
+- **6,03 > 2,306** → rejeita-se H0: **a distância afeta, sim, o tempo**.
+- O **p-valor é 0,0003** (3 chances em 10.000 de ver um β desses por sorte se o efeito fosse zero).
+
+**6.4 O intervalo de confiança do β:** \(\beta \pm \text{crítico}\times EP = 1{,}4189 \pm 2{,}306\times 0{,}2355 = 1{,}4189 \pm 0{,}543\), isto é, de **0,88 a 1,96**. Leitura: com 95% de confiança, **cada km a mais aumenta o tempo entre 0,88 e 1,96 minutos**. O zero **não está** dentro do intervalo, o que dá a mesma resposta do teste t (rejeita β = 0).
+
+**6.5 O teste F: a reta prevê melhor que a média?** Faz a mesma pergunta para o modelo todo (como só há uma variável, o resultado é o mesmo). Compara o que a reta **explica** com o que **sobra**, cada um por "graus de liberdade":
+
+\[ F = \frac{SQR \div 1}{SQE \div 8} = \frac{1638{,}85}{45{,}14} = \mathbf{36{,}30} \]
+
+O crítico F (1 e 8 graus de liberdade, 5%) é **5,32**, e 36,30 > 5,32 → rejeita-se H0 (**p = 0,0003**, o mesmo do t). Na regressão simples, **F = t²**: \(6{,}03^2 = 36{,}3\). (O mesmo vale para o intercepto: seu t é 1,30 e p = 0,23, **não significante**, o que não é problema: o intercepto **nunca é excluído** do modelo.)
+
+
+**Passo 7: usando a reta para prever.** Para um trajeto de **25 km**:
+
+\[ \hat{Y} = 5{,}878 + 1{,}4189\times 25 = \mathbf{41{,}35 \text{ minutos}} \]
+
+Esse é o tempo **esperado**; um trajeto real de 25 km pode variar em torno disso (o erro típico é de 6,7 min). Repare que o trajeto 5 do banco tinha exatamente 25 km e levou 50 min: o resíduo de +8,65 que vimos na tabela.
+
+**Cuidado com a extrapolação.** A reta foi estimada com distâncias de **5 a 32 km**. Prever para 25 km é seguro (está dentro da faixa). Prever para **100 km** daria \(5{,}878 + 1{,}4189\times 100 = 147{,}8\) min, mas **não se pode confiar**: nada nos dados mostra que a relação continua linear tão longe (em 100 km entram rodovia, parada, trânsito diferente...).
 
 
 O **R²** (também chamado **coeficiente de ajuste, de explicação ou de determinação**) é o **percentual da variância de Y explicado pelas variáveis explicativas**. Varia de 0 a 1 e, **na regressão simples, \(R^2 = r^2\)** (o quadrado da correlação de Pearson).
