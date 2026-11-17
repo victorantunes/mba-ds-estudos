@@ -60,13 +60,40 @@ Interpretação: **cada km a mais aumenta o tempo em média 1,42 min**. O interc
 | 9 | 28 | 35 | 45,61 | −10,61 |
 | 10 | 20 | 30 | 34,26 | −4,26 |
 
-Os resíduos somam **zero**, como o OLS exige, e a soma dos seus quadrados é a **SQE = 361,15**.
+Os resíduos somam **zero** (os erros para cima e para baixo se compensam), como o OLS exige.
 
-**Passo 5: R².** A variação total (SQT = 2000) se divide em parte **explicada** pela regressão (SQR = 1638,85) e parte **não explicada** (SQE = 361,15):
+**Passo 5: o R² (quanto a distância melhora a previsão).** A ideia é comparar **dois jeitos de prever o tempo**:
 
-\[ R^2 = \frac{SQR}{SQT} = \frac{1638{,}85}{2000} = 0{,}8194 \qquad\text{(ou }r^2 = \left(\frac{1155}{\sqrt{814\times 2000}}\right)^2 = 0{,}8194\text{)} \]
+- **Jeito 1, sem usar a distância:** chutar sempre a **média**, 30 min, para qualquer trajeto. O erro de cada trajeto é "tempo real − 30".
+- **Jeito 2, usando a distância:** usar a reta, \(\hat{Y} = 5{,}878 + 1{,}4189 X\). O erro de cada trajeto é o **resíduo** (tempo real − tempo previsto pela reta).
 
-A distância explica **82%** da variação do tempo. Como é regressão simples, \(R^2 = r^2\): a correlação de Pearson é \(r = 0{,}905\).
+Para medir o tamanho do erro de cada jeito, **eleva-se cada erro ao quadrado** (para não se anularem) e **soma-se**. A tabela faz isso para os 10 trajetos:
+
+| Trajeto | Tempo real | Erro do jeito 1 (real − 30) | **Erro² do jeito 1** | Previsto pela reta | Erro do jeito 2 (resíduo) | **Erro² do jeito 2** |
+|---|---|---|---|---|---|---|
+| 1 | 15 | −15 | 225 | 17,23 | −2,23 | 4,97 |
+| 2 | 20 | −10 | 100 | 14,39 | 5,61 | 31,45 |
+| 3 | 20 | −10 | 100 | 27,16 | −7,16 | 51,30 |
+| 4 | 40 | +10 | 100 | 34,26 | 5,74 | 32,98 |
+| 5 | 50 | +20 | 400 | 41,35 | 8,65 | 74,80 |
+| 6 | 25 | −5 | 25 | 21,49 | 3,51 | 12,34 |
+| 7 | 10 | −20 | 400 | 12,97 | −2,97 | 8,84 |
+| 8 | 55 | +25 | 625 | 51,28 | 3,72 | 13,81 |
+| 9 | 35 | +5 | 25 | 45,61 | −10,61 | 112,53 |
+| 10 | 30 | 0 | 0 | 34,26 | −4,26 | 18,12 |
+| **Soma** | | | **2.000** | | | **361,15** |
+
+Esses dois totais têm nome:
+
+- **SQT = 2.000** (soma dos quadrados **totais**): o erro de **chutar a média**. É toda a variação do tempo que existe para ser explicada.
+- **SQE = 361,15** (soma dos quadrados do **erro**): o erro que **sobrou** mesmo usando a reta. É a variação que a distância **não** explica.
+- **SQR = 2.000 − 361,15 = 1.638,85** (soma dos quadrados da **regressão**): a parte do erro que a reta **eliminou**. É a variação que a distância **explica**.
+
+O **R²** é a fração do erro que a reta eliminou:
+
+\[ R^2 = \frac{SQR}{SQT} = \frac{1638{,}85}{2000} = 0{,}8194 \]
+
+**Leitura:** usar a distância fez o erro cair de **2.000** para **361**, ou seja, a reta **eliminou 82%** do erro. Por isso se diz que "a distância explica 82% da variação do tempo". Os 18% restantes (361 ÷ 2.000) são o que a distância não explica (trânsito, semáforos, saída tarde...). Um R² de 0 significaria que a reta não ajuda em nada (erro igual ao de chutar a média), e um R² de 1 que ela acerta todos os trajetos.
 
 **Passo 6: os testes.** O **t** do beta: erro-padrão = 0,2355, então \(t = 1{,}4189/0{,}2355 = 6{,}03\) (**p = 0,0003**): a distância é significante, e o intervalo de confiança de 95% para β vai de **0,88 a 1,96**. O **F** do modelo: \(F = \dfrac{SQR/k}{SQE/(n-k-1)} = \dfrac{1638{,}85/1}{361{,}15/8} = 36{,}30\) (**p = 0,0003**). Repare que, **na regressão simples, \(F = t^2\)**: \(6{,}03^2 = 36{,}3\).
 
