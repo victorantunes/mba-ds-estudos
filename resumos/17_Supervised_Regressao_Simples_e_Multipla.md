@@ -110,10 +110,26 @@ Em palavras: erros maiores em volta da reta aumentam o balanço do β; distânci
 
 O β está a **6 erros-padrão de distância do zero**. Como regra: **mais de uns 2 erros-padrão já é raro demais para ser sorte**.
 
-**6.3 A decisão.** O t tem **n − 2 = 8** graus de liberdade. O **valor crítico** a 5% (na tabela t, 8 gl) é **2,306**:
+**6.3 A decisão: valor crítico e p-valor.** H0 é que **a distância não afeta o tempo** (β = 0). Mesmo se H0 fosse verdade, o t não daria exatamente 0: pela sorte da amostra, daria um valor pequeno. A pergunta é: **6,03 é um valor que a sorte produz, ou é grande demais para ser sorte?**
 
-- **6,03 > 2,306** → rejeita-se H0: **a distância afeta, sim, o tempo**.
-- O **p-valor é 0,0003** (3 chances em 10.000 de ver um β desses por sorte se o efeito fosse zero).
+Para ver isso, **embaralhei os 10 tempos entre os trajetos 200.000 vezes**. Cada embaralhamento quebra qualquer relação entre distância e tempo (o "mundo sem efeito"), e a cada vez calculei o t:
+
+- **Metade** dos t ficou entre −0,7 e +0,7.
+- **95%** ficaram entre **−2,35 e +2,35**.
+- Só **85 em 200.000** (0,04%) chegaram a ±6,03 ou mais.
+
+**Os 8 graus de liberdade** são n − 2: os 10 trajetos menos os 2 números que a reta precisou estimar (α e β). Eles só escolhem **qual curva t usar** (com poucos dados a curva é mais larga, porque a sorte oscila mais).
+
+**Maneira 1: o valor crítico (2,306).** É a **linha de corte dos 5% mais raros** nessa curva (8 gl): 95% dos t do mundo sem efeito ficam entre −2,306 e +2,306. Vem da **tabela t** (linha de 8 gl, coluna de 5%) e é praticamente o 2,35 do experimento. Decisão: **6,03 > 2,306** → cai nos 5% mais raros → **rejeita-se H0**: a distância afeta, sim, o tempo.
+
+**Maneira 2: o p-valor (0,0003).** É a **probabilidade de o t chegar a ±6,03 ou mais** no mundo sem efeito: a área das duas pontas da curva t (8 gl). No Excel: `=DIST.T.BC(6,03; 8)` → 0,0003, ou **3 chances em 10.000**. (No experimento deu 4 em 10.000: bate.) Decisão: **0,0003 < 0,05** → **rejeita-se H0**.
+
+| | Compara | Rejeita H0 quando | No exemplo |
+|---|---|---|---|
+| **Valor crítico** | t (6,03) com 2,306 | \|t\| > 2,306 | 6,03 > 2,306 → rejeita |
+| **p-valor** | p (0,0003) com 0,05 | p < 0,05 | 0,0003 < 0,05 → rejeita |
+
+Em uma frase: se a distância não afetasse o tempo, ver um β tão grande quanto o nosso seria uma coincidência de 3 em 10.000. Como isso é improvável demais, conclui-se que a distância realmente afeta o tempo.
 
 **6.4 O intervalo de confiança do β:** \(\beta \pm \text{crítico}\times EP = 1{,}4189 \pm 2{,}306\times 0{,}2355 = 1{,}4189 \pm 0{,}543\), isto é, de **0,88 a 1,96**. Leitura: com 95% de confiança, **cada km a mais aumenta o tempo entre 0,88 e 1,96 minutos**. O zero **não está** dentro do intervalo, o que dá a mesma resposta do teste t (rejeita β = 0).
 
