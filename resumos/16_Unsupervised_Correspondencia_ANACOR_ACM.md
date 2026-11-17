@@ -58,14 +58,44 @@ Já dá para ver as diferenças: agressivos **observados 36** em ações, contra
 
 **Passo 3: qui-quadrado.** Cada célula contribui com \((O-E)^2/E\). Para Agressivo × Ações: \((36-26{,}10)^2/26{,}10 = 98{,}01/26{,}10 = 3{,}76\). Somando as 9 células: **χ² = 31,76**, com \(gl = (3-1)(3-1) = 4\) e **p ≈ 0,000002**. Como p < 0,05, **rejeita-se H0 (independência)**: **há associação** entre perfil e aplicação, e vale seguir para a etapa 2.
 
-**De onde vem o p-valor?** O p-valor é a **probabilidade, se H0 fosse verdadeira (variáveis independentes), de obter um χ² tão grande quanto o observado ou maior**. Ele é a **área da cauda direita** da distribuição qui-quadrado com 4 graus de liberdade, à direita de 31,76. Quanto maior o χ² (mais distante o observado do esperado), menor essa área. Como calcular:
+**Como decidir se o χ² = 31,76 é "grande o bastante": valor crítico e p-valor.**
 
-- **No Excel:** `=DIST.QUI.QUAD.CD(31,76; 4)` (ou `=1 - DIST.QUI.QUAD(31,76; 4; VERDADEIRO)`) → 0,0000021.
-- **No Python:** `from scipy.stats import chi2; chi2.sf(31.76, 4)` → 2,1 × 10⁻⁶ (a função `sf` é a "survival function", 1 − CDF; é a cauda direita).
-- **À mão, só para 4 graus de liberdade** (existe fórmula fechada): \(p = e^{-\chi^2/2}\left(1 + \frac{\chi^2}{2}\right) = e^{-15{,}88}\times(1 + 15{,}88) = 1{,}27\times 10^{-7}\times 16{,}88 = 2{,}1\times 10^{-6}\).
-- **Pela tabela:** o valor crítico da qui-quadrado com 4 gl a 5% é **9,49**. Como 31,76 está **muito além** de 9,49 (a área à direita de 9,49 já é de apenas 5%), o p-valor é muito menor que 5%. A tabela dá só a faixa; o Excel e o Python dão o número exato.
+**A ideia.** H0 diz que perfil e aplicação **não têm relação**. Mesmo se isso fosse verdade, a tabela observada não sairia **exatamente** igual à esperada: pela sorte da amostra, o χ² daria um valor pequeno, mas não zero. A pergunta é: **31,76 é um valor pequeno de sorte, ou grande demais para ser sorte?**
 
-Ou seja, só haveria 2 chances em um milhão de ver uma discrepância dessas por puro acaso se perfil e aplicação fossem independentes. Por isso se rejeita H0.
+Para ver como o χ² se comporta quando não há relação, **embaralhei a coluna de aplicação dos 100 estudantes 300.000 vezes** (assim o perfil deixa de ter relação com a escolha) e calculei o χ² de cada tabela:
+
+- **Metade** dos χ² ficou abaixo de **3,5**.
+- **95%** ficaram abaixo de **9,4**.
+- Só **1 em 300.000** chegou a **31,76**.
+
+Há duas maneiras de usar essa ideia para decidir. As duas dão sempre a mesma resposta.
+
+**Maneira 1: o valor crítico (a "linha de corte").** É o χ² acima do qual ficam só os **5% mais raros** dos casos sem relação. Ele depende apenas dos **graus de liberdade** e do **nível de significância** (5%), e não dos seus dados:
+
+- **Graus de liberdade** = (3 − 1) × (3 − 1) = **4** (vem do tamanho da tabela).
+- Na tabela qui-quadrado, na **linha de 4 gl** e na **coluna de 5%**, está **9,49**. (Foi esse o "95% ficaram abaixo de 9,4" do experimento.)
+
+Decisão: **31,76 > 9,49**, ou seja, o seu χ² passa muito da linha de corte. Isso é raro demais para ser sorte, então **rejeita-se H0**.
+
+**Maneira 2: o p-valor.** É a **probabilidade de o χ² chegar a 31,76 ou mais**, se não houvesse relação. É a fração dos casos sem relação que dão um χ² tão grande quanto o seu (no gráfico da curva qui-quadrado, é a área à direita de 31,76). Com 4 graus de liberdade existe uma fórmula curta:
+
+\[ p = e^{-\chi^2/2}\,\left(1 + \frac{\chi^2}{2}\right) \]
+
+1. Metade do χ²: 31,76 ÷ 2 = **15,88**
+2. Fator: 1 + 15,88 = **16,88**
+3. Exponencial: \(e^{-15{,}88} \approx 0{,}000000127\) (na calculadora, tecla \(e^x\) com −15,88)
+4. Multiplicar: 16,88 × 0,000000127 ≈ **0,0000021**
+
+O **p-valor é 0,0000021**, cerca de **2 em 1 milhão**: bate com o experimento (1 em 300.000). Decisão: **p < 0,05**, então **rejeita-se H0**. (No Excel: `=DIST.QUI.QUAD.CD(31,76; 4)`; no Python: `chi2.sf(31.76, 4)`.)
+
+| | Valor crítico | p-valor |
+|---|---|---|
+| **O que compara** | seu χ² (31,76) com a linha de corte (9,49) | a probabilidade (0,0000021) com 5% (0,05) |
+| **Rejeita H0 quando** | χ² **maior** que o crítico | p **menor** que 0,05 |
+| **No exemplo** | 31,76 > 9,49 → rejeita | 0,0000021 < 0,05 → rejeita |
+| **Vantagem** | basta uma tabela | diz **o quanto** foi raro (2 em 1 milhão) |
+
+**Se o nível de significância fosse 1%** (mais exigente), a linha de corte subiria para **13,28** (4 gl): o 31,76 passaria do mesmo jeito. E **como lembrar o 9,49:** para poucos graus de liberdade, o crítico a 5% fica perto de **2 × gl + 1,5**; com 4 gl, 2 × 4 + 1,5 = 9,5.
 
 **Passo 4: resíduos padronizados ajustados** (a etapa 2). Para Agressivo × Ações:
 
