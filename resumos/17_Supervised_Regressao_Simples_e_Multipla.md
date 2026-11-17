@@ -163,35 +163,83 @@ O **R²** (também chamado **coeficiente de ajuste, de explicação ou de determ
 
 ## 4. Regressão múltipla
 
-Com várias variáveis: \(Y = \alpha + \beta_1 X_1 + \cdots + \beta_k X_k + u\), ou, em forma matricial, \(b = (X'X)^{-1}X'Y\). Cada beta é o efeito da variável **mantendo as demais constantes** (*ceteris paribus*). Para **comparar modelos com números diferentes de variáveis**, usa-se o **R² ajustado**, que penaliza variáveis inúteis:
+Na regressão simples, **uma** variável explica o Y (a distância explicava o tempo). Na vida real, quase nada depende de uma coisa só. A **regressão múltipla** usa **duas ou mais** variáveis explicativas **ao mesmo tempo**:
 
-\[ R^2_{aj} = 1 - (1 - R^2)\,\frac{n-1}{n-k-1} \]
+\[ Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \cdots + u \]
 
-### Exemplo completo (da aula): percepção de corrupção em 50 países
+A grande vantagem é poder dizer **o efeito de cada variável com as outras "seguradas"**: o que a variável 1 faz **se a variável 2 ficar parada**. Os conceitos (β, resíduo, R², t, F) são os mesmos da regressão simples; só aumenta o número de variáveis.
 
-Variável dependente: **CPI** (*Corruption Perception Index*, índice da Transparência Internacional: **quanto maior, menor a corrupção percebida**). Explicativas: a **idade média dos bilionários** do país e as **horas semanais de trabalho**. Dados de 50 países (CPI médio de 4,89; idade média de 60,5 anos; 32,7 horas).
+### Exemplo completo (da aula): o que explica a percepção de corrupção em 50 países?
 
-**Correlações com o CPI:** idade = **+0,44** e horas = **−0,44** (e entre idade e horas, só −0,19, então não há colinearidade).
+**O problema.** A Transparência Internacional mede o **CPI** (índice de percepção de corrupção) de cada país: **quanto maior o CPI, menos corrupção as pessoas percebem**. A aula tenta explicar o CPI com duas variáveis: a **idade média dos bilionários** do país (`idade`) e as **horas semanais de trabalho** (`horas`). Os dados são de 50 países:
 
-O modelo \(\widehat{CPI} = \alpha + \beta_1\,\text{idade} + \beta_2\,\text{horas}\) estimado por OLS:
+| País | CPI (Y) | idade (X₁) | horas (X₂) |
+|---|---|---|---|
+| Argentina | 3,9 | 72 | 35 |
+| Austrália | 8,7 | 64 | 32 |
+| Áustria | 7,9 | 72 | 32 |
+| ... (50 países) | | | |
 
-| Termo | Coeficiente | Erro-padrão | t | p-valor | IC 95% |
+**Passo 1: olhar as correlações antes de estimar.** A correlação mede se duas variáveis andam juntas (de −1 a +1):
+
+| | CPI | idade | horas |
+|---|---|---|---|
+| **CPI** | 1 | **+0,44** | **−0,44** |
+| **idade** | | 1 | −0,19 |
+
+Leitura: países com bilionários **mais velhos** tendem a ter CPI **maior** (menos corrupção percebida); países com **mais horas** de trabalho tendem a ter CPI **menor**. E `idade` e `horas` têm correlação baixa entre si (−0,19): **não repetem a mesma informação**, o que é bom (se fossem muito correlacionadas, o modelo não saberia separar o efeito de cada uma: é a multicolinearidade).
+
+**Passo 2: a equação estimada.** O OLS escolhe o plano que deixa os erros ao quadrado o menor possível (o mesmo critério da regressão simples):
+
+\[ \widehat{CPI} = 11{,}972 + 0{,}0997\times\text{idade} - 0{,}4013\times\text{horas} \]
+
+**Como ler cada número:**
+
+| Termo | Valor | O que significa |
+|---|---|---|
+| **α** (intercepto) | 11,972 | o CPI previsto se idade e horas fossem 0 (sem sentido prático aqui; serve só para "ancorar" o plano) |
+| **β₁** (idade) | **+0,0997** | **cada ano a mais** na idade média dos bilionários eleva o CPI em **0,10**, **mantendo as horas constantes** |
+| **β₂** (horas) | **−0,4013** | **cada hora a mais** de trabalho semanal reduz o CPI em **0,40**, **mantendo a idade constante** |
+
+"**Mantendo a outra constante**" é a ideia central. Veja com a equação, comparando países parecidos:
+
+| País hipotético | idade | horas | CPI previsto |
+|---|---|---|---|
+| A | 60 | 32 | 5,11 |
+| B (só **10 anos a mais** de idade) | 70 | 32 | **6,11** (sobe 1,0 = 10 × 0,10) |
+| C (só **4 horas a mais** de trabalho) | 60 | 36 | **3,51** (cai 1,6 = 4 × 0,40) |
+
+**Passo 3: usando a equação para um país real.** Para a **Argentina** (idade 72, horas 35): \(11{,}972 + 0{,}0997\times 72 - 0{,}4013\times 35 = 11{,}972 + 7{,}18 - 14{,}05 = \) **5,10**. O CPI real foi 3,9, então o **resíduo** é 3,9 − 5,10 = **−1,20** (a Argentina tem CPI menor do que o modelo previa, por razões que não estão nas duas variáveis).
+
+**Passo 4: cada variável importa mesmo? (teste t de cada β).** Para cada β, a pergunta é: "será que, na vida real, esse β é zero (a variável não ajuda) e o que vimos foi sorte?". O **t = β ÷ erro-padrão** mede a distância do β até zero em erros-padrão:
+
+| Variável | β | Erro-padrão | t | p-valor | Decisão |
 |---|---|---|---|---|---|
-| Intercepto | 11,972 | 5,165 | 2,32 | 0,025 | 1,58 a 22,36 |
-| **idade** | **0,0997** | 0,033 | 3,05 | 0,004 | 0,03 a 0,17 |
-| **horas** | **−0,4013** | 0,135 | −2,98 | 0,005 | −0,67 a −0,13 |
+| idade | 0,0997 | 0,033 | 3,05 | 0,004 | **significante** |
+| horas | −0,4013 | 0,135 | −2,98 | 0,005 | **significante** |
 
-**Interpretação (ceteris paribus).** Com as horas de trabalho constantes, **cada ano a mais na idade média dos bilionários eleva o CPI em 0,10** (bilionários mais velhos despertam menos desconfiança). Com a idade constante, **cada hora a mais de trabalho semanal reduz o CPI em 0,40**. Os dois sinais batem com a intuição, e os dois betas são significantes (p < 0,05).
+O valor crítico do t, com 47 graus de liberdade (n − k − 1 = 50 − 2 − 1), a 5%, é **2,01**. Como 3,05 e 2,98 passam de 2,01 em valor absoluto (e os p-valores são menores que 0,05), **as duas variáveis são significantes**: nenhuma pode ser tirada do modelo. (O sinal de cada β bate com a intuição das correlações.)
 
-**Ajuste global.** \(R^2 = 0{,}3239\) (as duas variáveis explicam 32% da variância do CPI). O **R² ajustado** penaliza o número de variáveis, com n = 50 e k = 2:
+**Passo 5: o quanto o modelo explica (R²).** \(R^2 = 0{,}3239\): **as duas variáveis juntas explicam 32% da variação do CPI** (os outros 68% dependem de fatores fora do modelo, o que é normal em fenômenos sociais). Repare no ganho de usar as duas: **só a idade** explicaria 19,6% e **só as horas** explicariam 19,0%; juntas, 32,4%.
 
-\[ R^2_{aj} = 1 - (1 - 0{,}3239)\times\frac{50-1}{50-2-1} = 1 - 0{,}6761\times\frac{49}{47} = 1 - 0{,}7049 = 0{,}2951 \]
+**R² ajustado.** Há um truque: **o R² sempre sobe quando se acrescenta uma variável**, mesmo inútil. O **R² ajustado** corrige isso, descontando o número de variáveis (k), e por isso é o que se usa para **comparar modelos com números diferentes de variáveis**:
 
-O **F** testa se **ao menos um** beta é diferente de zero:
+\[ R^2_{aj} = 1 - (1 - R^2)\times\frac{n-1}{n-k-1} = 1 - 0{,}6761\times\frac{49}{47} = 1 - 0{,}7049 = \mathbf{0{,}2951} \]
 
-\[ F = \frac{R^2/k}{(1-R^2)/(n-k-1)} = \frac{0{,}3239/2}{0{,}6761/47} = \frac{0{,}1620}{0{,}01439} = 11{,}26 \quad (p = 0{,}0001) \]
+**Passo 6: o modelo, como um todo, serve? (teste F).** O teste t olha uma variável por vez; o **F** olha o modelo inteiro. H0: **todos os β são zero** (o modelo não é melhor que chutar a média do CPI):
 
-**Pressupostos.** Resíduos normais? **Shapiro-Francia: W = 0,980, p = 0,455 > 0,05, então não rejeita a normalidade.** Heterocedasticidade? **Breusch-Pagan: p = 0,891 > 0,05, então não há evidência de problema.** O modelo é adequado para inferência.
+\[ F = \frac{R^2 / k}{(1-R^2)/(n-k-1)} = \frac{0{,}3239/2}{0{,}6761/47} = \frac{0{,}1620}{0{,}01439} = \mathbf{11{,}26} \]
+
+O valor crítico do F (2 e 47 graus de liberdade, 5%) é **3,20**. Como 11,26 > 3,20 (e o **p-valor é 0,0001**), **rejeita-se H0**: o modelo é útil.
+
+**Passo 7: conferir os pressupostos.** A inferência (os testes t e F acima) só vale se os resíduos se comportarem:
+
+| Pergunta | Teste | Resultado | Decisão |
+|---|---|---|---|
+| Os resíduos são normais? | Shapiro-Francia | p = 0,455 (> 0,05) | **não rejeita** a normalidade: ok |
+| A variância dos erros é constante? | Breusch-Pagan | p = 0,891 (> 0,05) | **sem evidência** de heterocedasticidade: ok |
+
+Os dois testes têm H0 do tipo "está tudo bem"; por isso aqui **queremos p grande** (maior que 0,05). Como os dois deram p alto, o modelo é adequado para inferência.
 
 
 ## 5. Variáveis qualitativas: as dummies (cai sempre)
